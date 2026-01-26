@@ -1,0 +1,75 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+permissions:
+    contents: write
+    id-token: write
+
+jobs:
+    build:
+        uses: ./.github/workflows/ci-check.yml
+        secrets: inherit
+        with:
+            artifact_suffix: "-Release"
+            upload_artifacts: true
+
+    generate-changelog:
+        name: Generate Changelog
+        needs: build
+        uses: ./.github/workflows/generate-changelog.yml
+        with:
+            mode: release
+            tag_name: ${{ github.ref_name }}
+
+    client-libraries:
+        name: Client library smoke builds and pack
+        uses: ./.github/workflows/clients_ci.yml
+        with:
+            artifact_suffix: "-Release"
+            upload_artifacts: true
+            version: ${{ github.ref_name }}
+
+    create-release:
+        name: Create Release
+        needs: [build, generate-changelog, client-libraries]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Extract build info
+              id: build_info
+              shell: bash
+              run: |
+                  echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+                  echo "time=$(date +'%H%M')" >> $GITHUB_OUTPUT
+                  echo "sha=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
+                  TAG_NAME=${GITHUB_REF#refs/tags/}
+                  echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+                  GIT_VERSION=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always || echo "")
+                  if [[ ! $GIT_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+                    COMMIT_COUNT=$(git rev-list --count HEAD)
+                    GIT_VERSION="v0.0.0-${COMMIT_COUNT}-${GITHUB_SHA:0:7}"
+                  fi
+                  echo "version=$GIT_VERSION" >> $GITHUB_OUTPUT
+                  echo "Version from git: $GIT_VERSION"
+
+            - name: Create Release
+              id: create_release
+              uses: softprops/action-gh-release@v1
+              with:
+                  tag_name: ${{ steps.build_info.outputs.tag_name }}
+                  name: "steaminputdb.com ${{ steps.build_info.outputs.version }}"
+                  body: |
+                      ${{ needs.generate-changelog.outputs.changelog }}
+                  files: release_files/*
+                  prerelease: false
+                  draft: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

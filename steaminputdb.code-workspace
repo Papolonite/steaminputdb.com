@@ -1,0 +1,25 @@
+{
+    "folders": [
+        {
+            "path": "frontend",
+        },
+        {
+            "path": "backend"
+        },
+        {
+            "name": "root",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.eol": "\n"
+    },
+    "extensions": {
+        "recommendations": [
+            "golang.go",
+            "dbaeumer.vscode-eslint",
+            "svelte.svelte-vscode",
+            "csstools.postcss"
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+name: PR-Check
+
+on:
+    pull_request:
+        branches:
+            - "**"
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        uses: ./.github/workflows/ci-check.yml
+        secrets: inherit
+        with:
+            upload_artifacts: false

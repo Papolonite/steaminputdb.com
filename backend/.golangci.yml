@@ -1,0 +1,55 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - misspell
+    - revive
+    - unconvert
+    - unparam
+    - whitespace
+  
+  settings:
+    errcheck:
+      check-blank: false
+      check-type-assertions: false
+    
+    govet:
+      enable:
+        - shadow
+    
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
+        - name: exported
+          disabled: true
+  
+  exclusions:
+    presets: []
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  
+  settings:
+    gofmt:
+      simplify: true
+    
+    goimports:
+      local-prefixes:
+        - github.com/Alia5/steaminputdb.com
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
