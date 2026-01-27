@@ -26,5 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Misc
 
-SteamInputDB is not affiliated with Steam, Valve Software or any of their partners.
-Steam and the Steam logo are trademarks of Valve Corporation. All other trademarks are property of their respective owners.
+SteamInputDB is not affiliated with Steam, Valve Software or any of their partners.  
+Steam and the Steam logo are trademarks of Valve Corporation.  
+All other trademarks are property of their respective owners.
