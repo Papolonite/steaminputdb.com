@@ -5,6 +5,12 @@
 *.so
 *.dylib
 
+.env
+
+__debug_bin*
+
+docker-data/
+
 # Test binary, built with `go test -c`
 *.test
 
