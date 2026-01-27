@@ -9,6 +9,8 @@
 
 __debug_bin*
 
+dist/
+
 docker-data/
 
 # Test binary, built with `go test -c`

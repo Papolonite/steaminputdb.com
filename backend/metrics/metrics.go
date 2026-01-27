@@ -1,0 +1,30 @@
+package metrics
+
+import (
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+	httpRequestsTotal = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_requests_total",
+			Help: "Total HTTP requests",
+		},
+		[]string{"method", "path", "status"},
+	)
+	httpRequestDuration = promauto.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:    "http_request_duration_seconds",
+			Help:    "HTTP request latency",
+			Buckets: prometheus.DefBuckets,
+		},
+		[]string{"method", "path"},
+	)
+	httpActiveConnections = promauto.NewGauge(
+		prometheus.GaugeOpts{
+			Name: "http_active_connections",
+			Help: "Active HTTP connections",
+		},
+	)
+)

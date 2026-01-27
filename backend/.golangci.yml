@@ -16,7 +16,6 @@ linters:
     - revive
     - unconvert
     - unparam
-    - whitespace
   
   settings:
     errcheck:
@@ -26,6 +25,12 @@ linters:
     govet:
       enable:
         - shadow
+
+    staticcheck:
+      checks:
+        - all
+        - -SA1029
+        - -ST1000
     
     revive:
       rules:
@@ -40,15 +45,10 @@ linters:
 formatters:
   enable:
     - gofmt
-    - goimports
   
   settings:
     gofmt:
       simplify: true
-    
-    goimports:
-      local-prefixes:
-        - github.com/Alia5/steaminputdb.com
 
 issues:
   max-issues-per-linter: 0

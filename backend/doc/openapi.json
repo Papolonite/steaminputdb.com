@@ -1,0 +1,241 @@
+{
+	"components": {
+		"schemas": {
+			"HTTPError": {
+				"description": "HTTPError schema",
+				"properties": {
+					"detail": {
+						"description": "Human readable error message",
+						"nullable": true,
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"nullable": true,
+							"properties": {
+								"more": {
+									"additionalProperties": {
+										"description": "Additional information about the error",
+										"nullable": true
+									},
+									"description": "Additional information about the error",
+									"nullable": true,
+									"type": "object"
+								},
+								"name": {
+									"description": "For example, name of the parameter that caused the error",
+									"type": "string"
+								},
+								"reason": {
+									"description": "Human readable error message",
+									"type": "string"
+								}
+							},
+							"type": "object"
+						},
+						"nullable": true,
+						"type": "array"
+					},
+					"instance": {
+						"nullable": true,
+						"type": "string"
+					},
+					"status": {
+						"description": "HTTP status code",
+						"example": 403,
+						"nullable": true,
+						"type": "integer"
+					},
+					"title": {
+						"description": "Short title of the error",
+						"nullable": true,
+						"type": "string"
+					},
+					"type": {
+						"description": "URL of the error type. Can be used to lookup the error in a documentation",
+						"nullable": true,
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"Ping": {
+				"description": "Ping schema",
+				"properties": {
+					"service": {
+						"type": "string"
+					},
+					"version": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"unknown-interface": {
+				"description": "unknown-interface schema"
+			}
+		}
+	},
+	"info": {
+		"description": "API for SteamInputDB.com",
+		"license": {
+			"name": "AGPL-3.0",
+			"url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
+		},
+		"title": "SteamInputDB API",
+		"version": "dev"
+	},
+	"openapi": "3.1.0",
+	"paths": {
+		"/": {
+			"get": {
+				"description": "#### Controller: \n\n`github.com/Alia5/steaminputdb.com/api.RegisterCatchAll.func1`\n\n#### Middlewares:\n\n- `github.com/go-fuego/fuego.defaultLogger.middleware`\n\n---\n\n",
+				"operationId": "GET_/",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/unknown-interface"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "func1"
+			}
+		},
+		"/ping": {
+			"get": {
+				"description": "Returns basic information about the service.",
+				"operationId": "GET_/ping",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Accept",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Ping"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/Ping"
+								}
+							}
+						},
+						"description": "OK"
+					},
+					"400": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Bad Request _(validation or deserialization error)_"
+					},
+					"500": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							},
+							"application/xml": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPError"
+								}
+							}
+						},
+						"description": "Internal Server Error _(panics)_"
+					},
+					"default": {
+						"description": ""
+					}
+				},
+				"summary": "Ping",
+				"tags": [
+					"Meta"
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"description": "Public API",
+			"url": "http://localhost:8889"
+		},
+		{
+			"description": "local server",
+			"url": "http://localhost:8889"
+		}
+	],
+	"tags": [
+		{
+			"name": "Meta"
+		}
+	]
+}
