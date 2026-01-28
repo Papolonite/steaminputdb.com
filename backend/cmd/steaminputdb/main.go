@@ -4,18 +4,17 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 
-	"github.com/Alia5/steaminputdb.com/api"
+	_ "embed"
+
 	"github.com/Alia5/steaminputdb.com/config"
+	"github.com/Alia5/steaminputdb.com/frontend"
 	"github.com/Alia5/steaminputdb.com/logging"
 	"github.com/Alia5/steaminputdb.com/metrics"
 	"github.com/Alia5/steaminputdb.com/routes"
@@ -23,12 +22,17 @@ import (
 	"github.com/alecthomas/kong"
 	kongtoml "github.com/alecthomas/kong-toml"
 	kongyaml "github.com/alecthomas/kong-yaml"
-	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/go-fuego/fuego"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humago"
+	"github.com/danielgtaylor/huma/v2/humacli"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 )
 
-const baseURL = "https://steaminputdb.com"
+const baseURL = "https://api.steaminputdb.com"
+
+//go:embed apidesc.md
+var apiDescription string
 
 func main() {
 
@@ -48,202 +52,186 @@ func main() {
 
 	logging.SetupDefault(cfg.LogLevel)
 
-	frontendListener, err := net.Listen("tcp", cfg.ListenAddress)
-	if err != nil {
-		panic(err)
-	}
-	apiListener, err := net.Listen("tcp", cfg.API.ListenAddress)
-	if err != nil {
-		panic(err)
-	}
-	metricsListener, err := net.Listen("tcp", cfg.Metrics.ListenAddress)
-	if err != nil {
-		panic(err)
-	}
-
-	frontendListener = addrDisplayListener{Listener: frontendListener, listenAddr: cfg.ListenAddress}
-	apiListener = addrDisplayListener{Listener: apiListener, listenAddr: cfg.API.ListenAddress}
-	metricsListener = addrDisplayListener{Listener: metricsListener, listenAddr: cfg.Metrics.ListenAddress}
-
-	frontendSrv := fuego.NewServer(
-		fuego.WithListener(frontendListener),
-		fuego.WithEngineOptions(
-			fuego.WithOpenAPIConfig(fuego.OpenAPIConfig{
-				Disabled:         true,
-				DisableSwaggerUI: true,
-				DisableLocalSave: true,
-			}),
-		),
-		fuego.WithLoggingMiddleware(
-			fuego.LoggingConfig{
-				DisableRequest:  true,
-				DisableResponse: true,
-			},
-		),
-		fuego.WithGlobalMiddlewares(
-			metrics.Middleware,
+	feMux := http.NewServeMux()
+	feSrv := http.Server{
+		Addr: cfg.ListenAddress,
+		Handler: logging.Middleware(
 			cors.New(cors.Options{
 				AllowedOrigins:   []string{cfg.CorsOrigins},
 				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 				AllowedHeaders:   []string{"*"},
 				AllowCredentials: true,
-			}).Handler,
-			logging.Middleware,
+			}).Handler(
+				metrics.Middleware(
+					routes.UnregisteredMiddleware(
+						feMux,
+					),
+				),
+			),
 		),
-	)
+	}
+	feMux.HandleFunc("GET /", frontend.Handler)
 
-	apiSrv := fuego.NewServer(
-		fuego.WithListener(apiListener),
-		fuego.WithEngineOptions(
-			fuego.WithErrorHandler(api.ErrorHandler),
-			fuego.WithOpenAPIConfig(fuego.OpenAPIConfig{
-				Disabled:         false,
-				DisableSwaggerUI: false,
-				DisableLocalSave: false,
-				PrettyFormatJSON: true,
-				UIHandler: func(specURL string) http.Handler {
-					return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-						w.Header().Set("Content-Type", "text/html; charset=utf-8")
-						_, _ = w.Write([]byte(
-							strings.Replace(
-								fuego.DefaultOpenAPIHTML(specURL),
-								"https://go-fuego.dev/img/logo.svg",
-								fmt.Sprintf("%s/logo.svg", baseURL),
-								2,
-							),
-						))
-					})
-				},
-				Info: &openapi3.Info{
-					Title:       "SteamInputDB API",
-					Description: "API for SteamInputDB.com",
-					License: &openapi3.License{
-						Name: "AGPL-3.0",
-						URL:  "https://www.gnu.org/licenses/agpl-3.0.en.html",
-					},
-					Version: version.Version,
-				},
-			}),
+	metricsMux := http.NewServeMux()
+	metricsSrv := http.Server{
+		Addr: cfg.Metrics.ListenAddress,
+		Handler: logging.Middleware(
+			metrics.Middleware(
+				routes.UnregisteredMiddleware(
+					metricsMux,
+				),
+			),
 		),
-		fuego.WithLoggingMiddleware(
-			fuego.LoggingConfig{
-				DisableRequest:  false,
-				DisableResponse: false,
-			},
-		),
-		fuego.WithGlobalMiddlewares(
-			func(next http.Handler) http.Handler {
-				return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					//revive:disable-next-line
-					r = r.WithContext(context.WithValue(r.Context(), "requestURI", r.RequestURI))
-					next.ServeHTTP(w, r)
-				})
-			},
-			metrics.Middleware,
+	}
+	metricsMux.Handle("GET /metrics", promhttp.Handler())
+
+	apiMux := http.NewServeMux()
+	apiSrv := http.Server{
+		Addr: cfg.API.ListenAddress,
+		Handler: logging.Middleware(
 			cors.New(cors.Options{
-				AllowedOrigins:   []string{cfg.API.CorsOrigins},
+				AllowedOrigins:   []string{cfg.CorsOrigins},
 				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 				AllowedHeaders:   []string{"*"},
 				AllowCredentials: true,
-			}).Handler,
-			logging.Middleware,
+			}).Handler(
+				metrics.Middleware(
+					routes.UnregisteredMiddleware(
+						apiMux,
+					),
+				),
+			),
 		),
-	)
+	}
 
-	metricsSrv := fuego.NewServer(
-		fuego.WithListener(metricsListener),
-		fuego.WithEngineOptions(
-			fuego.WithOpenAPIConfig(fuego.OpenAPIConfig{
-				Disabled:         true,
-				DisableSwaggerUI: true,
-				DisableLocalSave: true,
-			}),
-		),
-		fuego.WithLoggingMiddleware(
-			fuego.LoggingConfig{
-				DisableRequest:  true,
-				DisableResponse: true,
-			},
-		),
-		fuego.WithGlobalMiddlewares(
-			metrics.Middleware,
-			logging.Middleware,
-		),
-	)
+	schemaPrefix := "#/components/schemas/"
+	schemasPath := "/schemas"
 
-	routes.Register(frontendSrv, apiSrv, metricsSrv)
+	registry := huma.NewMapRegistry(schemaPrefix, huma.DefaultSchemaNamer)
+
+	docAPISrvs := []*huma.Server{}
 
 	if cfg.API.PublicAddress != "" {
-		apiSrv.OpenAPI.Description().Servers = []*openapi3.Server{
-			{
-				URL:         cfg.API.PublicAddress,
-				Description: "Public API",
+		docAPISrvs = append(docAPISrvs, &huma.Server{
+			URL:         cfg.API.PublicAddress,
+			Description: "SteamInputDB Live API",
+		})
+	} else {
+		docAPISrvs = append(docAPISrvs, &huma.Server{
+			URL:         baseURL,
+			Description: "SteamInputDB Live API",
+		})
+	}
+
+	apiClickable := formatClickableAddr(cfg.API.ListenAddress)
+	if strings.Contains(apiClickable, "localhost") {
+		docAPISrvs = append([]*huma.Server{{
+			URL:         apiClickable,
+			Description: "Local API",
+		}}, docAPISrvs...)
+	}
+
+	api := humago.New(apiMux, huma.Config{
+		OpenAPI: &huma.OpenAPI{
+			OpenAPI: "3.1.0",
+			Info: &huma.Info{
+				Title:       "SteamInputDB API",
+				Description: apiDescription,
+				License: &huma.License{
+					Name:       "GNU Affero General Public License v3.0",
+					URL:        "https://www.gnu.org/licenses/agpl-3.0.en.html",
+					Identifier: "AGPL-3.0",
+				},
+				Version: version.Version,
 			},
-		}
-	}
+			Components: &huma.Components{
+				Schemas: registry,
+			},
+			Servers: docAPISrvs,
+		},
+		OpenAPIPath:   "/openapi",
+		SchemasPath:   schemasPath,
+		Formats:       huma.DefaultFormats,
+		DefaultFormat: "application/json",
+		CreateHooks: []func(huma.Config) huma.Config{
+			func(c huma.Config) huma.Config {
+				linkTransformer := huma.NewSchemaLinkTransformer(schemaPrefix, c.SchemasPath)
+				c.OnAddOperation = append(c.OnAddOperation, linkTransformer.OnAddOperation)
+				c.Transformers = append(c.Transformers, linkTransformer.Transform)
+				return c
+			},
+		},
+	})
 
-	errChan := make(chan error, 3)
-	var wg sync.WaitGroup
+	api.Adapter().Handle(&huma.Operation{
+		Method: http.MethodGet,
+		Path:   "/docs",
+	}, func(ctx huma.Context) {
+		ctx.SetHeader("Content-Type", "text/html")
+		_, _ = ctx.BodyWriter().Write([]byte(`<!doctype html>
+			<html>
+			<head>
+				<title>SteamInputDB API</title>
+				<meta name="referrer" content="same-origin" />
+				<meta charset="utf-8" />
+				<meta
+				name="viewport"
+				content="width=device-width, initial-scale=1" />
+			</head>
+			<body>
+				<script
+				id="api-reference"
+				data-url="/openapi.yaml"></script>
+				<script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+			</body>
+			</html>`,
+		))
+	})
 
-	servers := []*fuego.Server{frontendSrv, apiSrv, metricsSrv}
-	for _, srv := range servers {
-		wg.Add(1)
-		go func(s *fuego.Server) {
-			defer wg.Done()
-			if err := s.Run(); err != nil {
-				errChan <- err
+	routes.RegisterAPI(api)
+
+	// use kong for parsing, ignore humas config parser
+	cli := humacli.New(func(h humacli.Hooks, _ *struct{}) {
+		closed := false
+		h.OnStart(func() {
+			var wg sync.WaitGroup
+			servers := []*http.Server{&feSrv, &metricsSrv, &apiSrv}
+			for _, srv := range servers {
+				wg.Add(1)
+				go func(s *http.Server) {
+					defer wg.Done()
+					slog.Info("Starting Server", "addr", s.Addr, "url", formatClickableAddr(s.Addr))
+					if err := s.ListenAndServe(); err != nil && !closed {
+						slog.Error("server error", "addr", s.Addr, "err", err)
+						os.Exit(1)
+					}
+				}(srv)
 			}
-		}(srv)
-	}
+			wg.Wait()
+		})
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+		h.OnStop(func() {
+			closed = true
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			err := feSrv.Shutdown(ctx)
+			if err != nil {
+				slog.Error("error shutting down frontend server", "err", err)
+			}
+			err = metricsSrv.Shutdown(ctx)
+			if err != nil {
+				slog.Error("error shutting down metrics server", "err", err)
+			}
+			err = apiSrv.Shutdown(ctx)
+			if err != nil {
+				slog.Error("error shutting down API server", "err", err)
+			}
+		})
 
-	select {
-	case <-sigChan:
-		slog.Info("shutdown signal received, shutting down servers")
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
+	})
 
-		if err := frontendSrv.Shutdown(ctx); err != nil {
-			slog.Error("error shutting down frontend server", "err", err)
-		}
-		if err := apiSrv.Shutdown(ctx); err != nil {
-			slog.Error("error shutting down API server", "err", err)
-		}
-		if err := metricsSrv.Shutdown(ctx); err != nil {
-			slog.Error("error shutting down metrics server", "err", err)
-		}
-
-	case err := <-errChan:
-		slog.Error("server error", "err", err)
-		os.Exit(1)
-	}
-
-	wg.Wait()
-}
-
-type addrDisplayListener struct {
-	net.Listener
-	listenAddr string
-}
-
-func (l addrDisplayListener) Addr() net.Addr  { return l }
-func (l addrDisplayListener) Network() string { return "tcp" }
-func (l addrDisplayListener) String() string {
-	addr := strings.TrimSpace(l.listenAddr)
-	if addr == "" {
-		return l.Listener.Addr().String()
-	}
-
-	host, port, err := net.SplitHostPort(addr)
-	if err != nil {
-		return l.Listener.Addr().String()
-	}
-	if host == "" || host == "0.0.0.0" || host == "::" {
-		host = "localhost"
-	}
-	return net.JoinHostPort(host, port)
+	cli.Run()
+	os.Exit(0)
 }
 
 func findUserConfig(args []string) string {
@@ -283,4 +271,16 @@ func configCandidatePaths(userPath string) (jsonPaths, yamlPaths, tomlPaths []st
 	}
 
 	return
+}
+
+func formatClickableAddr(addr string) string {
+	host := addr
+	if strings.HasPrefix(addr, ":") {
+		host = "localhost" + addr
+	} else if strings.HasPrefix(addr, "0.0.0.0:") {
+		host = "localhost:" + strings.TrimPrefix(addr, "0.0.0.0:")
+	} else if strings.HasPrefix(addr, "[::]:") {
+		host = "localhost:" + strings.TrimPrefix(addr, "[::]:")
+	}
+	return "http://" + host
 }

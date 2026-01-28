@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Alia5/steaminputdb.com/api"
+	"github.com/google/uuid"
 )
 
 func Middleware(next http.Handler) http.Handler {
@@ -16,6 +17,7 @@ func Middleware(next http.Handler) http.Handler {
 		sw := &api.StatusWriter{ResponseWriter: w, Status: http.StatusOK}
 		start := time.Now()
 
+		sw.Header().Set("X-Request-ID", uuid.NewString())
 		next.ServeHTTP(sw, r)
 
 		dur := time.Since(start)

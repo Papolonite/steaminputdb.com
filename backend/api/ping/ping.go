@@ -1,9 +1,10 @@
 package ping
 
 import (
-	"github.com/Alia5/steaminputdb.com/version"
-	"github.com/go-fuego/fuego"
-	"github.com/go-fuego/fuego/option"
+	"context"
+	"net/http"
+
+	"github.com/danielgtaylor/huma/v2"
 )
 
 type Ping struct {
@@ -11,19 +12,24 @@ type Ping struct {
 	Version string `json:"version"`
 }
 
-func RegisterRoutes(s *fuego.Server) {
-	fuego.Get(s, "/ping", Controller,
-		option.Summary("Ping"),
-		option.OverrideDescription(
-			"Returns basic information about the service.",
-		),
-		option.Tags("Meta"),
-	)
+type PingResponse struct {
+	Body Ping
 }
 
-func Controller(_ fuego.ContextNoBody) (*Ping, error) {
-	return &Ping{
-		Service: "SteamInputDB.com",
-		Version: version.Version,
-	}, nil
+func RegisterRoutes(a huma.API) {
+	huma.Register(
+		a,
+		huma.Operation{
+			Method: http.MethodGet,
+			Path:   "/ping",
+		},
+		func(ctx context.Context, _ *struct{}) (*PingResponse, error) {
+			return &PingResponse{
+				Body: Ping{
+					Service: "SteamInputDB.com",
+					Version: "v1.0.0",
+				},
+			}, nil
+		},
+	)
 }

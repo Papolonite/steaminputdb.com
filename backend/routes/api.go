@@ -1,12 +1,10 @@
 package routes
 
 import (
-	"github.com/Alia5/steaminputdb.com/api"
 	"github.com/Alia5/steaminputdb.com/api/ping"
-	"github.com/go-fuego/fuego"
+	"github.com/danielgtaylor/huma/v2"
 )
 
-func RegisterAPI(s *fuego.Server) {
-	api.RegisterCatchAll(s)
-	ping.RegisterRoutes(s)
+func RegisterAPI(a huma.API) {
+	ping.RegisterRoutes(a)
 }
