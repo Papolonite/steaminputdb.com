@@ -19,7 +19,11 @@
             "golang.go",
             "dbaeumer.vscode-eslint",
             "svelte.svelte-vscode",
-            "csstools.postcss"
+            "csstools.postcss",
+            "fill-labs.dependi",
+            "ms-playwright.playwright",
+            "vitest.explorer",
+            "maxmedia.go-prof"
         ]
     }
 }

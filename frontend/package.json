@@ -14,7 +14,8 @@
         "lint:ci": "eslint ./src/ --no-fix --format=compact",
         "test:unit": "vitest",
         "test": "npm run test:unit -- --run && npm run test:e2e",
-        "test:e2e": "playwright test"
+        "test:e2e": "playwright test",
+        "gen-proto": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=src/proto --proto_path=../steam_protobufs/webui --proto_path=../steam_protobufs/steam ../steam_protobufs/webui/*.proto ../steam_protobufs/steam/*.proto"
     },
     "devDependencies": {
         "@eslint/compat": "^2.0.1",

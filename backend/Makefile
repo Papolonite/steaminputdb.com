@@ -31,8 +31,9 @@ help: ## Show this help message
 	@echo   vet                  Run go vet
 	@echo   lint                 Run golangci-lint
 	@echo   run                  Build and run steaminputdb server
-	@echo   dev                  Run server with hot reload (air)
+	@echo   dev                  Run server with hot reload \(air\)
 	@echo   version              Show version information
+	@echo   gen 		         Generate Go types from Steam protobufs
 
 .PHONY: deps
 deps: 
@@ -81,3 +82,21 @@ version:
 	@echo Version: $(VERSION)
 	@echo Commit:  $(COMMIT)
 	@echo Built:   $(BUILD_TIME)
+
+.PHONY: gen
+gen: ## Generate Go types from Steam protobufs
+	@echo "Generating Go types from protobufs..."
+	protoc \
+		--go_out=steamapi \
+		--go_opt=paths=source_relative \
+		--go_opt=Mcommon_base.proto=github.com/Alia5/steaminputdb.com/steamapi \
+		--go_opt=Mcommon.proto=github.com/Alia5/steaminputdb.com/steamapi \
+		--go_opt=Mservice_steaminputmanager.proto=github.com/Alia5/steaminputdb.com/steamapi \
+		--go_opt=Mservice_publishedfile.proto=github.com/Alia5/steaminputdb.com/steamapi \
+		--go_opt=Mservice_storequery.proto=github.com/Alia5/steaminputdb.com/steamapi \
+		--proto_path=../steam_protobufs/webui \
+		--proto_path=../steam_protobufs/steam \
+		../steam_protobufs/webui/common_base.proto \
+		../steam_protobufs/webui/common.proto \
+		../steam_protobufs/webui/service_publishedfile.proto \
+		../steam_protobufs/webui/service_storequery.proto
