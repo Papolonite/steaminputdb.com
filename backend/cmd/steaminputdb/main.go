@@ -14,6 +14,7 @@ import (
 	_ "embed"
 
 	"github.com/Alia5/steaminputdb.com/config"
+	"github.com/Alia5/steaminputdb.com/db"
 	"github.com/Alia5/steaminputdb.com/frontend"
 	"github.com/Alia5/steaminputdb.com/logging"
 	"github.com/Alia5/steaminputdb.com/metrics"
@@ -51,6 +52,13 @@ func main() {
 	)
 
 	logging.SetupDefault(cfg.LogLevel)
+
+	err := db.Init(cfg.DB)
+	if err != nil {
+		slog.Error("Failed to initialize database", "error", err)
+		os.Exit(1)
+		return
+	}
 
 	feMux := http.NewServeMux()
 	feSrv := http.Server{
