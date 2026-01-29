@@ -8,6 +8,6 @@ bun.lockb
 # Miscellaneous
 /static/
 
-playwright.config.ts
-
+*.ts
+*.js
 
