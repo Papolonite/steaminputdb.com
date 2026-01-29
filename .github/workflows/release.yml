@@ -25,17 +25,10 @@ jobs:
             mode: release
             tag_name: ${{ github.ref_name }}
 
-    client-libraries:
-        name: Client library smoke builds and pack
-        uses: ./.github/workflows/clients_ci.yml
-        with:
-            artifact_suffix: "-Release"
-            upload_artifacts: true
-            version: ${{ github.ref_name }}
 
     create-release:
         name: Create Release
-        needs: [build, generate-changelog, client-libraries]
+        needs: [build, generate-changelog]
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code

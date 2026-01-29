@@ -85,18 +85,4 @@ version:
 
 .PHONY: gen
 gen: ## Generate Go types from Steam protobufs
-	@echo "Generating Go types from protobufs..."
-	protoc \
-		--go_out=steamapi \
-		--go_opt=paths=source_relative \
-		--go_opt=Mcommon_base.proto=github.com/Alia5/steaminputdb.com/steamapi \
-		--go_opt=Mcommon.proto=github.com/Alia5/steaminputdb.com/steamapi \
-		--go_opt=Mservice_steaminputmanager.proto=github.com/Alia5/steaminputdb.com/steamapi \
-		--go_opt=Mservice_publishedfile.proto=github.com/Alia5/steaminputdb.com/steamapi \
-		--go_opt=Mservice_storequery.proto=github.com/Alia5/steaminputdb.com/steamapi \
-		--proto_path=../steam_protobufs/webui \
-		--proto_path=../steam_protobufs/steam \
-		../steam_protobufs/webui/common_base.proto \
-		../steam_protobufs/webui/common.proto \
-		../steam_protobufs/webui/service_publishedfile.proto \
-		../steam_protobufs/webui/service_storequery.proto
+	sh ./scripts/gen.sh

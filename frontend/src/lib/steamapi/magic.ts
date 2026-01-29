@@ -38,13 +38,21 @@ export type Endpoint = ServiceEndpoints & {
     version?: string;
 };
 
-type ProtoTypeName<S extends string, Method extends string, Suffix extends 'Request' | 'Response'> =
+type ProtoTypeName<
+    S extends string,
+    Method extends string,
+    Suffix extends 'Request' | 'Response'
+> =
     `C${S}${Method}${Suffix}`;
 
 
 type UnwrapMessageFns<T> = T extends MessageFns<infer Inner> ? Inner : T;
 
-type GetProtoMessageType<S extends string, Method extends string, Suffix extends 'Request' | 'Response'> =
+type GetProtoMessageType<
+    S extends string,
+    Method extends string,
+    Suffix extends 'Request' | 'Response'
+> =
     ProtoTypeName<S, Method, Suffix> extends ProtoNames
         ? UnwrapMessageFns<ProtoTypes[ProtoTypeName<S, Method, Suffix>]>
         : never;
@@ -74,10 +82,6 @@ export type ResponseTypeEP<EP extends Endpoint> =
     EP['interface'] extends `I${infer S}Service`
         ? GetProtoMessageType<S, EP['method'], 'Response'>
         : never;
-
-export type X = RequestType<'IStoreQueryService', 'SearchSuggestions'>;
-export type Y = ResponseType<'IStoreQueryService', 'SearchSuggestions'>;
-export type XY = ResponseTypeEP<{ interface: 'IStoreQueryService'; method: 'SearchSuggestions' }>;
 
 type ProtoMap = {
     [K in ProtoNames]: ProtoTypes[K];

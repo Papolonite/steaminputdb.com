@@ -22,7 +22,7 @@ describe('GET', () => {
                 interface: 'IStoreQueryService',
                 method: 'SearchSuggestions'
             },
-            req: CStoreQuerySearchSuggestionsRequest.create({
+            req: {
                 context:{
                     language: 'english',
                     countryCode: 'US'
@@ -34,7 +34,7 @@ describe('GET', () => {
                         includeGames: true
                     }
                 }
-            }),
+            },
             expectedResp: CStoreQuerySearchSuggestionsResponse.create({
                 metadata: {
                     totalMatchingRecords: 4,

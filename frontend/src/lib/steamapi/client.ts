@@ -11,13 +11,28 @@ export async function GET<EP extends Endpoint, Req extends RequestTypeEP<EP>>(
         const params = new URLSearchParams();
         if (req) {
             const requestCtor = CtorForTypeString(BuildRequestTypeString(endpoint));
-            const reqBytes = requestCtor.encode(req as never).finish(); // TODO: fix type or whatever
-            params.append('input_protobuf_encoded', btoa(String.fromCharCode(...reqBytes)));
+            const reqBytes = requestCtor.encode(
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                requestCtor?.create(req) ?? req
+            ).finish();
+            params.append(
+                'input_protobuf_encoded',
+                btoa(String.fromCharCode(...reqBytes))
+            );
         }
         if (apiKey) {
             params.append('key', apiKey);
         }
-        const URL = `https://api.steampowered.com/${endpoint.interface}/${endpoint.method}/v${endpoint.version ?? '1'}/?${params.toString()}`;
+        const URL = `https://api.steampowered.com/${
+            endpoint.interface
+        }/${
+            endpoint.method
+        }/v${
+            endpoint.version ?? '1'
+        }/?${
+            params.toString()
+        }`;
         const resp = await fetchFn(URL, {
             method: 'GET'
         });
@@ -36,3 +51,18 @@ export async function GET<EP extends Endpoint, Req extends RequestTypeEP<EP>>(
         throw new Error('Failed to fetch from Steam API', { cause: e });
     }
 }
+
+export const demo = async () => {
+    const resp = await GET(
+        { interface: 'IStoreQueryService', method: 'SearchSuggestions' },
+        {
+            context: {
+                language: 'english',
+                countryCode: 'US'
+            },
+            searchTerm: 'portal',
+            maxResults: 2
+        }
+    );
+    return resp;
+};
