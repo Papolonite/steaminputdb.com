@@ -1,6 +1,6 @@
 module github.com/Alia5/steaminputdb.com
 
-go 1.25.6
+go 1.26rc2
 
 require (
 	github.com/alecthomas/kong v1.12.1
