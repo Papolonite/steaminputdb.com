@@ -4,7 +4,7 @@
 <main>
 	<h2>SteamInputDB.com</h2>
 	<h3>
-		<strong>Steam Web API backed</strong> community Driven Database of SteamInput configurations
+		<strong>Steam Web API backed</strong> community driven database of SteamInput configurations
 	</h3>
 </main>
 
