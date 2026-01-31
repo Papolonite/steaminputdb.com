@@ -206,7 +206,7 @@ func main() {
 					slog.Error("failed to generate OpenAPI YAML", "err", err)
 				}
 
-				err = os.WriteFile("../openapi.yaml", []byte(yml), 0644)
+				err = os.WriteFile("../openapi.yaml", yml, 0644)
 				if err != nil {
 					slog.Error("failed to write OpenAPI YAML to file", "err", err)
 				} else {
