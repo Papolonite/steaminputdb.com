@@ -1,7 +1,7 @@
 html,
 body {
 	transition-property: all;
-	transition-duration: var(--transitionDuration);
+	transition-duration: 0s; /* will be ste by apply-theme to prevent flashbang */
 	transition-timing-function: ease-in-out;
 	transition-delay: 0.001ms;
 }
@@ -12,10 +12,6 @@ body {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	transition-property: all;
-	transition-duration: var(--transitionDuration);
-	transition-timing-function: ease-in-out;
-	transition-delay: 0.001ms;
 }
 
 /* Remove default margin */

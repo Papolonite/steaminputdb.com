@@ -1,101 +1,25 @@
-@media (prefers-color-scheme: dark) {
-	:root {
-		color-scheme: dark light;
-		--textAlpha: 0.95;
-		--textColor: rgb(245 245 245 / var(--textAlpha));
-		--inverseTextColor: rgb(10 10 10 / var(--textAlpha));
-		--colorPrimary: #1f64d4;
-		--colorPrimaryHover: #273a55;
-		--colorPrimaryActive: #35598b;
-		--cardColor: #202125fc;
-		--backgroundColor: #090d10;
-		--opaqueBGColor: #090d10;
-		--shadowColor: #00000050;
-		--textColorLight: rgb(255 255 255 / 1);
-		--textColorDark: rgb(0 0 0 / 0.95);
-		--effectAlpha: 0.2;
-		--inverseEffectAlpha: 0.5;
-		-webkit-tap-highlight-color: #ffffff21;
-		--bgAlpha: 0.01;
-		--bgContrast: 1.85;
-		--gradAlpha: 0.209;
-	}
-}
-
-@media (prefers-color-scheme: light) {
-	:root {
-		color-scheme: light dark;
-		--textAlpha: 1;
-		--textColor: rgb(10 10 10 / var(--textAlpha));
-		--inverseTextColor: rgb(245 245 245 / var(--textAlpha));
-		--colorPrimary: #273346;
-		--colorPrimaryHover: #273a55;
-		--colorPrimaryActive: #35598b;
-		--cardColor: #f7f7f7fc;
-		--backgroundColor: #f5f8f8;
-		--opaqueBGColor: #e5e7e7;
-		--shadowColor: #00000030;
-		--textColorLight: rgb(255 255 255 / 1);
-		--textColorDark: rgb(0 0 0 / 0.95);
-		--effectAlpha: 0.5;
-		--inverseEffectAlpha: 0.25;
-		-webkit-tap-highlight-color: #00000021;
-		--bgAlpha: 0.023;
-		--bgContrast: 2.85;
-		--gradAlpha: 0.109;
-	}
-}
-
-[data-theme='light'] {
-	color-scheme: light;
-}
-[data-theme='dark'] {
-	color-scheme: dark;
-}
-
-.theme-dark {
-	--textAlpha: 0.95;
-	--textColor: rgb(245 245 245 / var(--textAlpha));
-	--inverseTextColor: rgb(10 10 10 / var(--textAlpha));
-	--colorPrimary: #1f64d4;
-	--colorPrimaryHover: #273a55;
-	--colorPrimaryActive: #35598b;
-	--cardColor: #202125fc;
-	--backgroundColor: #090d10;
-	--opaqueBGColor: #090d10;
-	--shadowColor: #00000050;
-	--textColorLight: rgb(255 255 255 / 1);
-	--textColorDark: rgb(0 0 0 / 0.95);
-	--effectAlpha: 0.2;
-	--inverseEffectAlpha: 0.5;
-	-webkit-tap-highlight-color: #ffffff21;
-	--bgAlpha: 0.01;
-	--bgContrast: 1.85;
-	--gradAlpha: 0.209;
-}
-
-.theme-light {
-	--textAlpha: 1;
-	--textColor: rgb(10 10 10 / var(--textAlpha));
-	--inverseTextColor: rgb(245 245 245 / var(--textAlpha));
-	--colorPrimary: #273346;
-	--colorPrimaryHover: #273a55;
-	--colorPrimaryActive: #35598b;
-	--cardColor: #f7f7f7fc;
-	--backgroundColor: #f5f8f8;
-	--opaqueBGColor: #e5e7e7;
-	--shadowColor: #00000030;
-	--textColorLight: rgb(255 255 255 / 1);
-	--textColorDark: rgb(0 0 0 / 0.95);
-	--effectAlpha: 0.5;
-	--inverseEffectAlpha: 0.25;
-	-webkit-tap-highlight-color: #00000021;
-	--bgAlpha: 0.023;
-	--bgContrast: 2.85;
-	--gradAlpha: 0.109;
-}
-
 :root {
+	color-scheme: light dark;
+
+	--textAlpha: light-dark(0.97, 0.95);
+	--textColor: light-dark(rgb(10 10 10 / 1), rgb(245 245 245 / 0.95));
+	--inverseTextColor: light-dark(rgb(245 245 245 / 1), rgb(10 10 10 / 0.95));
+	--colorPrimary: light-dark(#273346, #1f64d4);
+	--colorPrimaryHover: #273a55;
+	--colorPrimaryActive: #35598b;
+	--cardColor: light-dark(#f7f7f7fc, #202125fc);
+	--backgroundColor: light-dark(#f5f8f8, #090d10);
+	--opaqueBGColor: light-dark(#e5e7e7, #090d10);
+	--shadowColor: light-dark(#00000030, #00000050);
+	--textColorLight: rgb(255 255 255 / 1);
+	--textColorDark: rgb(0 0 0 / 0.95);
+	--effectAlpha: light-dark(0.5, 0.2);
+	--inverseEffectAlpha: light-dark(0.25, 0.5);
+	-webkit-tap-highlight-color: light-dark(#00000021, #ffffff21);
+	--bgAlpha: light-dark(0.023, 0.01);
+	--bgContrast: light-dark(2.85, 1.85);
+	--gradAlpha: light-dark(0.109, 0.209);
+
 	--transitionDuration: 124ms;
 
 	--scrollbarBG: hsl(0 0% 50% / 0.1);
