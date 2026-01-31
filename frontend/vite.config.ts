@@ -4,7 +4,8 @@ import { existsSync } from 'fs';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vitest/config';
 
-const chromiumPath = existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined;
+const chromiumPath = (() =>existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined
+)();
 
 export default defineConfig({
     plugins: [
@@ -24,7 +25,10 @@ export default defineConfig({
                     browser: {
                         enabled: true,
                         provider: playwright({
-                            launchOptions: chromiumPath ? { executablePath: chromiumPath } : {}
+                            launchOptions: chromiumPath ? {
+                                executablePath: chromiumPath
+
+                            } : {}
                         }),
                         instances: [{ browser: 'chromium', headless: process.env.TEST_SHOW_BROWSER ? false : true }]
                     },

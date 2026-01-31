@@ -4,7 +4,7 @@ import Themetoggle from '$lib/components/theme/toggle.svelte';
 </script>
 
 <header>
-	<a href={resolve('/')}><h1>SteamInputDB.com</h1></a>
+	<a href={resolve('/')}><span>SteamInputDB.com</span></a>
 	<Themetoggle />
 </header>
 
@@ -16,6 +16,12 @@ header {
 	grid-template-columns: auto min-content;
 	align-items: center;
 }
+
+span {
+	font-weight: bold;
+	font-size: 1.4em;
+}
+
 a {
 	text-decoration: none;
 	color: inherit;

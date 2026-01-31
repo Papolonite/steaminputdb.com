@@ -6,10 +6,10 @@ import Page from './+page.svelte';
 
 
 describe('/+page.svelte', () => {
-    it('should render h2', async () => {
+    it('should render title', async () => {
         render(Page);
 
-        const heading = page.getByRole('heading', { level: 2 });
+        const heading = page.getByRole('heading', { level: 1 });
         await expect.element(heading).toBeInTheDocument();
     });
 });

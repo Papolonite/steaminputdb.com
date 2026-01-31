@@ -2,10 +2,10 @@
 </script>
 
 <main>
-	<h2>SteamInputDB.com</h2>
-	<h3>
+	<h1>SteamInputDB.com</h1>
+	<h2>
 		<strong>Steam Web API backed</strong> community driven database of SteamInput configurations
-	</h3>
+	</h2>
 </main>
 
 <style lang="postcss">
@@ -15,7 +15,7 @@ main {
 	place-items: center;
 }
 
-h3 strong {
+h2 strong {
 	color: var(--highlight-color);
 }
 </style>
