@@ -2,13 +2,16 @@
 	color-scheme: light dark;
 
 	--text-alpha: light-dark(0.97, 0.95);
-	--text-color: light-dark(rgb(10 10 10 / 1), rgb(245 245 245 / 0.95));
+	--text-color-dark: rgb(245 245 245 / 0.95);
+	--text-color-light: rgb(10 10 10 / 0.97);
+
+	--text-color: light-dark(var(--text-color-light), var(--text-color-dark));
 	--highlight-color: light-dark(
 		color-mix(in srgb, var(--text-color), var(--color-primary) 50%),
 		color-mix(in srgb, var(--color-primary), var(--text-color) 60%)
 	);
 	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 25%);
-	--inverse-text-color: light-dark(rgb(245 245 245 / 1), rgb(10 10 10 / 0.95));
+	--inverse-text-color: light-dark(var(--text-color-dark), var(--text-color-light));
 	--color-primary: light-dark(#0062ff, #5898ff);
 	--color-primary-hover: #273a55;
 	--color-primary-active: #35598b;
@@ -16,8 +19,6 @@
 	--background-color: light-dark(#f5f8f8, #171820);
 	--opaque-bg-color: light-dark(#e5e7e7, #090d10);
 	--shadow-color: light-dark(#00000030, #0e0e0e88);
-	--text-color-light: rgb(255 255 255 / 1);
-	--text-color-dark: rgb(0 0 0 / 0.95);
 	--effect-alpha: light-dark(0.5, 0.2);
 	--inverse-effect-alpha: light-dark(0.25, 0.5);
 	-webkit-tap-highlight-color: light-dark(#00000021, #ffffff21);
