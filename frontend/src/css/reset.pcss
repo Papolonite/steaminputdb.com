@@ -49,8 +49,8 @@ select {
 }
 
 body {
-	background-color: var(--backgroundColor);
-	color: var(--textColor);
+	background-color: var(--background-color);
+	color: var(--text-color);
 	width: 100%;
 	font-family:
 		'Noto Sans',
@@ -102,14 +102,14 @@ fieldset {
 .primary {
 	padding: 1em;
 	border: none;
-	background-color: var(--textColor);
-	color: var(--inverseTextColor);
+	background-color: var(--text-color);
+	color: var(--inverse-text-color);
 	position: relative;
 	display: grid;
 	place-items: center;
 	margin: 0;
-	color: var(--inverseTextColor);
-	background-color: var(--textColor);
+	color: var(--inverse-text-color);
+	background-color: var(--text-color);
 	font-weight: bold;
 	&:disabled {
 		opacity: 0.5;
@@ -127,9 +127,9 @@ fieldset {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: var(--inverseTextColor);
+		background: var(--inverse-text-color);
 		opacity: 0;
-		transition: opacity var(--transitionDuration) ease;
+		transition: opacity var(--transition-duration) ease;
 	}
 
 	&:hover,
@@ -137,7 +137,7 @@ fieldset {
 		border: none;
 		outline: none;
 		&::before {
-			opacity: var(--inverseEffectAlpha);
+			opacity: var(--inverse-effect-alpha);
 		}
 	}
 }

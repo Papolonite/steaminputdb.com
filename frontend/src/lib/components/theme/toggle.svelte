@@ -72,7 +72,7 @@ onMount(() => {
 	pointer-events: none;
 	left: calc(var(--indicator-padding) / 2);
 	transition-property: left;
-	transition-duration: var(--transitionDuration);
+	transition-duration: var(--transition-duration);
 	&.checked {
 		left: calc(var(--toggle-width) - var(--toggle-height) + (var(--indicator-padding) / 2));
 	}
@@ -91,13 +91,13 @@ input[type='checkbox']:is(.toggle) {
 
 	&::before {
 		background-color: rgba(128, 128, 128, 0.25);
-		border: 1px solid tran;
+		border: 1px solid transparent;
 	}
 	&::after {
 		content: '';
 		transition-property: left;
-		transition-duration: var(--transitionDuration);
-		background-color: var(--inverseTextColor);
+		transition-duration: var(--transition-duration);
+		background-color: var(--inverse-text-color);
 	}
 	&:checked {
 		&::after {
