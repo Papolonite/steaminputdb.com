@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/Alia5/steaminputdb.com/version"
 	"github.com/danielgtaylor/huma/v2"
 )
 
@@ -20,14 +21,17 @@ func RegisterRoutes(a huma.API) {
 	huma.Register(
 		a,
 		huma.Operation{
-			Method: http.MethodGet,
-			Path:   "/ping",
+			Method:      http.MethodGet,
+			Path:        "/v1/ping",
+			Tags:        []string{"/v1"},
+			Summary:     "/ping",
+			Description: "Health check and basic information",
 		},
 		func(ctx context.Context, _ *struct{}) (*PingResponse, error) {
 			return &PingResponse{
 				Body: Ping{
 					Service: "SteamInputDB.com",
-					Version: "v1.0.0",
+					Version: version.Version,
 				},
 			}, nil
 		},
