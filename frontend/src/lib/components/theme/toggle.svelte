@@ -91,7 +91,6 @@ input[type='checkbox']:is(.toggle) {
 
 	&::before {
 		background-color: rgba(128, 128, 128, 0.25);
-		border: 1px solid transparent;
 	}
 	&::after {
 		content: '';
