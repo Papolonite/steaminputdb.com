@@ -18,6 +18,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/frontend"
 	"github.com/Alia5/steaminputdb.com/logging"
 	"github.com/Alia5/steaminputdb.com/metrics"
+	"github.com/Alia5/steaminputdb.com/middleware"
 	"github.com/Alia5/steaminputdb.com/routes"
 	"github.com/Alia5/steaminputdb.com/version"
 	"github.com/alecthomas/kong"
@@ -61,21 +62,20 @@ func main() {
 	}
 
 	feMux := http.NewServeMux()
+
 	feSrv := http.Server{
 		Addr: cfg.ListenAddress,
-		Handler: logging.Middleware(
+		Handler: middleware.With(
+			feMux,
+			logging.Middleware,
 			cors.New(cors.Options{
 				AllowedOrigins:   []string{cfg.CorsOrigins},
 				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 				AllowedHeaders:   []string{"*"},
 				AllowCredentials: true,
-			}).Handler(
-				metrics.Middleware(
-					routes.UnregisteredMiddleware(
-						feMux,
-					),
-				),
-			),
+			}).Handler,
+			metrics.Middleware,
+			// routes.UnregisteredMiddleware,
 		),
 	}
 	feMux.HandleFunc("GET /", frontend.Handler)
@@ -83,34 +83,14 @@ func main() {
 	metricsMux := http.NewServeMux()
 	metricsSrv := http.Server{
 		Addr: cfg.Metrics.ListenAddress,
-		Handler: logging.Middleware(
-			metrics.Middleware(
-				routes.UnregisteredMiddleware(
-					metricsMux,
-				),
-			),
+		Handler: middleware.With(
+			metricsMux,
+			logging.Middleware,
+			metrics.Middleware,
+			// routes.UnregisteredMiddleware,
 		),
 	}
 	metricsMux.Handle("GET /metrics", promhttp.Handler())
-
-	apiMux := http.NewServeMux()
-	apiSrv := http.Server{
-		Addr: cfg.API.ListenAddress,
-		Handler: logging.Middleware(
-			cors.New(cors.Options{
-				AllowedOrigins:   []string{cfg.CorsOrigins},
-				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-				AllowedHeaders:   []string{"*"},
-				AllowCredentials: true,
-			}).Handler(
-				metrics.Middleware(
-					routes.UnregisteredMiddleware(
-						apiMux,
-					),
-				),
-			),
-		),
-	}
 
 	schemaPrefix := "#/components/schemas/"
 	schemasPath := "/schemas"
@@ -139,6 +119,7 @@ func main() {
 		}}, docAPISrvs...)
 	}
 
+	apiMux := http.NewServeMux()
 	api := humago.New(apiMux, huma.Config{
 		OpenAPI: &huma.OpenAPI{
 			OpenAPI: "3.1.0",
@@ -170,6 +151,22 @@ func main() {
 			},
 		},
 	})
+
+	apiSrv := http.Server{
+		Addr: cfg.API.ListenAddress,
+		Handler: middleware.With(
+			apiMux,
+			logging.Middleware,
+			cors.New(cors.Options{
+				AllowedOrigins:   []string{cfg.CorsOrigins},
+				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+				AllowedHeaders:   []string{"*"},
+				AllowCredentials: true,
+			}).Handler,
+			metrics.Middleware,
+			routes.UnregisteredMiddleware(api),
+		),
+	}
 
 	api.Adapter().Handle(&huma.Operation{
 		Method: http.MethodGet,
