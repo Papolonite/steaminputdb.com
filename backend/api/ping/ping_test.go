@@ -28,7 +28,7 @@ func TestPing(t *testing.T) {
 	ping.RegisterRoutes(api)
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			resp := api.Get("/ping")
+			resp := api.Get("/v1/ping")
 			assert.Equal(t, tc.expectedStatus, resp.Code)
 			assert.JSONEq(t, tc.expectedResponse, resp.Body.String())
 		})
