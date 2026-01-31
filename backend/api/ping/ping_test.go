@@ -20,7 +20,7 @@ func TestPing(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:             "SUCCESS",
-			expectedResponse: `{"service":"SteamInputDB.com", "version":"v1.0.0"}`,
+			expectedResponse: `{"service":"SteamInputDB.com", "version":"dev"}`,
 			expectedStatus:   http.StatusOK,
 		},
 	}
