@@ -34,17 +34,14 @@ export default tseslint.config(
             '@typescript-eslint': tseslint.plugin,
             '@stylistic': stylistic
         },
-        env: {
-            browser: true,
-            node: true,
-            es2021: true,
-        },
+
         languageOptions: {
             parser: tseslint.parser,
             globals: {
                 ...globals.browser,
                 ...globals.node,
                 ...globals.es2021,
+
             },
             parserOptions: {
                 sourceType: 'module',
@@ -191,12 +188,13 @@ export default tseslint.config(
             parser: svelteEslintParser,
             parserOptions: {
                 parser: tseslint.parser,
-            }
-        },
-        env: {
-            browser: true,
-            node: true,
-            es2021: true,
+            },
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...globals.es2021,
+
+            },
         },
         rules: {
             'prettier/prettier': ['warn', {
