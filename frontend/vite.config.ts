@@ -1,8 +1,10 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { playwright } from '@vitest/browser-playwright';
+import { existsSync } from 'fs';
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'vitest/config';
 
+const chromiumPath = existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined;
 
 export default defineConfig({
     plugins: [
@@ -21,8 +23,10 @@ export default defineConfig({
                     name: 'client',
                     browser: {
                         enabled: true,
-                        provider: playwright(),
-                        instances: [{ browser: 'chromium', headless: true }]
+                        provider: playwright({
+                            launchOptions: chromiumPath ? { executablePath: chromiumPath } : {}
+                        }),
+                        instances: [{ browser: 'chromium', headless: process.env.TEST_SHOW_BROWSER ? false : true }]
                     },
                     include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
                     exclude: ['src/lib/server/**']
