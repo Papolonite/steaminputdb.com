@@ -199,6 +199,21 @@ func main() {
 	cli := humacli.New(func(h humacli.Hooks, _ *struct{}) {
 		closed := false
 		h.OnStart(func() {
+
+			if os.Getenv("DEV") == "1" {
+				yml, err := api.OpenAPI().YAML()
+				if err != nil {
+					slog.Error("failed to generate OpenAPI YAML", "err", err)
+				}
+
+				err = os.WriteFile("../openapi.yaml", []byte(yml), 0644)
+				if err != nil {
+					slog.Error("failed to write OpenAPI YAML to file", "err", err)
+				} else {
+					slog.Info("wrote OpenAPI YAML to ../openapi.yaml")
+				}
+			}
+
 			var wg sync.WaitGroup
 			servers := []*http.Server{&feSrv, &metricsSrv, &apiSrv}
 			for _, srv := range servers {
