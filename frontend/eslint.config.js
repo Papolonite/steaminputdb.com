@@ -34,6 +34,11 @@ export default tseslint.config(
             '@typescript-eslint': tseslint.plugin,
             '@stylistic': stylistic
         },
+        env: {
+            browser: true,
+            node: true,
+            es2021: true,
+        },
         languageOptions: {
             parser: tseslint.parser,
             globals: {
@@ -187,6 +192,11 @@ export default tseslint.config(
             parserOptions: {
                 parser: tseslint.parser,
             }
+        },
+        env: {
+            browser: true,
+            node: true,
+            es2021: true,
         },
         rules: {
             'prettier/prettier': ['warn', {
