@@ -1,8 +1,7 @@
 <script lang="ts">
-import Themtoggle from '$lib/components/theme/toggle.svelte';
 </script>
 
 <h1>Welcome to SvelteKit</h1>
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
 
-<Themtoggle />
+<p class="card" style="margin: 1em">test2345</p>
