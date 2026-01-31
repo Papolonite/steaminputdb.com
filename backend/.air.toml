@@ -1,9 +1,9 @@
 #:schema https://json.schemastore.org/any.json
 
-env_files = [".env"]
 root = "."
 testdata_dir = "testdata"
 tmp_dir = "dist"
+env_files = [".env"]
 
 [build]
 args_bin = []
@@ -42,7 +42,7 @@ watcher = "cyan"
 [log]
 main_only = false
 silent = false
-time = false
+time = true
 
 [misc]
 clean_on_exit = false
