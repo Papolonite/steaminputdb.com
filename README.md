@@ -1,5 +1,7 @@
 # SteamInputDB.com
 
+**Steam WEB API backed** community Driven Database of SteamInput configurations
+
 > [!WARNING]
     Work in progress.
 

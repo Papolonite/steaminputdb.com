@@ -3,8 +3,12 @@
 
 	--text-alpha: light-dark(0.97, 0.95);
 	--text-color: light-dark(rgb(10 10 10 / 1), rgb(245 245 245 / 0.95));
+	--highlight-color: light-dark(
+		color-mix(in srgb, var(--text-color), var(--color-primary) 50%),
+		color-mix(in srgb, var(--color-primary), var(--text-color) 75%)
+	);
 	--inverse-text-color: light-dark(rgb(245 245 245 / 1), rgb(10 10 10 / 0.95));
-	--color-primary: light-dark(#273346, #1f64d4);
+	--color-primary: light-dark(#0062ff, #1f64d4);
 	--color-primary-hover: #273a55;
 	--color-primary-active: #35598b;
 	--card-color: light-dark(#f3f4f5fc, #26262efc);

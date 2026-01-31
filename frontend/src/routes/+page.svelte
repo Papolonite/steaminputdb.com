@@ -1,7 +1,21 @@
 <script lang="ts">
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<main>
+	<h2>SteamInputDB.com</h2>
+	<h3>
+		<strong>Steam Web API backed</strong> community Driven Database of SteamInput configurations
+	</h3>
+</main>
 
-<p class="card" style="margin: 1em">test2345</p>
+<style lang="postcss">
+main {
+	padding: 1em;
+	display: grid;
+	place-items: center;
+}
+
+h3 strong {
+	color: var(--highlight-color);
+}
+</style>
