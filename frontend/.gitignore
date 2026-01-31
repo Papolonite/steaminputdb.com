@@ -27,3 +27,5 @@ vite.config.ts.timestamp-*
 *.pb.d.ts
 **/*.pb.ts
 **/*.pb.d.ts
+
+openapi.d.ts

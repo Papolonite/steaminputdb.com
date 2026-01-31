@@ -1,0 +1,120 @@
+components:
+  schemas:
+    ErrorDetail:
+      additionalProperties: false
+      properties:
+        location:
+          description: Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
+          type: string
+        message:
+          description: Error message text
+          type: string
+        value:
+          description: The value at the given location
+      type: object
+    ErrorModel:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/ErrorModel.json
+          format: uri
+          readOnly: true
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          examples:
+            - Property foo is required but is missing.
+          type: string
+        errors:
+          description: Optional list of individual error details
+          items:
+            $ref: "#/components/schemas/ErrorDetail"
+          type:
+            - array
+            - "null"
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem.
+          examples:
+            - https://example.com/error-log/abc123
+          format: uri
+          type: string
+        status:
+          description: HTTP status code
+          examples:
+            - 400
+          format: int64
+          type: integer
+        title:
+          description: A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+          examples:
+            - Bad Request
+          type: string
+        type:
+          default: about:blank
+          description: A URI reference to human-readable documentation for the error.
+          examples:
+            - https://example.com/errors/example
+          format: uri
+          type: string
+      type: object
+    Ping:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/Ping.json
+          format: uri
+          readOnly: true
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+      required:
+        - service
+        - version
+      type: object
+info:
+  description: |
+    [_SteamInputDB.com_](https://steaminputdb.com) is a community-driven database of Steam Input configurations for various games,
+    **backed by the official Steam Web API**.
+
+    [_SteamInputDB.com_](https://steaminputdb.com) allows users to share, discover,
+    and download custom controller configurations to enhance their gaming experience on Steam.
+
+    This API allows developers and users to access and interact with the database programmatically.  
+  license:
+    identifier: AGPL-3.0
+    name: GNU Affero General Public License v3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  title: SteamInputDB API
+  version: dev
+openapi: 3.1.0
+paths:
+  /v1/ping:
+    get:
+      description: Health check and basic information
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ping"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      summary: /ping
+      tags:
+        - /v1
+servers:
+  - description: Local API
+    url: http://localhost:8889
+  - description: SteamInputDB Live API
+    url: https://api.steaminputdb.com
