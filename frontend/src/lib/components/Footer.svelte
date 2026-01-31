@@ -19,6 +19,7 @@ import { resolve } from '$app/paths';
 footer {
 	padding: 1em;
 	background: var(--card-color);
+	box-shadow: 0 0px 4px var(--shadow-color);
 }
 
 .disclaimer {

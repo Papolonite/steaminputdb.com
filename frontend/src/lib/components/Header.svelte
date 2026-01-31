@@ -15,6 +15,7 @@ header {
 	display: grid;
 	grid-template-columns: auto min-content;
 	align-items: center;
+	box-shadow: 0 0px 4px var(--shadow-color);
 }
 
 span {
