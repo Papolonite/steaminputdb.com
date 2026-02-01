@@ -13,6 +13,7 @@ import (
 
 	_ "embed"
 
+	steaminputdbapi "github.com/Alia5/steaminputdb.com/api"
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/db"
 	"github.com/Alia5/steaminputdb.com/frontend"
@@ -20,6 +21,7 @@ import (
 	"github.com/Alia5/steaminputdb.com/metrics"
 	"github.com/Alia5/steaminputdb.com/middleware"
 	"github.com/Alia5/steaminputdb.com/routes"
+	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/Alia5/steaminputdb.com/version"
 	"github.com/alecthomas/kong"
 	kongtoml "github.com/alecthomas/kong-toml"
@@ -60,6 +62,8 @@ func main() {
 		os.Exit(1)
 		return
 	}
+
+	steamapi.DefaultClient = steamapi.NewClient(cfg.SteamAPIKey)
 
 	feMux := http.NewServeMux()
 
@@ -193,7 +197,7 @@ func main() {
 		))
 	})
 
-	routes.RegisterAPI(api)
+	steaminputdbapi.RegisterAPI(api)
 
 	// use kong for parsing, ignore humas config parser
 	cli := humacli.New(func(h humacli.Hooks, _ *struct{}) {

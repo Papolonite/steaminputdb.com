@@ -13,11 +13,13 @@ protoc \
 	--go_opt=paths=source_relative \
 	--go_opt=Mcommon_base.proto=github.com/Alia5/steaminputdb.com/steamapi \
 	--go_opt=Mcommon.proto=github.com/Alia5/steaminputdb.com/steamapi \
+	--go_opt=Menums.proto=github.com/Alia5/steaminputdb.com/steamapi \
 	--go_opt=Mservice_steaminputmanager.proto=github.com/Alia5/steaminputdb.com/steamapi \
 	--go_opt=Mservice_publishedfile.proto=github.com/Alia5/steaminputdb.com/steamapi \
 	--go_opt=Mservice_storequery.proto=github.com/Alia5/steaminputdb.com/steamapi \
 	--proto_path="${PROTO_DIR}/webui" \
 	--proto_path="${PROTO_DIR}/steam" \
+	"${PROTO_DIR}/steam/enums.proto" \
 	"${PROTO_DIR}/webui/common_base.proto" \
 	"${PROTO_DIR}/webui/common.proto" \
 	"${PROTO_DIR}/webui/service_publishedfile.proto" \

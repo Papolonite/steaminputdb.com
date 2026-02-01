@@ -13,6 +13,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+var DefaultClient = &Client{}
+
 // Client is a Steam Web API client
 type Client struct {
 	apiKey string

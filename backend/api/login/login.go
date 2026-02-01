@@ -55,8 +55,12 @@ func registerRoutes(a huma.API, loginURL string) {
 		huma.Operation{
 			Method:      http.MethodPost,
 			Path:        "/v1/steam/login",
-			Tags:        []string{"/v1"},
+			Tags:        []string{"auth"},
+			Summary:     "Log in with Steam",
 			Description: "Authenticate user via Steam OpenID and return JWT token",
+			Errors: []int{
+				401,
+			},
 		},
 		func(ctx context.Context, req *OpenIDRequest) (*Response, error) {
 			params := url.Values{}

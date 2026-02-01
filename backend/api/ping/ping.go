@@ -23,8 +23,8 @@ func RegisterRoutes(a huma.API) {
 		huma.Operation{
 			Method:      http.MethodGet,
 			Path:        "/v1/ping",
-			Tags:        []string{"/v1"},
-			Summary:     "/ping",
+			Tags:        []string{"meta"},
+			Summary:     "Ping",
 			Description: "Health check and basic information",
 		},
 		func(ctx context.Context, _ *struct{}) (*PingResponse, error) {
