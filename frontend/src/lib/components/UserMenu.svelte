@@ -1,13 +1,12 @@
 <script lang="ts">
-// eslint-disable-next-line prettier/prettier
-let profileId: string | undefined = $state(
-    (await cookieStore?.get('steamid'))
-        ?.value
-    );
+import { steamIdFromToken } from '$lib/steam_login';
+const { steamId }: { steamId?: string } = $props();
+
+let steamIdState = $derived(steamId || (await steamIdFromToken()));
 </script>
 
 <div>
-	<span>{profileId}</span>
+	<span>{steamIdState}</span>
 </div>
 
 <style lang="postcss">

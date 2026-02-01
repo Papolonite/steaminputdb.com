@@ -1,3 +1,5 @@
+import { browser } from '$app/environment';
+
 const steamAuthUrl = 'https://steamcommunity.com/openid/login';
 export const buildSteamLoginUrl = () => {
     const params = new URLSearchParams({
@@ -9,4 +11,25 @@ export const buildSteamLoginUrl = () => {
         'openid.realm': window.location.origin
     });
     return `${steamAuthUrl}?${params.toString()}`;
+};
+
+
+export const steamIdFromToken = async () => {
+    if (!browser) {
+        return undefined;
+    }
+
+    const token = (await cookieStore.get('token'))?.value;
+    if (!token) {
+        return undefined;
+    }
+
+    const mid = token.split('.')?.[1];
+    if (!mid) {
+        return undefined;
+    }
+    const decoded = atob(mid);
+    const payload = JSON.parse(decoded);
+    const steamId = payload.sub as string | undefined;
+    return steamId;
 };

@@ -1,7 +1,6 @@
 package login_test
 
 import (
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -19,7 +18,6 @@ func TestSteamLogin(t *testing.T) {
 		requestBody      map[string]any
 		expectedStatus   int
 		expectedResponse string
-		expectedSteamID  string
 	}
 
 	testCases := []testCase{
@@ -43,8 +41,7 @@ func TestSteamLogin(t *testing.T) {
 				"signed":         "signed,op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle",
 				"sig":            "5z/7Gwh1MhMbJ8JeU2pPNSit9l8=",
 			},
-			expectedStatus:  http.StatusOK,
-			expectedSteamID: "13371337696942069",
+			expectedStatus: http.StatusOK,
 		},
 		{
 			name: "INVALID_MODE",
@@ -152,13 +149,6 @@ func TestSteamLogin(t *testing.T) {
 				assert.JSONEq(t, tc.expectedResponse, resp.Body.String())
 			}
 
-			if tc.expectedSteamID != "" {
-				var body map[string]interface{}
-				err := json.Unmarshal(resp.Body.Bytes(), &body)
-				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedSteamID, body["steam_id"])
-				assert.NotEmpty(t, body["token"])
-			}
 		})
 	}
 

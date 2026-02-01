@@ -1,28 +1,22 @@
 <script lang="ts">
-import { browser } from '$app/environment';
 import { resolve } from '$app/paths';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
+import { steamIdFromToken } from '$lib/steam_login';
 import Icon from '@iconify/svelte';
 import UserMenu from './UserMenu.svelte';
 
-// eslint-disable-next-line prettier/prettier
-const isLoggedIn = $state(
-    browser
-        ? cookieStore?.get('token') !== undefined
-        : false 
-    );
-
+const steamId = $state(await steamIdFromToken());
 </script>
 
 <header>
 	<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
-	{#if !isLoggedIn}
+	{#if !steamId}
 		<a href={resolve('/login')}>
 			<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
 			<span>Sign In</span>
 		</a>
 	{:else}
-		<UserMenu />
+		<UserMenu steamId={steamId} />
 	{/if}
 	<Themetoggle />
 </header>

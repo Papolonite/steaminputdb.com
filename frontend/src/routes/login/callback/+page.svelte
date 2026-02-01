@@ -51,11 +51,8 @@ const tryLogin = async () => {
 			throw new Error('Invalid JWT token received');
 		}
 		const decoded = atob(mid);
-		console.log('Decoded JWT:', JSON.parse(decoded));
 		const expiresIn = JSON.parse(decoded).exp - Math.floor(Date.now() / 1000);
-		console.log(`Token expires in ${expiresIn} seconds`);
 		document.cookie = `token=${r.data.token};path=/;max-age=${expiresIn}`;
-		document.cookie = `steamid=${r.data.steam_id};path=/;max-age=${expiresIn}`;
 	}
 	return r;
 };
@@ -78,8 +75,12 @@ const tryLogin = async () => {
 			{goto(resolve('/'))}
 		{:catch error}
 			{error && ''}
-			<!-- {goto(resolve('/error'))} -->
-			Something went wrong during login. Please try again.
+			<p>
+				<!-- {goto(resolve('/error'))} -->
+				Something went wrong during login. Please try again.
+				<br />
+				TODO: Create an error page.
+			</p>
 		{/await}
 	{/if}
 </main>
