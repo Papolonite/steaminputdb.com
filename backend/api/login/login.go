@@ -4,6 +4,7 @@ package login
 import (
 	"context"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -41,14 +42,14 @@ type Response struct {
 const jwtSecret = "TODO:FIXME!"
 const jwtValidity = time.Hour * 24
 
-func RegisterWithUrl(a huma.API, steamUrl string) {
-	registerRoutes(a, steamUrl)
+func RegisterWithURL(a huma.API, steamURL string) {
+	registerRoutes(a, steamURL)
 }
 
 func RegisterRoutes(a huma.API) {
 	registerRoutes(a, steamLoginURL)
 }
-func registerRoutes(a huma.API, loginUrl string) {
+func registerRoutes(a huma.API, loginURL string) {
 	huma.Register(
 		a,
 		huma.Operation{
@@ -76,7 +77,7 @@ func registerRoutes(a huma.API, loginUrl string) {
 			}
 			steamID := parts[len(parts)-1]
 
-			steamReq, err := http.NewRequestWithContext(ctx, http.MethodPost, loginUrl, strings.NewReader(params.Encode()))
+			steamReq, err := http.NewRequestWithContext(ctx, http.MethodPost, loginURL, strings.NewReader(params.Encode()))
 			if err != nil {
 				return nil, huma.Error500InternalServerError("failed to create request")
 			}
@@ -86,7 +87,12 @@ func registerRoutes(a huma.API, loginUrl string) {
 			if err != nil {
 				return nil, huma.Error401Unauthorized("failed to verify with steam")
 			}
-			defer resp.Body.Close()
+			defer func() {
+				err = resp.Body.Close()
+				if err != nil {
+					slog.Error("failed to close steam response body", "error", err)
+				}
+			}()
 
 			respBody, err := io.ReadAll(resp.Body)
 			if err != nil {

@@ -140,7 +140,7 @@ func TestSteamLogin(t *testing.T) {
 				defer mockServer.Close()
 				mockUrl = mockServer.URL
 			}
-			login.RegisterWithUrl(api, mockUrl)
+			login.RegisterWithURL(api, mockUrl)
 
 			resp := api.Post("/v1/steam/login", tc.requestBody)
 			assert.Equal(t, tc.expectedStatus, resp.Code)
