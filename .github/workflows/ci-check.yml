@@ -51,6 +51,10 @@ jobs:
     frontend-test:
         name: Frontend Test
         runs-on: ubuntu-latest
+        env:
+            PUBLIC_API_BASE_URL: https://api.steaminputdb.com/
+            PUBLIC_API_BASE_URL_LOCAL: http://localhost:8889/
+            PUBLIC_DEV: "1"
         steps:
             - name: Checkout code
               uses: actions/checkout@v4

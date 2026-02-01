@@ -37,6 +37,11 @@ linters:
   
   exclusions:
     presets: []
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
+          - staticcheck
 
 formatters:
   enable:

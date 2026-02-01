@@ -69,13 +69,10 @@ components:
           format: uri
           readOnly: true
           type: string
-        steam_id:
-          type: string
         token:
           type: string
       required:
         - token
-        - steam_id
       type: object
     OpenIDRequestBody:
       additionalProperties: false

@@ -31,8 +31,7 @@ type OpenIDRequest struct {
 }
 
 type LoginResponse struct {
-	Token   string `json:"token"`
-	SteamID string `json:"steam_id"`
+	Token string `json:"token"`
 }
 
 type Response struct {
@@ -113,8 +112,7 @@ func registerRoutes(a huma.API, loginUrl string) {
 
 			return &Response{
 				Body: LoginResponse{
-					Token:   tokenString,
-					SteamID: steamID,
+					Token: tokenString,
 				},
 			}, nil
 		},
