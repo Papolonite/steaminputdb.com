@@ -94,6 +94,10 @@ jobs:
     frontend-build:
         name: Build Frontend
         runs-on: ubuntu-latest
+        env:
+            PUBLIC_API_BASE_URL: https://api.steaminputdb.com/
+            PUBLIC_API_BASE_URL_LOCAL: http://localhost:8889/
+            PUBLIC_DEV: ""
         needs: [frontend-lint, frontend-test]
         steps:
             - name: Checkout code
