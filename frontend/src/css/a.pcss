@@ -1,0 +1,44 @@
+a {
+	color: var(--color-primary);
+	text-decoration: none;
+	transition: color var(--transition-duration) ease-in-out;
+	position: relative;
+
+	&:hover,
+	&:focus-within {
+		color: currentColor;
+		& + li::after {
+			translate: -100%;
+			--scale-delay: var(--transition-duration);
+			--translate-delay: var(--transition-duration);
+		}
+	}
+}
+
+a:not(.button):has(+ :hover) {
+	&::after {
+		translate: 100%;
+		--scale-delay: var(--transition-duration);
+		--translate-delay: var(--transition-duration);
+	}
+}
+a:not(.button)::after {
+	content: '';
+	height: 2px;
+	width: 100%;
+	bottom: 0em;
+	transform: translateY(1.6px);
+	left: 0;
+	position: absolute;
+	background: currentColor;
+	scale: 0 1;
+	transition:
+		scale var(--transition-duration) var(--scale-delay, 0ms) ease-in-out,
+		translate calc(var(--transition-duration) * 2) var(--translate-delay, 0ms) ease-in-out;
+}
+a:not(.button):hover,
+a:not(.button):focus-within {
+	&::after {
+		scale: 1 1;
+	}
+}

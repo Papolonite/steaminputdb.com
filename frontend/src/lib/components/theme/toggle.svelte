@@ -1,7 +1,6 @@
 <script lang="ts">
+import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
-import PhMoon from '~icons/ph/moon';
-import PhSun from '~icons/ph/sun';
 
 let darkMode = $state(false);
 const toggleTheme = () => {
@@ -39,6 +38,7 @@ onMount(() => {
 
 <div class="wrapper">
 	<input
+		name="Theme toggle"
 		type="checkbox"
 		class="toggle"
 		checked={darkMode}
@@ -46,9 +46,9 @@ onMount(() => {
 		aria-label="Theme Toggle" />
 	<div class="icon {darkMode ? 'checked' : ''}">
 		{#if darkMode}
-			<PhMoon />
+			<Icon icon="ph:moon" width="1.2em" height="1.2em" />
 		{:else}
-			<PhSun />
+			<Icon icon="ph:sun" width="1.2em" height="1.2em" />
 		{/if}
 	</div>
 </div>
@@ -90,7 +90,7 @@ input[type='checkbox']:is(.toggle) {
 	position: relative;
 
 	&::before {
-		background-color: rgba(128, 128, 128, 0.25);
+		background-color: var(--background-neutral-alpha);
 	}
 	&::after {
 		content: '';

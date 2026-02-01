@@ -1,10 +1,29 @@
 <script lang="ts">
+import { browser } from '$app/environment';
 import { resolve } from '$app/paths';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
+import Icon from '@iconify/svelte';
+import UserMenu from './UserMenu.svelte';
+
+// eslint-disable-next-line prettier/prettier
+const isLoggedIn = $state(
+    browser
+        ? cookieStore?.get('token') !== undefined
+        : false 
+    );
+
 </script>
 
 <header>
-	<a href={resolve('/')}><span>SteamInputDB.com</span></a>
+	<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
+	{#if !isLoggedIn}
+		<a href={resolve('/login')}>
+			<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
+			<span>Sign In</span>
+		</a>
+	{:else}
+		<UserMenu />
+	{/if}
 	<Themetoggle />
 </header>
 
@@ -13,55 +32,36 @@ header {
 	padding: 1em;
 	background: var(--card-color);
 	display: grid;
-	grid-template-columns: auto min-content;
+	grid-template-columns: auto min-content min-content;
 	align-items: center;
 	box-shadow: 0 0px 4px var(--shadow-color);
+	gap: 1em;
 }
 
 span {
 	font-weight: bold;
-	font-size: 1.4em;
 }
 
-a {
+.neutral {
+	font-size: 1.4em;
 	text-decoration: none;
 	color: inherit;
 	position: relative;
 	width: min-content;
+}
 
-	&::after {
-		content: '';
-		height: 3px;
-		width: 100%;
-		bottom: 0em;
-		transform: translateY(0.25em);
-		left: 0;
-		position: absolute;
-		background: var(--text-color);
-		scale: 0 1;
-		transition:
-			scale var(--transition-duration) var(--scale-delay, 0ms) ease-in-out,
-			translate calc(var(--transition-duration) * 2) var(--translate-delay, 0ms) ease-in-out;
-	}
+a {
+	font-size: 1.4em;
+	white-space: nowrap;
+	display: grid;
+	place-items: center;
+	grid-auto-flow: column;
+	gap: 0.25em;
+	color: var(--text-color);
 	&:hover,
+	&:focus,
 	&:focus-within {
-		&::after {
-			scale: 1 1;
-		}
-	}
-	&:hover {
-		& + li::after {
-			translate: -100%;
-			--scale-delay: var(--transition-duration);
-			--translate-delay: var(--transition-duration);
-		}
-	}
-	&:has(+ :hover) {
-		&::after {
-			translate: 100%;
-			--scale-delay: var(--transition-duration);
-			--translate-delay: var(--transition-duration);
-		}
+		color: var(--color-primary);
 	}
 }
 </style>

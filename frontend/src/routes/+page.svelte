@@ -1,11 +1,20 @@
 <script lang="ts">
+import Searchbar from '$lib/components/search/searchbar.svelte';
 </script>
 
 <main>
-	<h1>SteamInputDB.com</h1>
-	<h2>
-		<strong>Steam API backed</strong> community driven database of SteamInput configurations
-	</h2>
+	<div>
+		<div>
+			<h1>
+				<strong>Steam API backed</strong> community driven database of SteamInput configurations
+			</h1>
+			<p>SteamInputDB uses the same APIs as Steam itself</p>
+			<p>That meansEvery configuration on Steam is available here!</p>
+		</div>
+		<div class="bar-container">
+			<Searchbar />
+		</div>
+	</div>
 </main>
 
 <style lang="postcss">
@@ -13,9 +22,23 @@ main {
 	padding: 1em;
 	display: grid;
 	place-items: center;
+	& > div {
+		display: grid;
+		place-items: center;
+	}
 }
 
-h2 strong {
+h1 strong {
 	color: var(--highlight-color);
+}
+p {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.bar-container {
+	padding: 2em;
+	width: 100%;
+	max-width: 36em;
 }
 </style>

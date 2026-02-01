@@ -24,7 +24,7 @@ input[type='checkbox']:is(.toggle) {
 		--size: calc(var(--toggle-height) - var(--indicator-padding));
 		height: var(--size);
 		width: var(--size);
-		background-color: var(--textColor);
+		background-color: var(--text-color);
 		border-radius: 100vh;
 		left: calc(var(--indicator-padding) / 2);
 		box-shadow: 0 2px 2px var(--shadow-color);
@@ -48,7 +48,7 @@ input[type='checkbox']:not(.toggle) {
 	width: 1.4em;
 	height: 1.4em;
 	padding: 0;
-	border: 1px solid color-mix(in srgb, var(--textColor), transparent 75%);
+	border: 1px solid color-mix(in srgb, var(--text-color), transparent 75%);
 	&::before {
 		content: '';
 		width: 100%;
@@ -58,7 +58,7 @@ input[type='checkbox']:not(.toggle) {
 		position: absolute;
 	}
 	&:checked::before {
-		background-color: var(--textColor);
+		background-color: var(--text-color);
 	}
 
 	&::after {
@@ -79,7 +79,7 @@ input[type='checkbox']:not(.toggle) {
 	&:hover,
 	&:focus-visible {
 		& input[type='checkbox']::before {
-			background-color: color-mix(in srgb, var(--textColor), transparent 75%);
+			background-color: color-mix(in srgb, var(--text-color), transparent 75%);
 		}
 	}
 

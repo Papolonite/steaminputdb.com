@@ -20,13 +20,12 @@ const { children } = $props();
 
 <Header />
 {@render children()}
-<div></div>
 <Footer />
 
 <style lang="postcss">
 :global(body) {
 	display: grid;
-	grid-template-rows: auto auto 1fr auto;
+	grid-template-rows: auto 1fr auto;
 	min-height: 100dvh;
 }
 </style>

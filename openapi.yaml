@@ -59,6 +59,69 @@ components:
           format: uri
           type: string
       type: object
+    LoginResponse:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/LoginResponse.json
+          format: uri
+          readOnly: true
+          type: string
+        steam_id:
+          type: string
+        token:
+          type: string
+      required:
+        - token
+        - steam_id
+      type: object
+    OpenIDRequestBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/OpenIDRequestBody.json
+          format: uri
+          readOnly: true
+          type: string
+        assoc_handle:
+          type: string
+        claimed_id:
+          minLength: 1
+          type: string
+        identity:
+          type: string
+        mode:
+          enum:
+            - id_res
+          type: string
+        ns:
+          type: string
+        op_endpoint:
+          type: string
+        response_nonce:
+          type: string
+        return_to:
+          type: string
+        sig:
+          type: string
+        signed:
+          type: string
+      required:
+        - ns
+        - mode
+        - op_endpoint
+        - claimed_id
+        - identity
+        - return_to
+        - response_nonce
+        - assoc_handle
+        - signed
+        - sig
+      type: object
     Ping:
       additionalProperties: false
       properties:
@@ -111,6 +174,30 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
           description: Error
       summary: /ping
+      tags:
+        - /v1
+  /v1/steam/login:
+    post:
+      description: Authenticate user via Steam OpenID and return JWT token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenIDRequestBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
       tags:
         - /v1
 servers:

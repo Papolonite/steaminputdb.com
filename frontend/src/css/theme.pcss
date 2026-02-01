@@ -10,12 +10,13 @@
 		color-mix(in srgb, var(--text-color), var(--color-primary) 50%),
 		color-mix(in srgb, var(--color-primary), var(--text-color) 60%)
 	);
-	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 25%);
 	--inverse-text-color: light-dark(var(--text-color-dark), var(--text-color-light));
+	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 25%);
 	--color-primary: light-dark(#0062ff, #5898ff);
 	--color-primary-hover: #273a55;
 	--color-primary-active: #35598b;
-	--card-color: light-dark(#f3f4f5fc, #26262efc);
+	--card-color: light-dark(#eceff1fc, #26262efc);
+	--inverse-card-color: light-dark(#26262efc, #eceff1fc);
 	--background-color: light-dark(#f5f8f8, #171820);
 	--opaque-bg-color: light-dark(#e5e7e7, #090d10);
 	--shadow-color: light-dark(#00000030, #0e0e0e88);
@@ -25,6 +26,8 @@
 	--bg-alpha: light-dark(0.023, 0.01);
 	--bg-contrast: light-dark(2.85, 1.85);
 	--grad-alpha: light-dark(0.109, 0.209);
+
+	--background-neutral-alpha: rgba(128, 128, 128, 0.25);
 
 	--transition-duration: 124ms;
 	--border-radius: 1em;

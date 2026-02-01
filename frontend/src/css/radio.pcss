@@ -1,29 +1,29 @@
 input[type='radio'] {
-    position: relative;
-    appearance: none;
-    border-radius: 100%;
-    display: grid;
-    place-items: center;
-    width: 1.4em;
-    height: 1.4em;
-    padding: 0;
-    box-shadow:
-        0 0 1px 0 white inset,
-        0 0 1px 0 white;
-    &::before {
-        content: '';
-        width: 50%;
-        height: 50%;
-        border-radius: 100%;
-        transition: background-color var(--transitionDuration) ease;
-    }
-    &:checked::before {
-        background-color: var(--textColor);
-    }
-    &:hover,
-    &:focus-visible {
-        & input[type='radio']::before {
-            background-color: color-mix(in srgb, var(--textColor), transparent 75%);
-        }
-    }
+	position: relative;
+	appearance: none;
+	border-radius: 100%;
+	display: grid;
+	place-items: center;
+	width: 1.4em;
+	height: 1.4em;
+	padding: 0;
+	box-shadow:
+		0 0 1px 0 white inset,
+		0 0 1px 0 white;
+	&::before {
+		content: '';
+		width: 50%;
+		height: 50%;
+		border-radius: 100%;
+		transition: background-color var(--transitionDuration) ease;
+	}
+	&:checked::before {
+		background-color: var(--text-color);
+	}
+	&:hover,
+	&:focus-visible {
+		& input[type='radio']::before {
+			background-color: color-mix(in srgb, var(--text-color), transparent 75%);
+		}
+	}
 }

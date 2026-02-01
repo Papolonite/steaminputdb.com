@@ -4,6 +4,9 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
     compilerOptions: {
         runes: true,
+        experimental: {
+            async: true
+        }
     },
     kit: {
         adapter: adapter({
