@@ -46,13 +46,13 @@ func RegisterRoutes(a huma.API) {
 	)
 }
 
-var SteamConfigsAppId = new(uint32(241100))
+var SteamConfigsAppID = new(uint32(241100))
 var ControllerConfigFileType = new(uint32(15)) // steam api returns 12, search uses 15? o.O
 
 func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 
 	query := &steamapi.CPublishedFile_QueryFiles_Request{
-		Appid:         SteamConfigsAppId,
+		Appid:         SteamConfigsAppID,
 		Filetype:      ControllerConfigFileType,
 		ReturnKvTags:  new(true),
 		ReturnDetails: new(true),
@@ -73,8 +73,8 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 		//
 		SearchText: &req.Body.QueryText,
 		//
-		Numperpage: &req.Body.ConfigPagination.Limit,
-		Page:       &req.Body.ConfigPagination.Page,
+		Numperpage: &req.Body.Limit,
+		Page:       &req.Body.Page,
 		//
 		QueryType: new((uint32)(req.Body.Rank.By.PublishedFileQueryType().Number())),
 		Days:      &req.Body.Rank.TrendingPeriod,

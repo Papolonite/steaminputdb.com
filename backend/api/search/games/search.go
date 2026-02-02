@@ -89,7 +89,7 @@ func Handler(ctx context.Context, req *Request) (*Response, error) {
 	for i, storeItem := range queryResp.StoreItems {
 		items[i].AppID = storeItem.Appid
 		items[i].Name = storeItem.Name
-		items[i].StoreUrlPath = storeItem.StoreUrlPath
+		items[i].StoreURLPath = storeItem.StoreUrlPath
 
 		if storeItem.Type != nil {
 			items[i].Type = TypeToString(storeItem.Type)

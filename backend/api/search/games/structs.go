@@ -41,7 +41,7 @@ type AppsResponse struct {
 type AppsSearchItem struct {
 	AppID        *uint32                       `json:"app_id" example:"440"`
 	Name         *string                       `json:"name" example:"Team Fortress 2"`
-	StoreUrlPath *string                       `json:"store_url_path" example:"app/440/Team_Fortress_2"`
+	StoreURLPath *string                       `json:"store_url_path" example:"app/440/Team_Fortress_2"`
 	Type         string                        `json:"type" enum:"game,demo,mod" example:"game"`
 	Links        *[]string                     `json:"links,omitempty,omitzero"`
 	BasicInfo    *steamapi.StoreItem_BasicInfo `json:"basic_info,omitempty,omitzero"`
@@ -54,6 +54,7 @@ type AppsPlatforms struct {
 	Windows      *bool `json:"windows" example:"true"`
 	SteamOSLinux *bool `json:"steamos_linux" example:"true"`
 	Mac          *bool `json:"mac" example:"false"`
+	// TODO:
 	// SteamVr
 	//SteamDeckCOmpat
 	//STeamOsCOmpat
