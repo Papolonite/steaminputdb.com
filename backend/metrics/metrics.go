@@ -16,7 +16,7 @@ var (
 	httpRequestDuration = promauto.NewHistogramVec(
 		prometheus.HistogramOpts{
 			Name:    "http_request_duration_seconds",
-			Help:    "HTTP request latency",
+			Help:    "HTTP Request Duration",
 			Buckets: prometheus.DefBuckets,
 		},
 		[]string{"method", "path"},

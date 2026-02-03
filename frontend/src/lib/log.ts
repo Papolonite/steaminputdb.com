@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import { PUBLIC_LOG_LEVEL } from '$env/static/public';
+
 const ANSI = {
     reset: '\u001b[0m',
     gray: '\u001b[90m',
@@ -11,7 +13,23 @@ const ANSI = {
     white: '\u001b[37m'
 };
 
-const write = (levelColor: string, level: string, message: string, ...args: unknown[]) => {
+const LOG_LEVELS = {
+    DEBUG: 1,
+    INFO: 2,
+    WARN: 3,
+    ERROR: 4
+} as const;
+
+let filterLevel: number = LOG_LEVELS[PUBLIC_LOG_LEVEL?.toUpperCase() as keyof typeof LOG_LEVELS] || LOG_LEVELS.INFO;
+
+export const setLogLevel = (lvl: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR') => {
+    filterLevel = LOG_LEVELS[lvl];
+};
+
+const write = (levelColor: string, level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR',  message: unknown, ...args: unknown[]) => {
+    if (LOG_LEVELS[level] < filterLevel) {
+        return;
+    }
     const now = new Date();
     const tzOffset = -now.getTimezoneOffset();
     const sign = tzOffset >= 0 ? '+' : '-';
@@ -21,18 +39,18 @@ const write = (levelColor: string, level: string, message: string, ...args: unkn
 
     const parts = args.reduce((acc: string[], n, i) => {
         if (i % 2 === 0) {
-            acc.push(`${ANSI.gray}${String(n)}${ANSI.reset}=`);
+            acc.push(`${ANSI.gray}${typeof n === 'object' ? JSON.stringify(n) : n}${ANSI.reset}=`);
         } else {
-            acc.push(`${String(n)} `);
+            acc.push(`${typeof n === 'object' ? JSON.stringify(n) : n} `);
         }
         return acc;
     },
     [
         `${ANSI.gray}${timestamp}${ANSI.reset} `,
         `${levelColor}${level.padStart(5)}${ANSI.reset} `,
-        message,
+        typeof message === 'object' ? JSON.stringify(message) : message,
         ' '
-    ]
+    ] as string[]
     );
 
     const line = parts.join('');
@@ -53,10 +71,10 @@ const write = (levelColor: string, level: string, message: string, ...args: unkn
 };
 
 export const log = {
-    debug: (message: string, ...args: unknown[]) => write(ANSI.blue, 'DEBUG', message, ...args),
-    info: (message: string, ...args: unknown[]) => write(ANSI.green, 'INFO', message, ...args),
-    warn: (message: string, ...args: unknown[]) => write(ANSI.yellow, 'WARN', message, ...args),
-    error: (message: string, ...args: unknown[]) => write(ANSI.red, 'ERROR', message, ...args)
+    debug: (message: unknown, ...args: unknown[]) => write(ANSI.blue, 'DEBUG', message, ...args),
+    info: (message: unknown, ...args: unknown[]) => write(ANSI.green, 'INFO', message, ...args),
+    warn: (message: unknown, ...args: unknown[]) => write(ANSI.yellow, 'WARN', message, ...args),
+    error: (message: unknown, ...args: unknown[]) => write(ANSI.red, 'ERROR', message, ...args)
 };
 
 export { ANSI };

@@ -2,58 +2,69 @@ import type { Handle } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
 
 import { ANSI, log } from '$lib/log';
+import { getStatusText, httpActiveConnections, httpRequestDuration, httpRequestsTotal } from '$lib/metrics';
 import { sequence } from '@sveltejs/kit/hooks';
 
 
 const logHook: Handle = async ({ event, resolve }) => {
     const start = Date.now();
     const requestId = randomUUID();
+    let statusCode = 500;
 
-    const response = await resolve(event);
+    try {
+        httpActiveConnections.inc();
+        const response = await resolve(event);
+        statusCode = response.status;
+        response.headers.set('x-request-id', requestId);
+        return response;
+    } finally {
+        const durationMs = Date.now() - start;
+        const durationSeconds = durationMs / 1000;
 
-    const durationMs = Date.now() - start;
+        const method = event.request.method;
+        const path = event.url.pathname;
+        const statusText = getStatusText(statusCode);
 
-    const statusCode = response.status;
-    const remoteAddr = event.getClientAddress?.() ?? 'unknown';
-    const statusStr = String(statusCode).charAt(0);
-    let statusColor: string;
-    switch (statusStr) {
-        case '2':
-            statusColor = ANSI.green;
-            break;
-        case '3':
-            statusColor = ANSI.cyan;
-            break;
-        case '4':
-            statusColor = ANSI.yellow;
-            break;
-        case '5':
-            statusColor = ANSI.red;
-            break;
-        default:
-            statusColor = ANSI.white;
+        httpRequestsTotal.labels(method, path, statusText).inc();
+        httpRequestDuration.labels(method, path).observe(durationSeconds);
+
+        const remoteAddr = event.getClientAddress?.() ?? 'unknown';
+        const statusStr = String(statusCode).charAt(0);
+        let statusColor: string;
+        switch (statusStr) {
+            case '2':
+                statusColor = ANSI.green;
+                break;
+            case '3':
+                statusColor = ANSI.cyan;
+                break;
+            case '4':
+                statusColor = ANSI.yellow;
+                break;
+            case '5':
+                statusColor = ANSI.red;
+                break;
+            default:
+                statusColor = ANSI.white;
+        }
+
+        log.debug(
+            'request',
+            'status_code',
+            `${statusColor}${statusCode}${ANSI.reset}`,
+            'method',
+            event.request.method,
+            'path',
+            event.url.pathname,
+            'duration_ms',
+            durationMs,
+            'request_id',
+            requestId,
+            'remote_addr',
+            remoteAddr
+        );
+        httpActiveConnections.dec();
     }
-
-    log.debug(
-        'request',
-        'status_code',
-        `${statusColor}${statusCode}${ANSI.reset}`,
-        'method',
-        event.request.method,
-        'path',
-        event.url.pathname,
-        'duration_ms',
-        durationMs,
-        'request_id',
-        requestId,
-        'remote_addr',
-        remoteAddr
-    );
-
-    response.headers.set('x-request-id', requestId);
-    return response;
-
-
 };
 
 const themeHook: Handle = async ({ event, resolve }) => {

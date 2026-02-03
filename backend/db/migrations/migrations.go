@@ -2,16 +2,20 @@ package migrations
 
 import (
 	"context"
+	"embed"
 	"log/slog"
 
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/migrate"
 )
 
+//go:embed [0-9]*.*
+var migrationFiles embed.FS
+
 var Migrations = migrate.NewMigrations()
 
 func init() {
-	if err := Migrations.DiscoverCaller(); err != nil {
+	if err := Migrations.Discover(migrationFiles); err != nil {
 		panic(err)
 	}
 }

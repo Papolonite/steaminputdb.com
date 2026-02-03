@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type Config struct {
 	ConfigPath  string  `help:"Path to configuration file (json|yaml|toml)" default:"" name:"config" env:"CONFIG"`
 	SteamAPIKey string  `help:"Steam API Key" env:"STEAM_API_KEY"`
@@ -20,5 +22,9 @@ type Metrics struct {
 }
 
 type DB struct {
-	// TODO
+	DatabaseURL     string        `help:"Database connection URL" default:"" env:"DATABASE_URL"`
+	MaxOpenConns    int           `help:"Database max open connections" default:"25" env:"DB_MAX_OPEN_CONNS"`
+	MaxIdleConns    int           `help:"Database max idle connections" default:"10" env:"DB_MAX_IDLE_CONNS"`
+	MaxConnLifetime time.Duration `help:"Database max connection lifetime" default:"5m" env:"DB_MAX_CONN_LIFETIME"`
+	MaxConnIdleTime time.Duration `help:"Database max idle time" default:"5m" env:"DB_MAX_IDLE_TIME"`
 }

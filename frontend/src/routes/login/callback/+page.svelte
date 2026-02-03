@@ -4,12 +4,20 @@ import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import Spinner from '$lib/components/Spinner.svelte';
 import Icon from '@iconify/svelte';
+import type { ActionFailure } from '@sveltejs/kit';
 import { fade } from 'svelte/transition';
 
 const waitLogin = async () => {
-	const cookie = await page.data.loginPromise;
-	document.cookie = cookie;
-	goto(resolve('/'));
+	const cookieOrFail: string | ActionFailure = await page.data.loginPromise;
+
+	if (typeof cookieOrFail !== 'string') {
+		throw cookieOrFail;
+	}
+
+	document.cookie = cookieOrFail;
+	goto(resolve('/'), {
+		invalidateAll: true
+	});
 };
 </script>
 

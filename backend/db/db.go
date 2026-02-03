@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/db/migrations"
@@ -17,14 +16,18 @@ func Init(cfg config.DB) error {
 
 	ctx := context.Background()
 
+	if cfg.DatabaseURL == "" {
+		cfg.DatabaseURL = "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+	}
+
 	sqldb := sql.OpenDB(pgdriver.NewConnector(
-		pgdriver.WithDSN("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"),
+		pgdriver.WithDSN(cfg.DatabaseURL),
 	))
 
-	sqldb.SetMaxOpenConns(25)
-	sqldb.SetMaxIdleConns(10)
-	sqldb.SetConnMaxLifetime(5 * time.Minute)
-	sqldb.SetConnMaxIdleTime(5 * time.Minute)
+	sqldb.SetMaxOpenConns(cfg.MaxOpenConns)
+	sqldb.SetMaxIdleConns(cfg.MaxIdleConns)
+	sqldb.SetConnMaxLifetime(cfg.MaxConnLifetime)
+	sqldb.SetConnMaxIdleTime(cfg.MaxConnIdleTime)
 
 	db := bun.NewDB(sqldb, pgdialect.New()).
 		WithQueryHook(logging.NewQueryHook())

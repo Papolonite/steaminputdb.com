@@ -1,9 +1,0 @@
-cors-origins = "*"
-steam-api-key = ""
-log-level = "info"
-
-[api]
-public-address = "localhost:8889"
-cors-origins = "*"
-
-[metrics]

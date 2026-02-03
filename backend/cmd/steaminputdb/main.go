@@ -280,10 +280,10 @@ func formatClickableAddr(addr string) string {
 	host := addr
 	if strings.HasPrefix(addr, ":") {
 		host = "localhost" + addr
-	} else if strings.HasPrefix(addr, "0.0.0.0:") {
-		host = "localhost:" + strings.TrimPrefix(addr, "0.0.0.0:")
-	} else if strings.HasPrefix(addr, "[::]:") {
-		host = "localhost:" + strings.TrimPrefix(addr, "[::]:")
+	} else if after, ok := strings.CutPrefix(addr, "0.0.0.0:"); ok {
+		host = "localhost:" + after
+	} else if after, ok := strings.CutPrefix(addr, "[::]:"); ok {
+		host = "localhost:" + after
 	}
 	return "http://" + host
 }
