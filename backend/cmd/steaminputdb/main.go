@@ -16,7 +16,6 @@ import (
 	steaminputdbapi "github.com/Alia5/steaminputdb.com/api"
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/db"
-	"github.com/Alia5/steaminputdb.com/frontend"
 	"github.com/Alia5/steaminputdb.com/logging"
 	"github.com/Alia5/steaminputdb.com/metrics"
 	"github.com/Alia5/steaminputdb.com/middleware"
@@ -64,25 +63,6 @@ func main() {
 	}
 
 	steamapi.DefaultClient = steamapi.NewClient(cfg.SteamAPIKey)
-
-	feMux := http.NewServeMux()
-
-	feSrv := http.Server{
-		Addr: cfg.ListenAddress,
-		Handler: middleware.With(
-			feMux,
-			logging.Middleware,
-			cors.New(cors.Options{
-				AllowedOrigins:   []string{cfg.CorsOrigins},
-				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-				AllowedHeaders:   []string{"*"},
-				AllowCredentials: true,
-			}).Handler,
-			metrics.Middleware,
-			// routes.UnregisteredMiddleware,
-		),
-	}
-	feMux.HandleFunc("GET /", frontend.Handler)
 
 	metricsMux := http.NewServeMux()
 	metricsSrv := http.Server{
@@ -162,7 +142,7 @@ func main() {
 			apiMux,
 			logging.Middleware,
 			cors.New(cors.Options{
-				AllowedOrigins:   []string{cfg.CorsOrigins},
+				AllowedOrigins:   []string{cfg.API.CorsOrigins},
 				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 				AllowedHeaders:   []string{"*"},
 				AllowCredentials: true,
@@ -219,7 +199,10 @@ func main() {
 			}
 
 			var wg sync.WaitGroup
-			servers := []*http.Server{&feSrv, &metricsSrv, &apiSrv}
+			servers := []*http.Server{
+				&metricsSrv,
+				&apiSrv,
+			}
 			for _, srv := range servers {
 				wg.Add(1)
 				go func(s *http.Server) {
@@ -238,10 +221,6 @@ func main() {
 			closed = true
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
-			err := feSrv.Shutdown(ctx)
-			if err != nil {
-				slog.Error("error shutting down frontend server", "err", err)
-			}
 			err = metricsSrv.Shutdown(ctx)
 			if err != nil {
 				slog.Error("error shutting down metrics server", "err", err)

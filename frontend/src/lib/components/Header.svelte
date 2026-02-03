@@ -1,22 +1,20 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
+import { page } from '$app/state';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
-import { steamIdFromToken } from '$lib/steam_login';
 import Icon from '@iconify/svelte';
 import UserMenu from './UserMenu.svelte';
-
-const steamId = $state(await steamIdFromToken());
 </script>
 
 <header>
 	<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
-	{#if !steamId}
+	{#if !page.data.steamId}
 		<a href={resolve('/login')}>
 			<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
 			<span>Sign In</span>
 		</a>
 	{:else}
-		<UserMenu steamId={steamId} />
+		<UserMenu />
 	{/if}
 	<Themetoggle />
 </header>

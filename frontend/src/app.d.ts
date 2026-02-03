@@ -5,9 +5,15 @@ import 'unplugin-icons/types/svelte';
 // for information about these interfaces
 declare global {
     namespace App {
-        // interface Error {}
+        interface Error {
+            message: string;
+            [key: string]: unknown;
+        }
         // interface Locals {}
-        // interface PageData {}
+        interface PageData {
+            steamId?: string;
+            theme?: 'light' | 'dark';
+        }
         // interface PageState {}
         // interface Platform {}
     }

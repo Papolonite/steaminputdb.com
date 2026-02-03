@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from '$app/state';
 import { buildSteamLoginUrl } from '$lib/steam_login';
 import Icon from '@iconify/svelte';
 </script>
@@ -13,7 +14,7 @@ import Icon from '@iconify/svelte';
 			data at any time. We use cookies to keep your session active.
 		</p>
 		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-		<a class="button" href={buildSteamLoginUrl()}
+		<a class="button" href={buildSteamLoginUrl(page.url.origin)}
 			>Sign in through <Icon icon="mdi:steam" width="1.4em" height="1.4em" /> Steam
 		</a>
 	</div>

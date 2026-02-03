@@ -1,8 +1,9 @@
 <script lang="ts">
+import { page } from '$app/state';
 import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
 
-let darkMode = $state(false);
+let darkMode = $state(page.data.theme == 'dark');
 const toggleTheme = () => {
 	const html = document.documentElement;
 	if (darkMode) {
@@ -16,13 +17,7 @@ const toggleTheme = () => {
 };
 
 onMount(() => {
-	const getCookie = (name: string) => {
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; ${name}=`);
-		if (parts.length === 2) return parts.pop()?.split(';').shift();
-	};
-
-	const savedTheme = getCookie('theme');
+	const savedTheme = page.data.theme;
 	const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 	const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 

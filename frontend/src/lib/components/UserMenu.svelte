@@ -1,12 +1,9 @@
 <script lang="ts">
-import { steamIdFromToken } from '$lib/steam_login';
-const { steamId }: { steamId?: string } = $props();
-
-let steamIdState = $derived(steamId || (await steamIdFromToken()));
+import { page } from '$app/state';
 </script>
 
 <div>
-	<span>{steamIdState}</span>
+	<span>{page.data.steamId}</span>
 </div>
 
 <style lang="postcss">
