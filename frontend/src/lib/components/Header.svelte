@@ -1,21 +1,31 @@
 <script lang="ts">
+import { beforeNavigate } from '$app/navigation';
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
 import Icon from '@iconify/svelte';
 import UserMenu from './UserMenu.svelte';
+
+let loginRoute = $state(false);
+beforeNavigate(({ from, to }) => {
+	if (from?.route.id?.includes('/login') || to?.route.id?.includes('/login')) {
+		loginRoute = true;
+		return;
+	}
+	loginRoute = false;
+});
 </script>
 
 <header>
 	<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
 	{#if !page.route.id?.startsWith('/login')}
 		{#if !page.data.steamId}
-			<a class="steamops" href={resolve('/login')}>
+			<a class={loginRoute ? 'login-view-transition' : ''} href={resolve('/login')}>
 				<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
 				<span>Sign In</span>
 			</a>
 		{:else}
-			<div class="steamops">
+			<div class={loginRoute ? 'login-view-transition' : ''}>
 				<UserMenu />
 			</div>
 		{/if}
@@ -41,7 +51,7 @@ header {
 	}
 }
 
-.steamops {
+.login-view-transition {
 	view-transition-name: steamlogin;
 }
 
