@@ -12,8 +12,6 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-const steamSummaryURL = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2"
-
 type PlayerInfo struct {
 	CommunityVisibilityState int       `json:"communityvisibilitystate"` // TODO:enum
 	PersonaName              string    `json:"personaname"`
@@ -32,14 +30,14 @@ type Response struct {
 	Body PlayerInfo
 }
 
-func RegisterWithURL(a huma.API, steamURL string) {
-	registerRoutes(a, steamURL)
+func RegisterWithURL(a huma.API) {
+	registerRoutes(a)
 }
 
 func RegisterRoutes(a huma.API) {
-	registerRoutes(a, steamSummaryURL)
+	registerRoutes(a)
 }
-func registerRoutes(a huma.API, loginURL string) {
+func registerRoutes(a huma.API) {
 	huma.Register(
 		a,
 		huma.Operation{

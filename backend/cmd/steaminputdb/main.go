@@ -14,7 +14,6 @@ import (
 	_ "embed"
 
 	"github.com/Alia5/steaminputdb.com/api"
-	steaminputdbapi "github.com/Alia5/steaminputdb.com/api"
 	"github.com/Alia5/steaminputdb.com/api/steam"
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/db"
@@ -107,7 +106,7 @@ func main() {
 	}
 
 	apiMux := http.NewServeMux()
-	api := humago.New(apiMux, huma.Config{
+	hAPI := humago.New(apiMux, huma.Config{
 		OpenAPI: &huma.OpenAPI{
 			OpenAPI: "3.1.0",
 			Info: &huma.Info{
@@ -161,7 +160,7 @@ func main() {
 			},
 		},
 	})
-	o := api.OpenAPI()
+	o := hAPI.OpenAPI()
 	flow := o.Components.SecuritySchemes["Steam OpenID"].Flows.Implicit
 	flow.AuthorizationURL = steam.OpenIDAuthorizationURL("http://localhost:8889/v1/steam/login")
 	flow.TokenURL = "http://localhost:8889/v1/steam/login"
@@ -178,11 +177,11 @@ func main() {
 				AllowCredentials: true,
 			}).Handler,
 			metrics.Middleware,
-			routes.UnregisteredMiddleware(api),
+			routes.UnregisteredMiddleware(hAPI),
 		),
 	}
 
-	api.Adapter().Handle(&huma.Operation{
+	hAPI.Adapter().Handle(&huma.Operation{
 		Method: http.MethodGet,
 		Path:   "/docs",
 	}, func(ctx huma.Context) {
@@ -207,7 +206,7 @@ func main() {
 		))
 	})
 
-	steaminputdbapi.RegisterAPI(api)
+	api.RegisterAPI(hAPI)
 
 	// use kong for parsing, ignore humas config parser
 	cli := humacli.New(func(h humacli.Hooks, _ *struct{}) {
@@ -215,7 +214,7 @@ func main() {
 		h.OnStart(func() {
 
 			if os.Getenv("DEV") == "1" {
-				yml, err := api.OpenAPI().YAML()
+				yml, err := hAPI.OpenAPI().YAML()
 				if err != nil {
 					slog.Error("failed to generate OpenAPI YAML", "err", err)
 				}

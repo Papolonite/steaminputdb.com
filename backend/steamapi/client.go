@@ -197,7 +197,7 @@ func (c *Client) GetJson(ctx context.Context, endpoint Endpoint, req any, params
 	return nil
 }
 
-func GetJson[Req any, Resp any](ctx context.Context, endpoint Endpoint, req Req, params *url.Values, resp Resp, auth *Auth) error {
+func GetJSON[Req any, Resp any](ctx context.Context, endpoint Endpoint, req Req, params *url.Values, resp Resp, auth *Auth) error {
 
 	baseURL := endpoint.URL()
 	if len(*params) == 0 {

@@ -53,7 +53,7 @@ type Response struct {
 	Body        LoginResponse
 	TokenCookie http.Cookie `header:"Set-Cookie"`
 	Status      int
-	Url         string `header:"Location"`
+	URL         string `header:"Location"`
 }
 
 const jwtSecret = "TODO:FIXME!"
@@ -213,9 +213,9 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 			return nil, huma.Error500InternalServerError("failed to generate token")
 		}
 
-		httpsOnly := true
+		HTTPSOnly := true
 		if os.Getenv("DEV") == "1" {
-			httpsOnly = false
+			HTTPSOnly = false
 		}
 		domain := config.Parsed.API.PublicAddress
 		domain = strings.Split(domain, ":")[0]
@@ -230,13 +230,13 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 			MaxAge:   int(jwtValidity.Seconds()),
 			Path:     "/",
 			Domain:   fmt.Sprintf(".%s", domain),
-			Secure:   httpsOnly,
+			Secure:   HTTPSOnly,
 		}
 
 		if req.Body == nil {
 			return &Response{
 				Status:      http.StatusFound,
-				Url:         "http://localhost:8889/v1/ping#access_token=" + tokenString,
+				URL:         "http://localhost:8889/v1/ping#access_token=" + tokenString,
 				TokenCookie: cookie,
 			}, nil
 		}

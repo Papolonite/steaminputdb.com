@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/Alia5/steaminputdb.com/api/ctx"
@@ -12,7 +13,10 @@ func Middleware(a huma.API) func(c huma.Context, next func(huma.Context)) {
 	return func(c huma.Context, next func(huma.Context)) {
 		cookie, err := huma.ReadCookie(c, "token")
 		if err != nil {
-			huma.WriteErr(a, c, http.StatusUnauthorized, "missing token")
+			err := huma.WriteErr(a, c, http.StatusUnauthorized, "missing token")
+			if err != nil {
+				slog.Error("failed to write error response", "error", err)
+			}
 			return
 		}
 
@@ -20,19 +24,28 @@ func Middleware(a huma.API) func(c huma.Context, next func(huma.Context)) {
 			return []byte("TODO:FIXME!"), nil
 		}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}))
 		if err != nil || !token.Valid {
-			huma.WriteErr(a, c, http.StatusUnauthorized, "invalid token")
+			err := huma.WriteErr(a, c, http.StatusUnauthorized, "invalid token")
+			if err != nil {
+				slog.Error("failed to write error response", "error", err)
+			}
 			return
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			huma.WriteErr(a, c, http.StatusUnauthorized, "invalid token claims")
+			err := huma.WriteErr(a, c, http.StatusUnauthorized, "invalid token claims")
+			if err != nil {
+				slog.Error("failed to write error response", "error", err)
+			}
 			return
 		}
 
 		steamID, ok := claims["sub"].(string)
 		if !ok || steamID == "" {
-			huma.WriteErr(a, c, http.StatusUnauthorized, "missing steamid")
+			err := huma.WriteErr(a, c, http.StatusUnauthorized, "missing steamid")
+			if err != nil {
+				slog.Error("failed to write error response", "error", err)
+			}
 			return
 		}
 
