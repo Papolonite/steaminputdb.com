@@ -22,17 +22,26 @@
 	--shadow-color: light-dark(#00000030, #0e0e0e88);
 	--effect-alpha: light-dark(0.5, 0.2);
 	--inverse-effect-alpha: light-dark(0.25, 0.5);
-	-webkit-tap-highlight-color: light-dark(#00000021, #ffffff21);
 	--bg-alpha: light-dark(0.023, 0.01);
 	--bg-contrast: light-dark(2.85, 1.85);
 	--grad-alpha: light-dark(0.109, 0.209);
 
 	--background-neutral-alpha: rgba(128, 128, 128, 0.25);
 
-	--transition-duration: 124ms;
+	--transition-duration: 196ms;
+	--default-ease: cubic-bezier(0.85, 0.09, 0.15, 0.91);
+	--ease-vanish: cubic-bezier(0.55, 0, 1, 0.45);
+	--ease-appear: cubic-bezier(0, 0.55, 0.45, 1);
+
 	--border-radius: 1em;
 
 	--scrollbar-bg: hsl(0 0% 50% / 0.1);
 	--thumb-bg: hsl(0 0% 50% / 0.5);
 	--scrollbar-width: 0.65rem;
+
+	-webkit-tap-highlight-color: color-mix(
+		in srgb,
+		light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.2)),
+		var(--background-neutral-alpha) 75%
+	);
 }

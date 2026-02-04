@@ -1,9 +1,32 @@
-html,
-body {
-	transition-property: all;
-	transition-duration: var(--transition-duration);
-	transition-timing-function: ease-in-out;
-	transition-delay: 0.001ms;
+body,
+main,
+header,
+footer {
+	transition: all var(--transition-duration) var(--default-ease);
+}
+
+:active-view-transition-type(theme) {
+	&::view-transition-old(*),
+	&::view-transition-new(*) {
+		animation-duration: calc(var(--transition-duration) * 2);
+		animation-timing-function: var(--default-ease);
+	}
+
+	&::view-transition-old(*) {
+		animation-name: fade-out;
+	}
+
+	&::view-transition-new(*) {
+		animation-name: fade-in;
+	}
+}
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+	animation-duration: var(--transition-duration);
+	animation-fill-mode: forwards;
+	animation-timing-function: var(--default-ease);
 }
 
 *,

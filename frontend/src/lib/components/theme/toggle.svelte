@@ -6,14 +6,33 @@ import { onMount } from 'svelte';
 let darkMode = $state(page.data.theme == 'dark');
 const toggleTheme = () => {
 	const html = document.documentElement;
-	if (darkMode) {
-		html.style.colorScheme = 'light';
-		document.cookie = 'theme=light;path=/;max-age=31536000';
-	} else {
-		html.style.colorScheme = 'dark';
-		document.cookie = 'theme=dark;path=/;max-age=31536000';
+	const wrap = () => {
+		// no-op, just for the transition
+		if (darkMode) {
+			html.style.colorScheme = 'light';
+			document.cookie = 'theme=light;path=/;max-age=31536000';
+		} else {
+			html.style.colorScheme = 'dark';
+			document.cookie = 'theme=dark;path=/;max-age=31536000';
+		}
+		darkMode = !darkMode;
+	};
+
+	if (!document.startViewTransition) {
+		wrap();
+		return;
 	}
-	darkMode = !darkMode;
+	try {
+		// firefox does not support view-transition OPTIONS yet...
+		// it doesnt show the same transition artifacts as chrome for some reason
+		// so no view-transition is actually fine!
+		document.startViewTransition({
+			types: ['theme'],
+			update: wrap
+		});
+	} catch {
+		wrap();
+	}
 };
 
 onMount(() => {
@@ -51,6 +70,13 @@ onMount(() => {
 <style lang="postcss">
 .wrapper {
 	position: relative;
+	&::view-transition-old(theme, theme-icon) {
+		animation-name: none !important;
+	}
+
+	&::view-transition-new(theme, theme-icon) {
+		animation-name: none !important;
+	}
 }
 
 .icon {
@@ -66,14 +92,14 @@ onMount(() => {
 	align-items: center;
 	pointer-events: none;
 	left: calc(var(--indicator-padding) / 2);
-	transition-property: left;
-	transition-duration: var(--transition-duration);
 	&.checked {
 		left: calc(var(--toggle-width) - var(--toggle-height) + (var(--indicator-padding) / 2));
 	}
 	& :global(svg) {
 		padding: 0.1em;
 	}
+	transition: left var(--transition-duration) var(--default-ease);
+	view-transition-name: theme-icon;
 }
 
 input[type='checkbox']:is(.toggle) {
@@ -81,7 +107,6 @@ input[type='checkbox']:is(.toggle) {
 	--toggle-width: 3em;
 	--indicator-padding: 0.5em;
 
-	transition-property: all;
 	position: relative;
 
 	&::before {
@@ -89,9 +114,8 @@ input[type='checkbox']:is(.toggle) {
 	}
 	&::after {
 		content: '';
-		transition-property: left;
-		transition-duration: var(--transition-duration);
 		background-color: var(--inverse-text-color);
+		view-transition-name: theme;
 	}
 	&:checked {
 		&::after {

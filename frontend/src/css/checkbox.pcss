@@ -28,6 +28,7 @@ input[type='checkbox']:is(.toggle) {
 		border-radius: 100vh;
 		left: calc(var(--indicator-padding) / 2);
 		box-shadow: 0 2px 2px var(--shadow-color);
+		transition: all var(--transition-duration) var(--default-ease);
 	}
 	&:checked {
 		&::after {
@@ -49,13 +50,14 @@ input[type='checkbox']:not(.toggle) {
 	height: 1.4em;
 	padding: 0;
 	border: 1px solid color-mix(in srgb, var(--text-color), transparent 75%);
+
 	&::before {
 		content: '';
 		width: 100%;
 		height: 100%;
 		border-radius: 0.25em;
-		transition: background-color var(--transitionDuration) ease;
 		position: absolute;
+		transition: all var(--transition-duration) var(--default-ease);
 	}
 	&:checked::before {
 		background-color: var(--text-color);
@@ -67,7 +69,8 @@ input[type='checkbox']:not(.toggle) {
 		opacity: 0;
 		width: 60%;
 		height: 60%;
-		background-color: var(--inverseTextColor);
+		background-color: var(--inverse-text-color);
+		transition: all var(--transition-duration) var(--default-ease);
 		transform-origin: bottom left;
 		clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 	}

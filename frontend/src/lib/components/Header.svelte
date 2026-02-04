@@ -8,13 +8,17 @@ import UserMenu from './UserMenu.svelte';
 
 <header>
 	<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
-	{#if !page.data.steamId}
-		<a href={resolve('/login')}>
-			<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
-			<span>Sign In</span>
-		</a>
-	{:else}
-		<UserMenu />
+	{#if !page.route.id?.startsWith('/login')}
+		{#if !page.data.steamId}
+			<a class="steamops" href={resolve('/login')}>
+				<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
+				<span>Sign In</span>
+			</a>
+		{:else}
+			<div class="steamops">
+				<UserMenu />
+			</div>
+		{/if}
 	{/if}
 	<Themetoggle />
 </header>
@@ -23,11 +27,43 @@ import UserMenu from './UserMenu.svelte';
 header {
 	padding: 1em;
 	background: var(--card-color);
-	display: grid;
-	grid-template-columns: auto min-content min-content;
+	display: flex;
 	align-items: center;
 	box-shadow: 0 0px 4px var(--shadow-color);
 	gap: 1em;
+	overflow: hidden;
+	transition-property: all;
+	& > :first-child {
+		display: unset;
+		margin-right: auto;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+.steamops {
+	view-transition-name: steamlogin;
+}
+
+::view-transition-old(steamlogin) {
+	animation: var(--transition-duration) var(--ease-vanish) fade-out;
+	animation-fill-mode: forwards;
+}
+
+::view-transition-new(steamlogin) {
+	animation: var(--transition-duration) var(--ease-appear) slide-down-fade;
+	animation-fill-mode: forwards;
+}
+
+@keyframes slide-down-fade {
+	from {
+		transform: translateY(-100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
 }
 
 span {
