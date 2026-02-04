@@ -41,7 +41,7 @@ func registerRoutes(a huma.API) {
 	huma.Register(
 		a,
 		huma.Operation{
-			Method:      http.MethodPost,
+			Method:      http.MethodGet,
 			Path:        "/v1/steam/userinfo",
 			Tags:        []string{"steam", "user"},
 			Summary:     "Get Steam user info",

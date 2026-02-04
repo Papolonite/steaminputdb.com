@@ -1,9 +1,11 @@
+import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { playwright } from '@vitest/browser-playwright';
 import { existsSync } from 'fs';
 import Icons from 'unplugin-icons/vite';
 import devtoolsJson from 'vite-plugin-devtools-json';
 import { defineConfig } from 'vitest/config';
+
 
 const chromiumPath = (() =>existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined
 )();
@@ -14,6 +16,7 @@ export default defineConfig({
     },
     plugins: [
         devtoolsJson(),
+        enhancedImages(),
         sveltekit(),
         Icons({
             compiler: 'svelte',

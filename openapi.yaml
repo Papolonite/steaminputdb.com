@@ -2210,7 +2210,7 @@ paths:
         - steam
         - auth
   /v1/steam/userinfo:
-    post:
+    get:
       description: Retrieve user information from Steam for the currently authenticated user
       responses:
         "200":

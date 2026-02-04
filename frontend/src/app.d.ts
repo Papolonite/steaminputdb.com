@@ -1,3 +1,4 @@
+import type { paths } from '$lib/api/openapi';
 import 'unplugin-icons/types/svelte';
 
 
@@ -13,6 +14,7 @@ declare global {
         interface PageData {
             steamId?: string;
             theme?: 'light' | 'dark';
+            userInfo?: paths['/v1/steam/userinfo']['get']['responses']['200']['content']['application/json'];
         }
         // interface PageState {}
         // interface Platform {}

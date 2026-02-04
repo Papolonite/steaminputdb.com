@@ -1,3 +1,4 @@
+import { log } from '$lib/log';
 import type { LayoutServerLoad } from './$types';
 
 
@@ -20,9 +21,12 @@ export const load: LayoutServerLoad = async ({ parent, cookies }) => {
     const payload = JSON.parse(decoded);
     const steamId = payload.sub as string | undefined;
 
+    log.debug('Layout server load', 'steamid', steamId, 'payload', payload);
+
     return {
         ...res,
-        steamId
+        steamId,
+        userInfo: payload
     };
 
 };
