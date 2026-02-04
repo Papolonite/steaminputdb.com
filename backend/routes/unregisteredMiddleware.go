@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Alia5/steaminputdb.com/api"
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func UnregisteredMiddleware(api huma.API) func(next http.Handler) http.Handler {
+func UnregisteredMiddleware(a huma.API) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		mux, ok := next.(*http.ServeMux)
 		if ok {
@@ -15,7 +16,7 @@ func UnregisteredMiddleware(api huma.API) func(next http.Handler) http.Handler {
 				_, pattern := mux.Handler(r)
 				if pattern == "" {
 					pathExists := false
-					for path, pathItem := range api.OpenAPI().Paths {
+					for path, pathItem := range a.OpenAPI().Paths {
 						if r.URL.Path == path && pathItem != nil {
 							pathExists = true
 							break
@@ -26,6 +27,10 @@ func UnregisteredMiddleware(api huma.API) func(next http.Handler) http.Handler {
 						hErr = huma.Error405MethodNotAllowed("Method not allowed")
 					} else {
 						hErr = huma.Error404NotFound("Resource not found")
+					}
+
+					if sw, ok := w.(*api.StatusWriter); ok {
+						sw.Error = hErr
 					}
 
 					b, err := json.Marshal(hErr)

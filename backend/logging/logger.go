@@ -7,6 +7,8 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+
+	"github.com/Alia5/steaminputdb.com/api/ctx"
 )
 
 func ParseLevel(s string) slog.Level {
@@ -76,7 +78,7 @@ func (h *colorHandler) Handle(_ context.Context, r slog.Record) error {
 
 		valStr := a.Value.String()
 		switch a.Key {
-		case "status_code":
+		case string(ctx.KeyStatusCode):
 			if strings.HasPrefix(valStr, "2") {
 				buf.WriteString("\033[32m") // Green
 			} else if strings.HasPrefix(valStr, "3") {

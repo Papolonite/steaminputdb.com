@@ -13,7 +13,9 @@ import (
 
 	_ "embed"
 
+	"github.com/Alia5/steaminputdb.com/api"
 	steaminputdbapi "github.com/Alia5/steaminputdb.com/api"
+	"github.com/Alia5/steaminputdb.com/api/steam"
 	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/Alia5/steaminputdb.com/db"
 	"github.com/Alia5/steaminputdb.com/logging"
@@ -54,6 +56,7 @@ func main() {
 	)
 
 	logging.SetupDefault(cfg.LogLevel)
+	config.Parsed = cfg
 
 	err := db.Init(cfg.DB)
 	if err != nil {
@@ -119,6 +122,19 @@ func main() {
 			},
 			Components: &huma.Components{
 				Schemas: registry,
+				SecuritySchemes: map[string]*huma.SecurityScheme{
+					// makes doc pages work this way..., flow is set later
+					"Steam OpenID": {
+						Type:             "oauth2",
+						OpenIDConnectURL: "https://steamcommunity.com/openid/.well-known/openid-configuration",
+						Scheme:           "OAuth",
+						Name:             "Steam Auth",
+						In:               "query",
+						Flows: &huma.OAuthFlows{
+							Implicit: &huma.OAuthFlow{},
+						},
+					},
+				},
 			},
 			Servers: docAPISrvs,
 		},
@@ -134,7 +150,21 @@ func main() {
 				return c
 			},
 		},
+		Transformers: []huma.Transformer{
+			func(c huma.Context, _ string, v any) (any, error) {
+				if err, is := v.(error); is {
+					if sw, ok := c.BodyWriter().(*api.StatusWriter); ok {
+						sw.Error = err
+					}
+				}
+				return v, nil
+			},
+		},
 	})
+	o := api.OpenAPI()
+	flow := o.Components.SecuritySchemes["Steam OpenID"].Flows.Implicit
+	flow.AuthorizationURL = steam.OpenIDAuthorizationURL("http://localhost:8889/v1/steam/login")
+	flow.TokenURL = "http://localhost:8889/v1/steam/login"
 
 	apiSrv := http.Server{
 		Addr: cfg.API.ListenAddress,

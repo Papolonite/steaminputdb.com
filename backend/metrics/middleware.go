@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Alia5/steaminputdb.com/api"
+	"github.com/Alia5/steaminputdb.com/api/ctx"
 	"github.com/google/uuid"
 )
 
@@ -29,11 +30,12 @@ func Middleware(next http.Handler) http.Handler {
 			r.Method, r.URL.Path,
 		).Observe(dur.Seconds())
 
-		ctx := r.Context()
-		//revive:disable-next-line
-		ctx = context.WithValue(ctx, "status_code", sw.Status)
-		//revive:disable-next-line
-		ctx = context.WithValue(ctx, "duration", dur.Milliseconds())
-		*r = *r.WithContext(ctx)
+		c := r.Context()
+		c = context.WithValue(c, ctx.KeyStatusCode, sw.Status)
+		c = context.WithValue(c, ctx.KeyDuration, dur.Milliseconds())
+		if sw.Error != nil {
+			c = context.WithValue(c, ctx.KeyError, sw.Error)
+		}
+		*r = *r.WithContext(c)
 	})
 }

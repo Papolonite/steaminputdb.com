@@ -4,25 +4,68 @@ import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import Spinner from '$lib/components/Spinner.svelte';
 import Icon from '@iconify/svelte';
-import type { ActionFailure } from '@sveltejs/kit';
+import { onMount } from 'svelte';
 import { fade } from 'svelte/transition';
 
-const waitLogin = async () => {
-	const cookieOrFail: string | ActionFailure = await page.data.loginPromise;
+const searchParams = page.url.searchParams;
+let loginErr = $state<Error | undefined>();
 
-	if (typeof cookieOrFail !== 'string') {
-		throw cookieOrFail;
+onMount(async () => {
+	try {
+		const resp = await fetch('?/validateLogin', {
+			method: 'POST',
+			body: JSON.stringify(
+				searchParams.entries().reduce(
+					(acc, [key, value]) => {
+						if (key.startsWith('openid.')) {
+							acc[key.split('openid.')[1]!] = value;
+						}
+						return acc;
+					},
+					{} as Record<string, string>
+				)
+			),
+			headers: {
+				'x-sveltekit-action': 'true'
+			}
+		});
+		if (!resp.ok) {
+			loginErr = await resp.json();
+			return;
+		}
+		const data = await resp.json();
+		if (!data) {
+			loginErr = new Error('No data received from login validation');
+			return;
+		}
+		if (data.type === 'failure') {
+			loginErr = data;
+			return;
+		}
+		goto(resolve('/'), {
+			invalidateAll: true
+		});
+	} catch (e) {
+		loginErr = e as Error;
 	}
-
-	document.cookie = cookieOrFail;
-	goto(resolve('/'), {
-		invalidateAll: true
-	});
-};
+});
 </script>
 
 <main>
-	{#await waitLogin()}
+	{#if loginErr}
+		<p transition:fade>
+			Ouh no, Login Failed! <br />
+			Please try again later.
+			{JSON.stringify(loginErr)}
+		</p>
+	{:else}
+		<div transition:fade class="spinner">
+			<Spinner size="15em" thickness="0.3em" />
+			<Icon icon="mdi:steam" style="height: 12em; width: 12em;" />
+		</div>
+	{/if}
+
+	<!-- {#await waitLogin()}
 		<div transition:fade class="spinner">
 			<Spinner size="15em" thickness="0.3em" />
 			<Icon icon="mdi:steam" style="height: 12em; width: 12em;" />
@@ -32,9 +75,8 @@ const waitLogin = async () => {
 			Ouh no, Login Failed! <br />
 			Please try again later.
 			{error?.message}
-			<!-- TODO: create proper error page -->
 		</p>
-	{/await}
+	{/await} -->
 </main>
 
 <style lang="postcss">

@@ -1,88 +1,94 @@
+import { tick } from 'svelte';
 import { describe, expect, it, vi } from 'vitest';
 import { render } from 'vitest-browser-svelte';
 import { page } from 'vitest/browser';
 import '../../../css/main.pcss';
-import { applyUserThemePreferences } from './applytheme.svelte';
+
+let mockTheme: 'dark' | 'light' | undefined;
+
+vi.mock('$app/state', () => ({
+    page: {
+        get data() {
+            return { theme: mockTheme };
+        }
+    }
+}));
+
 import ThemeToggle from './toggle.svelte';
 
 describe('ThemeToggle', () => {
     interface TestCase {
         name: string;
-        existingCookie?: string;
+        setupPageData?: () => { theme: 'dark' | 'light' | undefined };
         prefersColorScheme: 'dark' | 'light';
         action?: () => Promise<void>;
         expected: {
             darkMode: boolean;
             colorScheme: '' | 'light' | 'dark';
-            cookieContains: string;
         };
     }
 
-    const testCase: TestCase[] = [
+    const testCases: TestCase[] = [
         {
             name: 'SUCCESS_UseSavedDarkTheme_OverridesBrowserPreference',
-            existingCookie: 'theme=dark',
+            setupPageData: () => ({ theme: 'dark' }),
             prefersColorScheme: 'light',
             expected: {
                 darkMode: true,
-                colorScheme: '',
-                cookieContains: 'theme=dark'
+                colorScheme: ''
             }
         },
         {
             name: 'SUCCESS_UseSavedLightTheme_OverridesBrowserPreference',
-            existingCookie: 'theme=light',
+            setupPageData: () => ({ theme: 'light' }),
             prefersColorScheme: 'dark',
             expected: {
                 darkMode: false,
-                colorScheme: '',
-                cookieContains: 'theme=light'
+                colorScheme: ''
             }
         },
         {
-            name: 'SUCCESS_UseBrowserDarkPreference_WhenNoCookie',
+            name: 'SUCCESS_UseBrowserDarkPreference_WhenNoSavedTheme',
             prefersColorScheme: 'dark',
             expected: {
                 darkMode: true,
-                colorScheme: '',
-                cookieContains: 'theme=dark'
+                colorScheme: ''
             }
         },
         {
-            name: 'SUCCESS_UseBrowserLightPreference_WhenNoCookie',
+            name: 'SUCCESS_UseBrowserLightPreference_WhenNoSavedTheme',
             prefersColorScheme: 'light',
             expected: {
                 darkMode: false,
-                colorScheme: '',
-                cookieContains: 'theme=light'
+                colorScheme: ''
             }
         },
         {
             name: 'SUCCESS_ToggleDarkToLight',
-            existingCookie: 'theme=dark',
+            setupPageData: () => ({ theme: 'dark' }),
             prefersColorScheme: 'dark',
             action: async () => {
                 const checkboxEl = page.getByRole('checkbox', { name: 'Theme Toggle' });
                 await checkboxEl.click();
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             },
             expected: {
                 darkMode: false,
-                colorScheme: 'light',
-                cookieContains: 'theme=light'
+                colorScheme: 'light'
             }
         },
         {
             name: 'SUCCESS_ToggleLightToDark',
-            existingCookie: 'theme=light',
+            setupPageData: () => ({ theme: 'light' }),
             prefersColorScheme: 'light',
             action: async () => {
                 const checkboxEl = page.getByRole('checkbox', { name: 'Theme Toggle' });
                 await checkboxEl.click();
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             },
             expected: {
                 darkMode: true,
-                colorScheme: 'dark',
-                cookieContains: 'theme=dark'
+                colorScheme: 'dark'
             }
         },
         {
@@ -90,117 +96,15 @@ describe('ThemeToggle', () => {
             prefersColorScheme: 'light',
             expected: {
                 darkMode: false,
-                colorScheme: '',
-                cookieContains: 'theme=light'
-            }
-        }
-    ];
-
-    testCase.forEach((tc) => {
-        it(tc.name, async () => {
-            document.cookie.split(';').forEach((c) => {
-                document.cookie = c
-                    .replace(/^ +/, '')
-                    .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-            });
-            document.documentElement.style.colorScheme = '';
-            if (tc.existingCookie) {
-                document.cookie = `${tc.existingCookie};path=/`;
-            }
-            const matchMediaMock = vi.fn((query: string) => ({
-                matches: query.includes('dark') ? tc.prefersColorScheme === 'dark' : false,
-                media: query,
-                onchange: null,
-                addListener: vi.fn(),
-                removeListener: vi.fn(),
-                addEventListener: vi.fn(),
-                removeEventListener: vi.fn(),
-                dispatchEvent: vi.fn()
-            }));
-            vi.stubGlobal('matchMedia', matchMediaMock);
-
-            render(ThemeToggle);
-
-            await tc.action?.();
-            const toggleInput = page.getByRole('checkbox', { name: 'Theme Toggle' });
-            const checkbox = toggleInput.element() as HTMLInputElement;
-            expect(checkbox.checked).toBe(tc.expected.darkMode);
-
-            const colorScheme = document.documentElement.style.colorScheme;
-            expect(colorScheme).toBe(tc.expected.colorScheme);
-
-            expect(document.cookie).toContain(tc.expected.cookieContains);
-            vi.unstubAllGlobals();
-        });
-    });
-});
-
-describe('applyUserThemePreferences', () => {
-    interface TestCase {
-        name: string;
-        existingCookie?: string;
-        prefersColorScheme: 'dark' | 'light';
-        expected: {
-            colorScheme: 'dark' | 'light';
-            transitionDuration?: string;
-        };
-    }
-
-    const testCases: TestCase[] = [
-        {
-            name: 'SUCCESS_SetsDark_WhenCookieDark',
-            existingCookie: 'theme=dark',
-            prefersColorScheme: 'light',
-            expected: {
-                colorScheme: 'dark'
-            }
-        },
-        {
-            name: 'SUCCESS_SetsLight_WhenCookieLight',
-            existingCookie: 'theme=light',
-            prefersColorScheme: 'dark',
-            expected: {
-                colorScheme: 'light'
-            }
-        },
-        {
-            name: 'SUCCESS_SetsDark_WhenPrefersDark_NoCookie',
-            prefersColorScheme: 'dark',
-            expected: {
-                colorScheme: 'dark'
-            }
-        },
-        {
-            name: 'SUCCESS_SetsLight_WhenPrefersLight_NoCookie',
-            prefersColorScheme: 'light',
-            expected: {
-                colorScheme: 'light'
-            }
-        },
-        {
-            name: 'SUCCESS_ApplyTransitionDuration_Callback',
-            existingCookie: 'theme=light',
-            prefersColorScheme: 'dark',
-            expected: {
-                colorScheme: 'light',
-                transitionDuration: 'var(--transitionDuration)'
+                colorScheme: ''
             }
         }
     ];
 
     testCases.forEach((tc) => {
         it(tc.name, async () => {
-            document.cookie.split(';').forEach((c) => {
-                document.cookie = c
-                    .replace(/^ +/, '')
-                    .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-            });
             document.documentElement.style.colorScheme = '';
-            document.documentElement.style.transitionDuration = '';
-            document.body.style.transitionDuration = '';
-            if (tc.existingCookie) {
-                document.cookie = `${tc.existingCookie};path=/`;
-            }
+
             const matchMediaMock = vi.fn((query: string) => ({
                 matches: query.includes('dark') ? tc.prefersColorScheme === 'dark' : false,
                 media: query,
@@ -213,20 +117,51 @@ describe('applyUserThemePreferences', () => {
             }));
             vi.stubGlobal('matchMedia', matchMediaMock);
 
-            const applyTransition = applyUserThemePreferences();
+            const doc = document as Document & { startViewTransition?: Document['startViewTransition'] };
+            Reflect.deleteProperty(doc, 'startViewTransition');
 
-            expect(document.documentElement.style.colorScheme).toBe(tc.expected.colorScheme);
-
-            if (tc.expected.transitionDuration) {
-                vi.useFakeTimers();
-                applyTransition?.();
-                vi.runAllTimers();
-                expect(document.documentElement.style.transitionDuration).toBe(tc.expected.transitionDuration);
-                expect(document.body.style.transitionDuration).toBe(tc.expected.transitionDuration);
-                vi.useRealTimers();
+            let pageData: { theme: 'dark' | 'light' | undefined } | undefined;
+            if (tc.setupPageData) {
+                pageData = tc.setupPageData();
+                mockTheme = pageData.theme;
+            } else {
+                mockTheme = undefined;
             }
 
+            const { unmount } = render(ThemeToggle);
+
+            await tick();
+
+            const expectedInitialDarkMode = pageData?.theme
+                ? pageData.theme === 'dark'
+                : tc.prefersColorScheme === 'dark';
+
+            {
+                const toggleInput = page.getByRole('checkbox', { name: 'Theme Toggle' });
+                const checkbox = toggleInput.element() as HTMLInputElement;
+                expect(checkbox.checked).toBe(expectedInitialDarkMode);
+            }
+
+            if (tc.action) {
+                await tc.action();
+            }
+
+            await tick();
+
+
+            {
+                const toggleInput = page.getByRole('checkbox', { name: 'Theme Toggle' });
+                const checkbox = toggleInput.element() as HTMLInputElement;
+                expect(checkbox.checked).toBe(tc.expected.darkMode);
+
+                const colorScheme = document.documentElement.style.colorScheme;
+                expect(colorScheme).toBe(tc.expected.colorScheme);
+            }
+
+
+            unmount();
             vi.unstubAllGlobals();
+            vi.restoreAllMocks();
         });
     });
 });

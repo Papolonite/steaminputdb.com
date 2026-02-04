@@ -9,6 +9,11 @@ export const client = createClient<paths>({
     baseUrl: PUBLIC_DEV ? PUBLIC_API_BASE_URL_LOCAL : PUBLIC_API_BASE_URL
 });
 
+export const clientWithSvelteFetch = (fetch: typeof window.fetch) => createClient<paths>({
+    baseUrl: PUBLIC_DEV ? PUBLIC_API_BASE_URL_LOCAL : PUBLIC_API_BASE_URL,
+    fetch
+});
+
 export type ResponseType<
     M extends keyof typeof client,
     P extends keyof paths,
@@ -19,3 +24,4 @@ export type ResponseType<
             : never
         : never
     : never;
+

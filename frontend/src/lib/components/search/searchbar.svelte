@@ -30,10 +30,11 @@ label {
 	outline: 1px solid transparent;
 	color: var(--text-color);
 	border-radius: 100em;
-	box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.25);
+	box-shadow: 0 1px 4px 0 var(--shadow-color);
 	transition: all var(--transition-duration) var(--default-ease);
 
-	&:is(&:hover, &:focus-within) {
+	&:hover,
+	&:focus-within {
 		outline: 0.1em solid var(--color-primary);
 		box-shadow: 0 0 1.3em -0.4em var(--color-primary);
 		& :global(svg) {

@@ -1,6 +1,6 @@
-import { client as apiclient, type ResponseType } from '$lib/api/client';
+import { clientWithSvelteFetch } from '$lib/api/client';
 import { log } from '$lib/log';
-import { error } from '@sveltejs/kit';
+import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ parent, url }) => {
@@ -22,54 +22,91 @@ export const load: PageServerLoad = async ({ parent, url }) => {
         throw error(400, { message: 'Missing OpenID parameters' });
     }
 
-    const loginPromise = (async () => {
-        let r: Awaited<ResponseType<'POST', '/v1/steam/login'>>;
-        try {
-            r = await apiclient.POST('/v1/steam/login', {
-                body: Object.entries(openIdParams).reduce((acc, [k, v]) => {
-                    const key = k.split('.')?.pop();
-                    if (!key) {
-                        return acc;
-                    }
-                    acc[key] = v;
-                    return acc;
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                }, {} as any)
-            });
-        } catch (err) {
-            log.error('Error contacting login endpoint', 'error', err);
-            throw error(500, { message: 'Error contacting login endpoint', error: `${err}` });
-        }
-        if (r.error) {
-            log.error('Login endpoint returned an error',  'error', r.error);
-            throw error(r.error.status || 500, {
-                ...r.error,
-                message: r.error.title || 'Failed to complete Steam login'
-            });
-        }
-        if (!r.data) {
-            log.error('No data received from login endpoint');
-            throw error(500, { message: 'No data received from login endpoint' });
-        }
-        if (!r.data.token) {
-            log.error('Invalid login response from server: missing token');
-            throw error(500, { message: 'Invalid login response from server' });
-        }
-        const mid = r.data.token.split('.')?.[1];
-        if (!mid) {
-            log.error('Invalid JWT token received from login endpoint');
-            throw error(500, { message: 'Invalid JWT token received' });
-        }
-        const decoded = atob(mid);
-        const expiresIn = JSON.parse(decoded).exp - Math.floor(Date.now() / 1000);
-        // cookies.set('token', r.data.token, { path: '/', maxAge: expiresIn });
-
-        // throw redirect(302, '/');
-        return `token=${r.data.token}; Path=/; Max-Age=${expiresIn}; SameSite=Lax`;
-    })();
 
     return {
-        ...parentData,
-        loginPromise
+        ...parentData
     };
 };
+
+
+// ouh the lengths one goes through to have
+// SSR,
+// an HTTP-only cookie,
+// no API-Key exposed,
+// AND an immediate redirect to the frontend in case the real backend is slow...
+// 🙄
+export const actions = {
+    validateLogin: async ({ request, cookies, fetch }) => {
+        if (!request.body) {
+            log.error('No request body in validateLogin action');
+            return fail(400, 'No body in request');
+        }
+
+        try {
+            const r = await clientWithSvelteFetch(fetch).POST('/v1/steam/login', {
+                body: await request.json()
+            });
+
+            if (r.error) {
+                log.error('Login endpoint returned an error',  'error', r.error);
+                return fail(r.error.status || 502, {
+                    ...r.error,
+                    message: r.error.title || 'Failed to complete Steam login'
+                });
+            }
+            if (!r.data) {
+                log.error('No data received from login endpoint');
+                return fail(502, { message: 'No data received from login endpoint' });
+            }
+
+
+            const cookieHeaders = r.response.headers.getSetCookie();
+            cookieHeaders?.forEach((header) => {
+                const parts = header.split(';').map((part) => part.trim());
+                const [nameValue, ...attributes] = parts;
+                if (!nameValue) {
+                    return;
+                }
+                const nameValueIndex = nameValue.indexOf('=');
+                const name = nameValueIndex === -1 ? nameValue : nameValue.slice(0, nameValueIndex);
+                const value = nameValueIndex === -1 ? '' : nameValue.slice(nameValueIndex + 1);
+
+                const options: Record<string, string | boolean> = {};
+                attributes.forEach((attr) => {
+                    const [attrName, attrValue] = attr.split('=');
+                    if (!attrName) {
+                        return;
+                    }
+                    options[attrName.toLowerCase()] = attrValue ? attrValue : true;
+                });
+
+                const sameSite = typeof options.samesite === 'string'
+                    ? options.samesite.toLowerCase()
+                    : undefined;
+                const expires = typeof options.expires === 'string'
+                    ? new Date(options.expires)
+                    : undefined;
+                const maxAge = typeof options['max-age'] === 'string'
+                    ? Number.parseInt(options['max-age'], 10)
+                    : undefined;
+
+                cookies.set(name, value, {
+                    path: typeof options.path === 'string' ? options.path : '/',
+                    domain: typeof options.domain === 'string' ? options.domain : undefined,
+                    httpOnly: options.httponly === true,
+                    secure: options.secure === true,
+                    sameSite: sameSite === 'lax' || sameSite === 'strict' || sameSite === 'none'
+                        ? sameSite
+                        : undefined,
+                    expires: expires && !Number.isNaN(expires.getTime()) ? expires : undefined,
+                    maxAge: Number.isFinite(maxAge) ? maxAge : undefined
+                });
+            });
+
+            return r.data;
+        } catch (err) {
+            log.error('Error contacting login endpoint', 'error', err);
+            return fail(502, { message: 'Error contacting login endpoint', error: `${err}` });
+        }
+    }
+} satisfies Actions;

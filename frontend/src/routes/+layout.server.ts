@@ -1,5 +1,6 @@
 import type { LayoutServerLoad } from './$types';
 
+
 export const load: LayoutServerLoad = async ({ parent, cookies }) => {
     const res = {
         ...(await parent()),

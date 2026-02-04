@@ -2,6 +2,7 @@ package configs
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"reflect"
@@ -104,7 +105,10 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 
 	queryResp, err := steamapi.DefaultClient.QueryFiles(ctx, query)
 	if err != nil {
-		return nil, huma.Error502BadGateway("Error querying Steam API", err)
+		if errors.Is(err, steamapi.ErrRequest) {
+			return nil, huma.Error502BadGateway("failed to get steam user info: %v", err)
+		}
+		return nil, err
 	}
 
 	if req.Body.Raw {

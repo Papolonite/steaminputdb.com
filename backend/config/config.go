@@ -28,3 +28,5 @@ type DB struct {
 	MaxConnLifetime time.Duration `help:"Database max connection lifetime" default:"5m" env:"DB_MAX_CONN_LIFETIME"`
 	MaxConnIdleTime time.Duration `help:"Database max idle time" default:"5m" env:"DB_MAX_IDLE_TIME"`
 }
+
+var Parsed Config

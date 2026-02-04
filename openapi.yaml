@@ -600,18 +600,51 @@ components:
           format: uri
           readOnly: true
           type: string
-        token:
+        avatar:
+          type: string
+        avatarfull:
+          type: string
+        avatarhash:
+          type: string
+        avatarmedium:
+          type: string
+        communityvisibilitystate:
+          format: int64
+          type: integer
+        lastlogoff:
+          format: date-time
+          type: string
+        loccountrycode:
+          type: string
+        personaname:
+          type: string
+        primaryclanid:
+          type: string
+        profileurl:
+          type: string
+        timecreated:
+          format: date-time
           type: string
       required:
-        - token
+        - communityvisibilitystate
+        - personaname
+        - profileurl
+        - avatar
+        - avatarmedium
+        - avatarfull
+        - avatarhash
+        - lastlogoff
+        - primaryclanid
+        - timecreated
+        - loccountrycode
       type: object
-    OpenIDRequestBody:
+    OpenIDBody:
       additionalProperties: false
       properties:
         $schema:
           description: A URL to the JSON Schema for this object.
           examples:
-            - http://localhost:8889/schemas/OpenIDRequestBody.json
+            - http://localhost:8889/schemas/OpenIDBody.json
           format: uri
           readOnly: true
           type: string
@@ -667,6 +700,54 @@ components:
       required:
         - service
         - version
+      type: object
+    PlayerInfo:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/PlayerInfo.json
+          format: uri
+          readOnly: true
+          type: string
+        avatar:
+          type: string
+        avatarfull:
+          type: string
+        avatarhash:
+          type: string
+        avatarmedium:
+          type: string
+        communityvisibilitystate:
+          format: int64
+          type: integer
+        lastlogoff:
+          format: date-time
+          type: string
+        loccountrycode:
+          type: string
+        personaname:
+          type: string
+        primaryclanid:
+          type: string
+        profileurl:
+          type: string
+        timecreated:
+          format: date-time
+          type: string
+      required:
+        - communityvisibilitystate
+        - personaname
+        - profileurl
+        - avatar
+        - avatarmedium
+        - avatarfull
+        - avatarhash
+        - lastlogoff
+        - primaryclanid
+        - timecreated
+        - loccountrycode
       type: object
     PublishedFileAuthorSnapshot:
       additionalProperties: false
@@ -1805,6 +1886,18 @@ components:
         type:
           type: string
       type: object
+  securitySchemes:
+    Steam OpenID:
+      flows:
+        implicit:
+          authorizationUrl: https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=http%3A%2F%2Flocalhost%3A8889&openid.return_to=http%3A%2F%2Flocalhost%3A8889%2Fv1%2Fsteam%2Flogin
+          scopes: null
+          tokenUrl: http://localhost:8889/v1/steam/login
+      in: query
+      name: Steam Auth
+      openIdConnectUrl: https://steamcommunity.com/openid/.well-known/openid-configuration
+      scheme: OAuth
+      type: oauth2
 info:
   description: |
     [_SteamInputDB.com_](https://steaminputdb.com) is a community-driven database of Steam Input configurations for various games,
@@ -1908,14 +2001,67 @@ paths:
       tags:
         - search
   /v1/steam/login:
-    post:
-      description: Authenticate user via Steam OpenID and return JWT token
+    get:
+      description: Authenticate user via Steam OpenID and return JWT token in Cookie
+      parameters:
+        - explode: false
+          in: query
+          name: openid.ns
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.mode
+          schema:
+            enum:
+              - id_res
+            type: string
+        - explode: false
+          in: query
+          name: openid.op_endpoint
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.claimed_id
+          schema:
+            minLength: 1
+            type: string
+        - explode: false
+          in: query
+          name: openid.identity
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.return_to
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.response_nonce
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.assoc_handle
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.signed
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.sig
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/OpenIDRequestBody"
-        required: true
+              $ref: "#/components/schemas/OpenIDBody"
       responses:
         "200":
           content:
@@ -1923,6 +2069,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/LoginResponse"
           description: OK
+          headers:
+            Location:
+              schema:
+                type: string
+            Set-Cookie:
+              schema:
+                type: string
         "401":
           content:
             application/problem+json:
@@ -1941,9 +2094,153 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
           description: Internal Server Error
+        "502":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Bad Gateway
       summary: Log in with Steam
       tags:
+        - steam
         - auth
+    post:
+      description: |-
+        Authenticate user via Steam OpenID and return JWT token  
+        			Wrapper endpoint for SSR frontend
+      parameters:
+        - explode: false
+          in: query
+          name: openid.ns
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.mode
+          schema:
+            enum:
+              - id_res
+            type: string
+        - explode: false
+          in: query
+          name: openid.op_endpoint
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.claimed_id
+          schema:
+            minLength: 1
+            type: string
+        - explode: false
+          in: query
+          name: openid.identity
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.return_to
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.response_nonce
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.assoc_handle
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.signed
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: openid.sig
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenIDBody"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+          description: OK
+          headers:
+            Location:
+              schema:
+                type: string
+            Set-Cookie:
+              schema:
+                type: string
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unauthorized
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+        "502":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Bad Gateway
+      summary: Log in with Steam
+      tags:
+        - steam
+        - auth
+  /v1/steam/userinfo:
+    post:
+      description: Retrieve user information from Steam for the currently authenticated user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerInfo"
+          description: OK
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unauthorized
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+        "502":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Bad Gateway
+      summary: Get Steam user info
+      tags:
+        - steam
+        - user
 servers:
   - description: Local API
     url: http://localhost:8889
