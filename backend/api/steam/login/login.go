@@ -213,10 +213,8 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 			return nil, huma.Error500InternalServerError("failed to generate token")
 		}
 
-		HTTPSOnly := true
-		if os.Getenv("DEV") == "1" {
-			HTTPSOnly = false
-		}
+		HTTPSOnly := os.Getenv("DEV") != "1"
+
 		domain := config.Parsed.API.PublicAddress
 		domain = strings.Split(domain, ":")[0]
 		domain = strings.TrimPrefix(domain, "http://")

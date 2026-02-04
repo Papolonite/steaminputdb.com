@@ -9,7 +9,7 @@ import (
 
 func (c *Client) GetPlayerSummaries(ctx context.Context, steamID string) (*PlayerSummaries, error) {
 	resp := &PlayerSummaries{}
-	err := c.GetJson(
+	err := c.GetJSON(
 		ctx,
 		Endpoint{Interface: "ISteamUser", Method: "GetPlayerSummaries", Version: "2"},
 		&struct{}{},

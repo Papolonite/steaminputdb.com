@@ -148,58 +148,8 @@ func GetWithResp[Req proto.Message, Resp proto.Message](ctx context.Context, end
 	return nil
 }
 
-func (c *Client) GetJson(ctx context.Context, endpoint Endpoint, req any, params *url.Values, resp any, auth *Auth) error {
+func (c *Client) GetJSON(ctx context.Context, endpoint Endpoint, req any, params *url.Values, resp any, auth *Auth) error {
 	baseURL := endpoint.URLWithBase(c.baseURL)
-	if len(*params) == 0 {
-		reqJSON, err := json.Marshal(req)
-		if err != nil {
-			return fmt.Errorf("failed to marshal request to JSON: %w", err)
-		}
-		params.Add("input_json", string(reqJSON))
-	}
-
-	if auth != nil {
-		auth.AddToParams(params)
-	}
-
-	fullURL := baseURL + "?" + params.Encode()
-
-	httpReq, err := http.NewRequestWithContext(ctx, http.MethodGet, fullURL, nil)
-	if err != nil {
-		return fmt.Errorf("failed to create request: %w", err)
-	}
-
-	httpResp, err := http.DefaultClient.Do(httpReq)
-	if err != nil {
-		return fmt.Errorf("%w: %w", ErrRequest, err)
-	}
-	defer (func() {
-		err := httpResp.Body.Close()
-		if err != nil {
-			slog.Error("failed to close response body", "error", err)
-		}
-	})()
-
-	if httpResp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(httpResp.Body)
-		return fmt.Errorf("%w: HTTP error %d: %s", ErrRequest, httpResp.StatusCode, string(body))
-	}
-
-	body, err := io.ReadAll(httpResp.Body)
-	if err != nil {
-		return fmt.Errorf("%w: failed to read response: %v", ErrRequest, err)
-	}
-
-	if err := json.Unmarshal(body, resp); err != nil {
-		return fmt.Errorf("failed to unmarshal JSON response: %w", err)
-	}
-
-	return nil
-}
-
-func GetJSON[Req any, Resp any](ctx context.Context, endpoint Endpoint, req Req, params *url.Values, resp Resp, auth *Auth) error {
-
-	baseURL := endpoint.URL()
 	if len(*params) == 0 {
 		reqJSON, err := json.Marshal(req)
 		if err != nil {
