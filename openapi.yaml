@@ -1156,6 +1156,62 @@ components:
           minimum: 0
           type: integer
       type: object
+    SearchRequestBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/SearchRequestBody.json
+          format: uri
+          readOnly: true
+          type: string
+        limit:
+          format: int32
+          minimum: 0
+          type: integer
+        limit_configs:
+          default: 5
+          format: int32
+          minimum: 0
+          type: integer
+        limit_games:
+          default: 3
+          format: int32
+          minimum: 0
+          type: integer
+        search_term:
+          maxLength: 100
+          type: string
+      required:
+        - limit
+        - limit_games
+        - limit_configs
+        - search_term
+      type: object
+    SearchResponseBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/SearchResponseBody.json
+          format: uri
+          readOnly: true
+          type: string
+        configs:
+          items:
+            $ref: "#/components/schemas/ConfigResponseItem"
+          type:
+            - array
+            - "null"
+        games:
+          items:
+            $ref: "#/components/schemas/AppsSearchItem"
+          type:
+            - array
+            - "null"
+      type: object
     StoreBrowseFilterFailure:
       additionalProperties: false
       properties:
@@ -1934,6 +1990,42 @@ paths:
       summary: Ping
       tags:
         - meta
+  /v1/search/:
+    post:
+      description: |
+        Search for games that are available on Steam
+        **and** Search for SteamInput configurations for Steam and non-Steam games
+        **all at once**
+
+        This endpoint supports no pagination and has pretty strict limits, it's intended for the "main-page" of the Frontend only
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchRequestBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponseBody"
+          description: OK
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+      summary: Search Steam games and configurations all at once
+      tags:
+        - search
   /v1/search/configs:
     post:
       description: Search for SteamInput configurations for Steam and non-Steam games
