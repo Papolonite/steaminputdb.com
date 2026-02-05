@@ -17,37 +17,50 @@ beforeNavigate(({ from, to }) => {
 </script>
 
 <header>
-	<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
-	{#if !page.route.id?.startsWith('/login')}
-		{#if !page.data.steamId}
-			<a class={loginRoute ? 'login-view-transition' : ''} href={resolve('/login')}>
-				<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
-				<span>Sign In</span>
-			</a>
-		{:else}
-			<div class={loginRoute ? 'login-view-transition' : ''}>
-				<UserMenu />
-			</div>
+	<div>
+		<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
+	</div>
+	<div>
+		{#if !page.route.id?.startsWith('/login')}
+			{#if !page.data.steamId}
+				<a class={loginRoute ? 'login-view-transition' : ''} href={resolve('/login')}>
+					<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
+					<span>Sign In</span>
+				</a>
+			{:else}
+				<div class={loginRoute ? 'login-view-transition' : ''}>
+					<UserMenu />
+				</div>
+			{/if}
 		{/if}
-	{/if}
-	<Themetoggle />
+		<Themetoggle />
+	</div>
 </header>
 
 <style lang="postcss">
 header {
 	padding: 1em;
 	background: var(--card-color);
-	display: flex;
+	display: grid;
+	grid-template-columns: minmax(2ch, auto) min-content;
 	align-items: center;
 	box-shadow: 0 0px 4px var(--shadow-color);
 	gap: 1em;
-	overflow: hidden;
 	transition-property: all;
 	& > :first-child {
-		display: unset;
-		margin-right: auto;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		display: grid;
+		grid-template-columns: minmax(1ch, min-content);
+		& > * {
+			display: unset;
+			overflow: hidden;
+			width: auto;
+			text-overflow: ellipsis;
+		}
+	}
+	& > :last-child {
+		display: grid;
+		grid-auto-flow: column;
+		gap: 1em;
 	}
 }
 
