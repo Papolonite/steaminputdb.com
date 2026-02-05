@@ -42,7 +42,7 @@ label {
 		}
 	}
 
-	background: var(--card-color);
+	background: var(--card-background-noise);
 	isolation: isolate;
 	&::before {
 		content: '';

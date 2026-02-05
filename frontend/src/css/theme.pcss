@@ -1,7 +1,24 @@
+:root[data-theme='dark'] {
+	--text-alpha: 0.95;
+	--effect-alpha: 0.2;
+	--inverse-effect-alpha: 0.5;
+	--bg-alpha: 0.01;
+	--bg-contrast: 1.85;
+	--grad-alpha: 0.209;
+}
+
+:root[data-theme='light'] {
+	--text-alpha: 0.97;
+	--effect-alpha: 0.5;
+	--inverse-effect-alpha: 0.25;
+	--bg-alpha: 0.023;
+	--bg-contrast: 2.85;
+	--grad-alpha: 0.109;
+}
+
 :root {
 	color-scheme: light dark;
 
-	--text-alpha: light-dark(0.97, 0.95);
 	--text-color-dark: rgb(245 245 245 / 0.95);
 	--text-color-light: rgb(10 10 10 / 0.97);
 
@@ -18,11 +35,6 @@
 	--inverse-card-color: light-dark(#29262efc, #edecf7fc);
 	--background-color: light-dark(#f8f7fa, #171820);
 	--shadow-color: light-dark(#0f0f0f4d, #0e0e0e88);
-	--effect-alpha: light-dark(0.5, 0.2);
-	--inverse-effect-alpha: light-dark(0.25, 0.5);
-	--bg-alpha: light-dark(0.023, 0.01);
-	--bg-contrast: light-dark(2.85, 1.85);
-	--grad-alpha: light-dark(0.109, 0.209);
 
 	--background-neutral-alpha: rgba(128, 128, 128, 0.25);
 
@@ -42,4 +54,19 @@
 		light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.2)),
 		var(--background-neutral-alpha) 75%
 	);
+
+	--noise-card-color: light-dark(
+		color-mix(in srgb, var(--card-color), transparent 23%),
+		color-mix(in srgb, var(--card-color), transparent 12%)
+	);
+	--card-background-noise:
+		linear-gradient(var(--noise-card-color), var(--noise-card-color)), url('/filter-noise.svg');
+
+	--noise-background-color: light-dark(
+		color-mix(in srgb, var(--background-color), transparent 18%),
+		color-mix(in srgb, var(--background-color), transparent 7%)
+	);
+	--background-noise:
+		linear-gradient(var(--noise-background-color), var(--noise-background-color)),
+		url('/filter-noise.svg');
 }

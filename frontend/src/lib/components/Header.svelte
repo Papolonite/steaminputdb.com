@@ -40,7 +40,9 @@ beforeNavigate(({ from, to }) => {
 <style lang="postcss">
 header {
 	padding: 1em;
-	background: var(--card-color);
+
+	background: var(--card-background-noise);
+
 	display: grid;
 	grid-template-columns: minmax(2ch, auto) min-content;
 	align-items: center;

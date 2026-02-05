@@ -10,9 +10,11 @@ const toggleTheme = () => {
 		// no-op, just for the transition
 		if (darkMode) {
 			html.style.colorScheme = 'light';
+			document.documentElement.setAttribute('data-theme', 'light');
 			document.cookie = 'theme=light;path=/;max-age=31536000';
 		} else {
 			html.style.colorScheme = 'dark';
+			document.documentElement.setAttribute('data-theme', 'dark');
 			document.cookie = 'theme=dark;path=/;max-age=31536000';
 		}
 		darkMode = !darkMode;

@@ -18,7 +18,7 @@ import { resolve } from '$app/paths';
 <style lang="postcss">
 footer {
 	padding: 1em;
-	background: var(--card-color);
+	background: var(--card-background-noise);
 	box-shadow: 0 0px 4px var(--shadow-color);
 }
 
