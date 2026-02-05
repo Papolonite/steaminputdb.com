@@ -19,7 +19,7 @@ import Searchbar from '$lib/components/search/searchbar.svelte';
 
 <style lang="postcss">
 main {
-	padding: 1em;
+	padding: 2em;
 	display: grid;
 	place-items: center;
 	& > div {
@@ -37,7 +37,7 @@ p {
 }
 
 .bar-container {
-	padding: 2em;
+	padding: 2em 1em;
 	width: 100%;
 	max-width: 36em;
 }

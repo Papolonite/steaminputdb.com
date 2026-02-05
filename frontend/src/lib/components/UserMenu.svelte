@@ -1,10 +1,10 @@
 <script lang="ts">
+import { resolve } from '$app/paths';
 import { page } from '$app/state';
-
 const userInfo = $state(page.data.userInfo);
 </script>
 
-<a href="TODO">
+<a href={resolve('/logout')}>
 	{#if userInfo?.avatar}
 		<enhanced:img src={userInfo.avatar} alt="User Avatar" height="100%"></enhanced:img>
 	{:else}
