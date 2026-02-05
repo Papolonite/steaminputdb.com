@@ -39,8 +39,6 @@ This endpoint supports no pagination and has pretty strict limits, it's intended
 }
 
 func Handler(ctx context.Context, req *Request) (*Response, error) {
-
-	// make channels for both requests and run them in parallel
 	gamesCh := make(chan *games.AppsResponse)
 	configsCh := make(chan *configs.ConfigsResponse)
 	errCh := make(chan error, 2)
@@ -104,7 +102,7 @@ func Handler(ctx context.Context, req *Request) (*Response, error) {
 	var gamesResp *games.AppsResponse
 	var configsResp *configs.ConfigsResponse
 
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		select {
 		case err := <-errCh:
 			return nil, err
