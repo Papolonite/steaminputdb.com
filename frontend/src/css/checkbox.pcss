@@ -8,6 +8,8 @@ input[type='checkbox']:is(.toggle) {
 	display: grid;
 	place-items: center;
 
+	border-radius: 100vh;
+
 	&::before {
 		content: '';
 		width: var(--toggle-width);
@@ -35,8 +37,10 @@ input[type='checkbox']:is(.toggle) {
 			left: calc(var(--toggle-width) - var(--toggle-height) + (var(--indicator-padding) / 2));
 		}
 	}
-	&:hover {
+	&:hover,
+	&:focus-visible {
 		cursor: pointer;
+		box-shadow: 0 0 1.3em -0.4em var(--color-primary);
 	}
 }
 

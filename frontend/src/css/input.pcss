@@ -1,17 +1,21 @@
 input:not([type='checkbox']) {
 	background-color: transparent;
 	border: 1px solid color-mix(in srgb, var(--text-color), transparent 90%);
-	outline: 1px solid transparent;
 	padding: 0.5em 1em;
 	color: var(--text-color);
 	border-radius: 0.5rem;
 	box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.25);
-	transition: all var(--transition-duration) var(--default-ease);
 	&::placeholder {
 		color: var(--text-color);
 		opacity: 0.5;
 	}
-	&:is(:hover, :focus) {
-		outline: 2px solid color-mix(in srgb, var(--color-primary), transparent 25%);
+}
+
+input {
+	transition: all var(--transition-duration) var(--default-ease);
+	outline: 1px solid transparent;
+	&:hover,
+	&:focus-visible {
+		outline: 0.16em solid var(--color-primary);
 	}
 }

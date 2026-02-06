@@ -20,6 +20,7 @@ let {
 <style lang="postcss">
 label {
 	--font-size: 1.4em;
+	--box-shadow-default: 0 1px 4px 0 var(--shadow-color);
 
 	position: relative;
 	display: grid;
@@ -30,15 +31,17 @@ label {
 	outline: 1px solid transparent;
 	color: var(--text-color);
 	border-radius: 100em;
-	box-shadow: 0 1px 4px 0 var(--shadow-color);
+	box-shadow: var(--box-shadow, var(--box-shadow-default));
 	transition: all var(--transition-duration) var(--default-ease);
 
 	&:hover,
 	&:focus-within {
 		outline: 0.1em solid var(--color-primary);
-		box-shadow: 0 0 1.3em -0.4em var(--color-primary);
 		& :global(svg) {
 			opacity: 1;
+		}
+		&::before {
+			box-shadow: 0 0 1.3em -0.4em var(--color-primary);
 		}
 	}
 

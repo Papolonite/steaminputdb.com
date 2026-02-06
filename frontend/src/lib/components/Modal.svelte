@@ -6,7 +6,8 @@ import { fade } from 'svelte/transition';
 let {
 	open = $bindable(false),
 	slide_touch = $bindable(true),
-	children
+	children,
+	...props
 }: {
 	open?: boolean;
 	slide_touch?: boolean;
@@ -16,6 +17,8 @@ let {
 	'--background-opacity'?: `${number}%`;
 	'--background-opacity-multi'?: `${number}`;
 } = $props();
+
+let scrim_opa_multi = $state(Number(props['--background-opacity-multi'] ?? 1));
 
 export function show() {
 	open = true;
@@ -35,7 +38,7 @@ export function swipeend(e: CustomEvent<SwipeEndEventDetail>) {
 }
 
 export function setScrimOpacityMulti(multi: number) {
-	document.documentElement.style.setProperty('--background-opacity-multi', String(multi));
+	scrim_opa_multi = multi;
 }
 
 beforeNavigate(async () => {
@@ -47,7 +50,12 @@ let HTMLDialog = $state<HTMLDialogElement>()!;
 <svelte:window onkeypress={onkeypress} />
 
 {#if open}
-	<dialog id="modal" bind:this={HTMLDialog} open transition:fade={{ duration: 196 }}>
+	<dialog
+		style:--background-opacity-multi={scrim_opa_multi}
+		id="modal"
+		bind:this={HTMLDialog}
+		open
+		transition:fade={{ duration: 196 }}>
 		<button onclick={close} aria-label="modal-backdrop"></button>
 		{@render children?.()}
 	</dialog>
@@ -65,18 +73,20 @@ dialog[open] {
 	background: transparent;
 	&::after {
 		content: '';
+		transition: none;
 		position: absolute;
 		pointer-events: none;
 		inset: 0;
 		z-index: -1;
 		opacity: var(--background-opacity-multi, 1);
 		backdrop-filter: var(--backdrop-filter, none);
-		background:
+		background: var(
+			--background,
 			linear-gradient(
 				color-mix(in srgb, transparent, rgb(32, 25, 47) var(--background-opacity, 80%)),
 				color-mix(in srgb, transparent, rgb(7, 4, 11) var(--background-opacity, 95%))
-			),
-			url('/filter-noise.svg');
+			)
+		);
 	}
 }
 button {

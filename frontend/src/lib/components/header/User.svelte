@@ -56,6 +56,9 @@ beforeNavigate(({ from, to }) => {
 
 span {
 	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 100%;
 }
 
 a {
@@ -63,13 +66,16 @@ a {
 	white-space: nowrap;
 	display: grid;
 	place-items: center;
-	grid-auto-flow: column;
+	grid-template-columns: min-content auto;
+	width: 100%;
+
 	gap: 0.25em;
 	color: var(--text-color);
 	&:hover,
 	&:focus,
 	&:focus-within {
 		color: var(--color-primary);
+		outline: 1px solid transparent;
 	}
 }
 </style>

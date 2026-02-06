@@ -14,6 +14,17 @@ a {
 			--translate-delay: var(--transition-duration);
 		}
 	}
+
+	outline: 1px solid transparent;
+	outline-offset: 0.25em;
+	border-radius: 0.1em;
+}
+
+a:not(.button) {
+	&:hover,
+	&:focus-visible {
+		outline: 1px solid transparent;
+	}
 }
 
 a:not(.button):has(+ :hover) {

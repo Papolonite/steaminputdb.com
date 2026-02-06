@@ -1,10 +1,12 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
+import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import { setStylePropertyCallback } from '$lib/attachments/setStylePropertyCallback.svelte';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
 import Icon from '@iconify/svelte';
 import { swipeable } from '@svelte-put/swipeable';
-import { slide } from 'svelte/transition';
+import { cubicIn, cubicOut } from 'svelte/easing';
+import { fly } from 'svelte/transition';
 import Modal from '../Modal.svelte';
 import Search from './Search.svelte';
 import User from './User.svelte';
@@ -13,9 +15,10 @@ let modal = $state<Modal>()!;
 </script>
 
 <header>
-	<div>
-		<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
-	</div>
+	<a class="home" href={resolve('/')}>
+		<SC2 height="1.6em" />
+		<span>SteamInputDB</span>
+	</a>
 	<button
 		onclick={() => {
 			modal.setScrimOpacityMulti(1);
@@ -27,12 +30,15 @@ let modal = $state<Modal>()!;
 	<Search />
 	<div>
 		<User />
-		<Themetoggle />
+		<div>
+			<Themetoggle />
+		</div>
 	</div>
 </header>
 <Modal bind:this={modal} --backdrop-filter="blur(2px)">
 	<aside
-		transition:slide={{ duration: 196, axis: 'x' }}
+		in:fly={{ duration: 196, x: '-100%', y: 0, easing: cubicOut, opacity: 1 }}
+		out:fly={{ duration: 196, x: '-100%', y: 0, easing: cubicIn, opacity: 1 }}
 		use:swipeable={{
 			direction: 'left'
 		}}
@@ -40,16 +46,16 @@ let modal = $state<Modal>()!;
 		onsetstyleproperty={(e) => {
 			const { name, value } = e.detail;
 			if (name === '--swipe-distance-x') {
-				let swipeDist = Number(value.replace('px', '').trim());
-				swipeDist = Math.min(Math.max(-window.innerWidth / 0.75, swipeDist), 0);
+				let swipeDist = Math.min(Number(value.replace('px', '').trim()), 0);
 				modal.setScrimOpacityMulti(1 - Math.abs(swipeDist) / (window.innerWidth / 0.75));
 			}
 		}}
 		onswipeend={modal.swipeend}>
 		<div>
-			<div>
-				<User />
-			</div>
+			<a class="home" href={resolve('/')}>
+				<SC2 height="1.6em" />
+				<span>SteamInputDB</span>
+			</a>
 			<Themetoggle />
 		</div>
 	</aside>
@@ -60,22 +66,20 @@ header {
 	padding: 1em;
 
 	background: var(--card-background-noise);
+	width: 100%;
 
 	display: grid;
-	grid-template-columns: minmax(1ch, auto) 1fr min-content;
+	grid-template-columns: minmax(3.2em, 1fr) auto minmax(2em, 1fr);
+	@media (orientation: portrait) {
+		grid-template-columns: minmax(2em, 1fr) auto minmax(2em, 1fr);
+	}
 	align-items: center;
 	box-shadow: 0 0px 4px var(--shadow-color);
 	gap: 1em;
 	transition-property: all;
+
 	& > :first-child {
-		display: grid;
-		grid-template-columns: minmax(1ch, min-content);
-		& > * {
-			display: unset;
-			overflow: hidden;
-			width: auto;
-			text-overflow: ellipsis;
-		}
+		margin-right: auto;
 	}
 
 	& > :nth-child(2) {
@@ -87,6 +91,19 @@ header {
 		grid-auto-flow: column;
 		gap: 1em;
 		margin-left: auto;
+		place-items: center;
+		overflow: visible;
+		max-width: 100%;
+	}
+}
+.home {
+	grid-template-columns: min-content auto;
+	font-weight: bold;
+	height: fit-content;
+	& span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100%;
 	}
 }
 
@@ -96,20 +113,14 @@ header {
 			display: none;
 		}
 		& > :nth-child(2) {
-			display: block;
+			display: grid;
 		}
 		& > :last-child {
-			display: none;
+			& > :last-child {
+				display: none;
+			}
 		}
 	}
-}
-
-.neutral {
-	font-size: 1.4em;
-	text-decoration: none;
-	color: inherit;
-	position: relative;
-	width: min-content;
 }
 
 a {
@@ -118,7 +129,7 @@ a {
 	display: grid;
 	place-items: center;
 	grid-auto-flow: column;
-	gap: 0.25em;
+	gap: 0.5em;
 	color: var(--text-color);
 	&:hover,
 	&:focus,
@@ -134,16 +145,23 @@ button {
 	border: none;
 	box-shadow: none;
 	aspect-ratio: 1 / 1;
-	width: 2em;
-	height: 2em;
+	max-width: 2em;
 }
 
 aside {
 	display: grid;
+	grid-template-rows: min-content;
+
 	min-width: 75%;
 	width: fit-content;
+	height: 100%;
+
+	background: var(--card-background-noise);
+	backdrop-filter: blur(1px);
+
+	transition: background var(--transition-duration) var(--default-ease);
 	transform: translateX(clamp(-100%, var(--swipe-distance-x), 0px));
-	& > div {
+	& > :first-child {
 		display: grid;
 		grid-template-columns: auto min-content;
 		min-width: 20ch;
@@ -154,8 +172,5 @@ aside {
 			margin-right: auto;
 		}
 	}
-	background: var(--card-background-noise);
-	backdrop-filter: blur(1px);
-	height: 100%;
 }
 </style>
