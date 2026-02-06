@@ -1,7 +1,7 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
+import { setStylePropertyCallback } from '$lib/attachments/setStylePropertyCallback.svelte';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
-import { setStylePropertyCallback } from '$lib/effects/setStylePropertyCallback.svelte';
 import Icon from '@iconify/svelte';
 import { swipeable } from '@svelte-put/swipeable';
 import { slide } from 'svelte/transition';

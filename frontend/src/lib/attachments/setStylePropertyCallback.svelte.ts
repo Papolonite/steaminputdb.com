@@ -22,3 +22,4 @@ export const setStylePropertyCallback: Action<HTMLElement, undefined, {
         }
     };
 };
+

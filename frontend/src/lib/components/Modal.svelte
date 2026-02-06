@@ -4,11 +4,11 @@ import type { SwipeEndEventDetail } from '@svelte-put/swipeable';
 import type { Snippet } from 'svelte';
 import { fade } from 'svelte/transition';
 let {
-	opened = $bindable(false),
+	open = $bindable(false),
 	slide_touch = $bindable(true),
 	children
 }: {
-	opened?: boolean;
+	open?: boolean;
 	slide_touch?: boolean;
 	children?: Snippet;
 	'--background'?: string;
@@ -17,14 +17,14 @@ let {
 	'--background-opacity-multi'?: `${number}`;
 } = $props();
 
-export function open() {
-	opened = true;
+export function show() {
+	open = true;
 }
 export function close() {
-	opened = false;
+	open = false;
 }
 export function toggle() {
-	opened = !opened;
+	open = !open;
 }
 
 export function swipeend(e: CustomEvent<SwipeEndEventDetail>) {
@@ -39,40 +39,30 @@ export function setScrimOpacityMulti(multi: number) {
 }
 
 beforeNavigate(async () => {
-	opened = false;
+	open = false;
 });
-const onkeypress = (event: KeyboardEvent) => {
-	if (!opened) {
-		return;
-	}
-	if (
-		event.key === 'Enter' ||
-		event.key === ' ' ||
-		event.key === 'Spacebar' ||
-		event.code === 'Escape' ||
-		event.code === 'Enter' ||
-		event.code === 'Space'
-	) {
-		opened = !opened;
-	}
-};
+let HTMLDialog = $state<HTMLDialogElement>()!;
 </script>
 
 <svelte:window onkeypress={onkeypress} />
 
-{#if opened}
-	<div id="modal" transition:fade={{ duration: 196 }}>
+{#if open}
+	<dialog id="modal" bind:this={HTMLDialog} open transition:fade={{ duration: 196 }}>
 		<button onclick={close} aria-label="modal-backdrop"></button>
 		{@render children?.()}
-	</div>
+	</dialog>
 {/if}
 
 <style lang="postcss">
-#modal {
-	position: absolute;
+dialog[open] {
+	position: fixed;
 	inset: 0;
 	isolation: isolate;
 	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	border: none;
+	background: transparent;
 	&::after {
 		content: '';
 		position: absolute;
