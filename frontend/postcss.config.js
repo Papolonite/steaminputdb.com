@@ -5,10 +5,13 @@ const config = {
     plugins: [
         presetEnv({
             autoprefixer: true,
-            stage: 3,
+            stage: 2,
             features: {
                 'nesting-rules': true,
-            }
+            },
+            browsers: [
+				"> 0.2% and not dead"
+			]
         }),
         cssnano({
             preset: 'default',

@@ -80,6 +80,7 @@ header {
 
 	& > :first-child {
 		margin-right: auto;
+		padding: 0.25em;
 	}
 
 	& > :nth-child(2) {
@@ -92,8 +93,9 @@ header {
 		gap: 1em;
 		margin-left: auto;
 		place-items: center;
-		overflow: visible;
+		overflow: clip;
 		max-width: 100%;
+		padding: 0.25em;
 	}
 }
 .home {
@@ -158,6 +160,19 @@ aside {
 
 	background: var(--card-background-noise);
 	backdrop-filter: blur(1px);
+	background-color: light-dark(
+		color-mix(in srgb, var(--card-color), transparent 80%),
+		color-mix(in srgb, var(--card-color), transparent 20%)
+	);
+
+	isolation: isolate;
+	/* &::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--card-background-noise);
+		z-index: -1;
+	} */
 
 	transition: background var(--transition-duration) var(--default-ease);
 	transform: translateX(clamp(-100%, var(--swipe-distance-x), 0px));
