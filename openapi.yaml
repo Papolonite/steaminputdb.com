@@ -1167,6 +1167,7 @@ components:
           readOnly: true
           type: string
         limit:
+          default: 10
           format: int32
           minimum: 0
           type: integer
@@ -1184,9 +1185,6 @@ components:
           maxLength: 100
           type: string
       required:
-        - limit
-        - limit_games
-        - limit_configs
         - search_term
       type: object
     SearchResponseBody:
