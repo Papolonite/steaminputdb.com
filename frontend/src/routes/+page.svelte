@@ -1,14 +1,57 @@
 <script lang="ts">
+import SC2 from '$lib/assets/SC2_Googley.svg?component';
+import { onMount } from 'svelte';
+let eyes = $state<{
+	left: HTMLElement;
+	right: HTMLElement;
+}>({
+	left: undefined!,
+	right: undefined!
+})!;
+
+onMount(() => {
+	const group = document.querySelector('#sc2>*>svg>g>:last-child')!;
+	eyes.left = group.children[0] as HTMLElement;
+	eyes.right = group.children[1] as HTMLElement;
+});
 </script>
+
+<svelte:window
+	onmousemove={(e) => {
+		if (!eyes || !eyes.left || !eyes.right) {
+			return;
+		}
+		Object.values(eyes).forEach((eye) => {
+			const rect = eye.getBoundingClientRect();
+			const eyeX = rect.left + rect.width / 2;
+			const eyeY = rect.top + rect.height / 2;
+			const deltaX = e.clientX - eyeX;
+			const deltaY = e.clientY - eyeY;
+			const angle = Math.atan2(deltaY, deltaX);
+			const distance = Math.min(16, Math.hypot(deltaX, deltaY) / 2);
+			const translateX = Math.cos(angle) * distance;
+			const translateY = Math.sin(angle) * distance;
+			eye.style.transform = `translate(${translateX}px, ${translateY}px)`;
+		});
+	}} />
 
 <main>
 	<div>
 		<div>
-			<h1>
-				<strong>Steam API backed</strong> community driven database of SteamInput configurations
-			</h1>
-			<p>SteamInputDB uses the same APIs as Steam itself</p>
-			<p>That means <strong>every</strong> configuration on Steam is also available here!</p>
+			<div id="sc2">
+				<SC2
+					height="10em"
+					--eyes-color="var(--text-color-light)"
+					--eyes-white-color="var(--text-color-dark)"
+					--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
+			</div>
+			<div>
+				<h1>
+					<strong>Steam API backed</strong> community driven database of SteamInput configurations
+				</h1>
+				<p>SteamInputDB uses the same APIs as Steam itself</p>
+				<p>That means <strong>every</strong> configuration on Steam is also available here!</p>
+			</div>
 		</div>
 		<div class="wip">
 			<span>🚧 Work in Progress 🚧</span>
@@ -29,6 +72,11 @@ main {
 	}
 }
 
+main > div > :first-child {
+	display: grid;
+	place-items: center;
+}
+
 h1 strong {
 	color: var(--color-primary);
 }
@@ -38,6 +86,10 @@ p {
 	& strong {
 		color: var(--highlight-color);
 	}
+}
+
+#sc2 {
+	filter: drop-shadow(0px 0.25em 0.2em var(--shadow-color));
 }
 
 .wip {

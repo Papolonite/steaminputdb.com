@@ -1,3 +1,4 @@
+import svg from '@poppanator/sveltekit-svg';
 import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { playwright } from '@vitest/browser-playwright';
@@ -18,6 +19,9 @@ export default defineConfig({
         devtoolsJson(),
         enhancedImages(),
         sveltekit(),
+        svg({
+            includePaths: ['./src/lib/assets/', './src/static/']
+        }),
         Icons({
             compiler: 'svelte',
             autoInstall: true
