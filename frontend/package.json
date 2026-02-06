@@ -26,6 +26,7 @@
         "@iconify/svelte": "^5.2.1",
         "@playwright/test": "^1.58.0",
         "@stylistic/eslint-plugin": "^5.7.1",
+        "@svelte-put/swipeable": "^1.1.0",
         "@sveltejs/adapter-static": "^3.0.10",
         "@sveltejs/enhanced-img": "^0.10.0",
         "@sveltejs/kit": "^2.50.1",

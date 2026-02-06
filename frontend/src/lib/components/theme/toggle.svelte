@@ -1,14 +1,23 @@
+<script lang="ts" module>
+export const themeSelection = $state({
+	darkMode: undefined as boolean | undefined
+});
+</script>
+
 <script lang="ts">
 import { page } from '$app/state';
 import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
 
-let darkMode = $state(page.data.theme == 'dark');
+if (themeSelection.darkMode === undefined) {
+	themeSelection.darkMode = page.data.theme === 'dark';
+}
+
 const toggleTheme = () => {
 	const html = document.documentElement;
 	const wrap = () => {
 		// no-op, just for the transition
-		if (darkMode) {
+		if (themeSelection.darkMode) {
 			html.style.colorScheme = 'light';
 			document.documentElement.setAttribute('data-theme', 'light');
 			document.cookie = 'theme=light;path=/;max-age=31536000';
@@ -17,7 +26,7 @@ const toggleTheme = () => {
 			document.documentElement.setAttribute('data-theme', 'dark');
 			document.cookie = 'theme=dark;path=/;max-age=31536000';
 		}
-		darkMode = !darkMode;
+		themeSelection.darkMode = !themeSelection.darkMode;
 	};
 
 	if (!document.startViewTransition) {
@@ -38,11 +47,11 @@ const toggleTheme = () => {
 };
 
 onMount(() => {
-	const savedTheme = page.data.theme;
+	const savedTheme = themeSelection.darkMode! ? 'dark' : 'light';
 	const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 	const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
-	darkMode = isDark;
+	themeSelection.darkMode = isDark;
 
 	if (isDark && !savedTheme) {
 		document.cookie = 'theme=dark;path=/;max-age=31536000';
@@ -57,11 +66,11 @@ onMount(() => {
 		name="Theme toggle"
 		type="checkbox"
 		class="toggle"
-		checked={darkMode}
+		checked={themeSelection.darkMode}
 		onchange={() => toggleTheme()}
 		aria-label="Theme Toggle" />
-	<div class="icon {darkMode ? 'checked' : ''}">
-		{#if darkMode}
+	<div class="icon {themeSelection.darkMode ? 'checked' : ''}">
+		{#if themeSelection.darkMode}
 			<Icon icon="ph:moon" width="1.2em" height="1.2em" />
 		{:else}
 			<Icon icon="ph:sun" width="1.2em" height="1.2em" />
