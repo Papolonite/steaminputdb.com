@@ -56,18 +56,20 @@
 		var(--background-neutral-alpha) 75%
 	);
 
+	--bg-noise: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><filter id='noice'><feTurbulence type='fractalNoise' baseFrequency='1.24' numOctaves='4' stitchTiles='stitch'></feTurbulence><feColorMatrix type='saturate' values='0'></feColorMatrix><feComponentTransfer><feFuncR type='linear' slope='0.46'></feFuncR><feFuncG type='linear' slope='0.46'></feFuncG><feFuncB type='linear' slope='0.46'></feFuncB><feFuncA type='linear' slope='0.56'></feFuncA></feComponentTransfer><feComponentTransfer><feFuncR type='linear' slope='1.47' intercept='-0.23' /><feFuncG type='linear' slope='1.47' intercept='-0.23' /><feFuncB type='linear' slope='1.47' intercept='-0.23' /></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(#noice)'></rect></svg>");
+	--noise-filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='1.24' numOctaves='4' stitchTiles='stitch'></feTurbulence><feColorMatrix type='saturate' values='0'></feColorMatrix><feComponentTransfer><feFuncR type='linear' slope='0.46'></feFuncR><feFuncG type='linear' slope='0.46'></feFuncG><feFuncB type='linear' slope='0.46'></feFuncB><feFuncA type='linear' slope='0.56'></feFuncA></feComponentTransfer><feComponentTransfer><feFuncR type='linear' slope='1.47' intercept='-0.23' /><feFuncG type='linear' slope='1.47' intercept='-0.23' /><feFuncB type='linear' slope='1.47' intercept='-0.23' /></feComponentTransfer></filter></svg>#noise");
+
 	--noise-card-color: light-dark(
 		color-mix(in srgb, var(--card-color), transparent 23%),
 		color-mix(in srgb, var(--card-color), transparent 12%)
 	);
 	--card-background-noise:
-		linear-gradient(var(--noise-card-color), var(--noise-card-color)), url('/filter-noise.svg');
+		linear-gradient(var(--noise-card-color), var(--noise-card-color)), var(--bg-noise);
 
 	--noise-background-color: light-dark(
 		color-mix(in srgb, var(--background-color), transparent 18%),
 		color-mix(in srgb, var(--background-color), transparent 7%)
 	);
 	--background-noise:
-		linear-gradient(var(--noise-background-color), var(--noise-background-color)),
-		url('/filter-noise.svg');
+		linear-gradient(var(--noise-background-color), var(--noise-background-color)), var(--bg-noise);
 }
