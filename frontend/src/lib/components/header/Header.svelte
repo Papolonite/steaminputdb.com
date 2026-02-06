@@ -1,6 +1,7 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
+import { setStylePropertyCallback } from '$lib/effects/setStylePropertyCallback.svelte';
 import Icon from '@iconify/svelte';
 import { swipeable } from '@svelte-put/swipeable';
 import { slide } from 'svelte/transition';
@@ -15,7 +16,12 @@ let modal = $state<Modal>()!;
 	<div>
 		<a class="neutral" href={resolve('/')}><span>SteamInputDB.com</span></a>
 	</div>
-	<button onclick={() => modal.toggle()} aria-label="Menu">
+	<button
+		onclick={() => {
+			modal.setScrimOpacityMulti(1);
+			modal.toggle();
+		}}
+		aria-label="Menu">
 		<Icon icon="mdi:menu" width="100%" height="100%" />
 	</button>
 	<Search />
@@ -29,6 +35,15 @@ let modal = $state<Modal>()!;
 		transition:slide={{ duration: 196, axis: 'x' }}
 		use:swipeable={{
 			direction: 'left'
+		}}
+		use:setStylePropertyCallback
+		onsetstyleproperty={(e) => {
+			const { name, value } = e.detail;
+			if (name === '--swipe-distance-x') {
+				let swipeDist = Number(value.replace('px', '').trim());
+				swipeDist = Math.min(Math.max(-window.innerWidth / 0.75, swipeDist), 0);
+				modal.setScrimOpacityMulti(1 - Math.abs(swipeDist) / (window.innerWidth / 0.75));
+			}
 		}}
 		onswipeend={modal.swipeend}>
 		<div>

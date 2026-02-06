@@ -34,6 +34,10 @@ export function swipeend(e: CustomEvent<SwipeEndEventDetail>) {
 	}
 }
 
+export function setScrimOpacityMulti(multi: number) {
+	document.documentElement.style.setProperty('--background-opacity-multi', String(multi));
+}
+
 beforeNavigate(async () => {
 	opened = false;
 });
@@ -69,21 +73,21 @@ const onkeypress = (event: KeyboardEvent) => {
 	inset: 0;
 	isolation: isolate;
 	z-index: 1000;
-	backdrop-filter: var(--backdrop-filter, none);
-	background:
-		linear-gradient(
-			color-mix(
-				in srgb,
-				transparent,
-				rgb(32, 25, 47) var(--background-opacity, calc(80% * var(--background-opacity-multi, 1)))
+	&::after {
+		content: '';
+		position: absolute;
+		pointer-events: none;
+		inset: 0;
+		z-index: -1;
+		opacity: var(--background-opacity-multi, 1);
+		backdrop-filter: var(--backdrop-filter, none);
+		background:
+			linear-gradient(
+				color-mix(in srgb, transparent, rgb(32, 25, 47) var(--background-opacity, 80%)),
+				color-mix(in srgb, transparent, rgb(7, 4, 11) var(--background-opacity, 95%))
 			),
-			color-mix(
-				in srgb,
-				transparent,
-				rgb(7, 4, 11) var(--background-opacity, calc(95% * var(--background-opacity-multi, 1)))
-			)
-		),
-		url('/filter-noise.svg');
+			url('/filter-noise.svg');
+	}
 }
 button {
 	-webkit-tap-highlight-color: transparent;
