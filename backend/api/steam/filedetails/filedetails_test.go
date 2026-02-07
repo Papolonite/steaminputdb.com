@@ -4,180 +4,274 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/Alia5/steaminputdb.com/api/steam/user"
-	"github.com/Alia5/steaminputdb.com/config"
+	"github.com/Alia5/steaminputdb.com/api/search/configs"
+	"github.com/Alia5/steaminputdb.com/api/steam/filedetails"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2/humatest"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 )
 
+type roundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func redirectSteamAPITo(t *testing.T, targetBaseURL string) {
+	t.Helper()
+
+	orig := http.DefaultClient
+
+	u, err := url.Parse(targetBaseURL)
+	if err != nil {
+		t.Fatalf("failed to parse target base URL: %v", err)
+	}
+
+	http.DefaultClient = &http.Client{
+		Transport: roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+			if req.URL.Host == "api.steampowered.com" {
+				req.URL.Scheme = u.Scheme
+				req.URL.Host = u.Host
+			}
+			return http.DefaultTransport.RoundTrip(req)
+		}),
+	}
+
+	t.Cleanup(func() {
+		http.DefaultClient = orig
+	})
+}
+
+func mustMarshalProto(t *testing.T, msg proto.Message) []byte {
+	t.Helper()
+	b, err := proto.Marshal(msg)
+	require.NoError(t, err)
+	return b
+}
+
 func TestFileDetails(t *testing.T) {
+	successMock := func(t *testing.T) *httptest.Server {
+		t.Helper()
+		return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/IPublishedFileService/GetDetails/v1/" {
+				http.Error(w, "wrong path", http.StatusNotFound)
+				return
+			}
+
+			created := uint32(1700000000)
+			updated := uint32(1700000123)
+			fileID := uint64(123)
+			fileType := uint32(12)
+			fileSize := uint64(2048)
+			creator := uint64(76561198000000000)
+			playtime := uint64(600)
+			sessions := uint64(42)
+			subs := uint32(9001)
+			score := float32(4.25)
+			up := uint32(100)
+			down := uint32(5)
+
+			resp := &steamapi.CPublishedFile_GetDetails_Response{
+				Publishedfiledetails: []*steamapi.PublishedFileDetails{
+					{
+						Publishedfileid:          &fileID,
+						FileType:                 &fileType,
+						Title:                    new("My Config"),
+						FileDescription:          new("Cool config"),
+						Filename:                 new("controller.vdf"),
+						FileUrl:                  new("https://cdn.steamusercontent.com/ugc/abc"),
+						FileSize:                 &fileSize,
+						Creator:                  &creator,
+						TimeCreated:              &created,
+						TimeUpdated:              &updated,
+						LifetimePlaytime:         &playtime,
+						LifetimePlaytimeSessions: &sessions,
+						LifetimeSubscriptions:    &subs,
+						VoteData: &steamapi.PublishedFileDetails_VoteData{
+							Score:     &score,
+							VotesUp:   &up,
+							VotesDown: &down,
+						},
+						Tags: []*steamapi.PublishedFileDetails_Tag{
+							{Tag: new(string(configs.ControllerTypeXboxOne))},
+							{Tag: new("controller_native")},
+						},
+						Kvtags: []*steamapi.PublishedFileDetails_KVTag{
+							{Key: new("app"), Value: new("440")},
+						},
+					},
+				},
+			}
+
+			w.WriteHeader(http.StatusOK)
+			w.Write(mustMarshalProto(t, resp))
+		}))
+	}
 
 	type testCase struct {
-		name             string
-		setupMock        func() *httptest.Server
-		setupToken       func() string
-		expectedStatus   int
-		expectedResponse string
+		name           string
+		path           string
+		setupMock      func(t *testing.T) *httptest.Server
+		expectedStatus int
+		assertBody     func(t *testing.T, body []byte)
+		contains       string
 	}
 
 	testCases := []testCase{
 		{
-			name: "SUCCESS",
-			setupMock: func() *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := steamapi.PlayerSummaries{
-						Response: steamapi.Response{
-							Players: []steamapi.Players{
-								{
-									Steamid:                  "76561197997352479",
-									Communityvisibilitystate: 3,
-									Personaname:              "TestUser",
-									Profileurl:               "https://steamcommunity.com/id/testuser/",
-									Avatar:                   "https://avatars.steamstatic.com/test.jpg",
-									Avatarmedium:             "https://avatars.steamstatic.com/test_medium.jpg",
-									Avatarfull:               "https://avatars.steamstatic.com/test_full.jpg",
-									Avatarhash:               "testhash",
-									Lastlogoff:               1234567890,
-									Primaryclanid:            "123456789",
-									Timecreated:              1234567890,
-									Loccountrycode:           "US",
-								},
-							},
-						},
-					}
-					json.NewEncoder(w).Encode(resp)
-				}))
-			},
-			setupToken: func() string {
-				claims := jwt.MapClaims{
-					"sub": "76561197997352479",
-					"exp": time.Now().Add(time.Hour).Unix(),
-				}
-				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
-				return tokenString
-			},
+			name:           "SUCCESS_PROCESSED",
+			path:           "/v1/steam/filedetails?file_id=123",
+			setupMock:      successMock,
 			expectedStatus: http.StatusOK,
+			assertBody: func(t *testing.T, body []byte) {
+				t.Helper()
+				var got configs.ConfigResponseItem
+				require.NoError(t, json.Unmarshal(body, &got))
+
+				require.NotNil(t, got.Title)
+				assert.Equal(t, "My Config", *got.Title)
+				require.NotNil(t, got.Description)
+				assert.Equal(t, "Cool config", *got.Description)
+				require.NotNil(t, got.FileID)
+				assert.Equal(t, uint64(123), *got.FileID)
+				assert.Equal(t, "controller.vdf", *got.FileName)
+				assert.Equal(t, "https://cdn.steamusercontent.com/ugc/abc", *got.FileURL)
+				assert.Equal(t, uint64(2048), *got.FileSize)
+				assert.Equal(t, uint64(76561198000000000), *got.CreatorID)
+
+				assert.Equal(t, uint32(440), *got.AppID)
+				require.NotNil(t, got.AppIDString)
+				assert.Equal(t, "440", *got.AppIDString)
+				require.NotNil(t, got.ControllerType)
+				assert.Equal(t, configs.ControllerTypeXboxOne, *got.ControllerType)
+				assert.Equal(t, "Xbox One", got.ControllerTypeNice)
+				assert.True(t, got.ControllerNative)
+
+				assert.True(t, got.TimeCreated.Equal(time.Unix(1700000000, 0)), "expected TimeCreated to match")
+				assert.True(t, got.TimeUpdated.Equal(time.Unix(1700000123, 0)), "expected TimeUpdated to match")
+
+				require.NotNil(t, got.PlaytimeSeconds)
+				assert.Equal(t, uint64(600), *got.PlaytimeSeconds)
+				require.NotNil(t, got.PlaytimeSessions)
+				assert.Equal(t, uint64(42), *got.PlaytimeSessions)
+				require.NotNil(t, got.Subscriptions)
+				assert.Equal(t, uint32(9001), *got.Subscriptions)
+
+				require.NotNil(t, got.Votes.Score)
+				assert.InDelta(t, 4.25, float64(*got.Votes.Score), 0.0001)
+				require.NotNil(t, got.Votes.Up)
+				assert.Equal(t, uint32(100), *got.Votes.Up)
+				require.NotNil(t, got.Votes.Down)
+				assert.Equal(t, uint32(5), *got.Votes.Down)
+			},
 		},
 		{
-			name: "MISSING_TOKEN",
-			setupMock: func() *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := steamapi.PlayerSummaries{
-						Response: steamapi.Response{
-							Players: []steamapi.Players{},
-						},
-					}
-					json.NewEncoder(w).Encode(resp)
-				}))
+			name:           "SUCCESS_RAW",
+			path:           "/v1/steam/filedetails?file_id=123&raw=true",
+			setupMock:      successMock,
+			expectedStatus: http.StatusOK,
+			assertBody: func(t *testing.T, body []byte) {
+				t.Helper()
+				var got steamapi.CPublishedFile_GetDetails_Response
+				require.NoError(t, json.Unmarshal(body, &got))
+				require.Len(t, got.Publishedfiledetails, 1)
+				require.NotNil(t, got.Publishedfiledetails[0])
+				assert.Equal(t, uint64(123), got.Publishedfiledetails[0].GetPublishedfileid())
 			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"missing token", "status":401, "title":"Unauthorized"}`,
 		},
 		{
-			name: "INVALID_TOKEN",
-			setupMock: func() *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := steamapi.PlayerSummaries{
-						Response: steamapi.Response{
-							Players: []steamapi.Players{},
-						},
-					}
-					json.NewEncoder(w).Encode(resp)
-				}))
-			},
-			setupToken: func() string {
-				return "invalid.token.here"
-			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"invalid token", "status":401, "title":"Unauthorized"}`,
+			name:           "MISSING_FILE_ID",
+			path:           "/v1/steam/filedetails",
+			expectedStatus: http.StatusUnprocessableEntity,
+			contains:       "file_id",
 		},
 		{
-			name: "STEAM_API_NO_RESPONSE",
-			setupMock: func() *httptest.Server {
+			name: "STEAM_API_HTTP_ERROR",
+			path: "/v1/steam/filedetails?file_id=123",
+			setupMock: func(t *testing.T) *httptest.Server {
+				t.Helper()
 				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusServiceUnavailable)
+					w.Write([]byte("nope"))
 				}))
-			},
-			setupToken: func() string {
-				claims := jwt.MapClaims{
-					"sub": "76561197997352479",
-					"exp": time.Now().Add(time.Hour).Unix(),
-				}
-				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
-				return tokenString
 			},
 			expectedStatus: http.StatusBadGateway,
+			contains:       "failed to get steam file details",
 		},
 		{
-			name: "STEAM_USER_NOT_FOUND",
-			setupMock: func() *httptest.Server {
+			name: "FILE_NOT_FOUND_EMPTY_LIST",
+			path: "/v1/steam/filedetails?file_id=123",
+			setupMock: func(t *testing.T) *httptest.Server {
+				t.Helper()
 				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := steamapi.PlayerSummaries{
-						Response: steamapi.Response{
-							Players: []steamapi.Players{},
-						},
+					if r.URL.Path != "/IPublishedFileService/GetDetails/v1/" {
+						http.Error(w, "wrong path", http.StatusNotFound)
+						return
 					}
-					json.NewEncoder(w).Encode(resp)
+					resp := &steamapi.CPublishedFile_GetDetails_Response{Publishedfiledetails: []*steamapi.PublishedFileDetails{}}
+					w.WriteHeader(http.StatusOK)
+					w.Write(mustMarshalProto(t, resp))
 				}))
 			},
-			setupToken: func() string {
-				claims := jwt.MapClaims{
-					"sub": "76561197997352479",
-					"exp": time.Now().Add(time.Hour).Unix(),
-				}
-				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
-				return tokenString
+			expectedStatus: http.StatusNotFound,
+			assertBody: func(t *testing.T, body []byte) {
+				t.Helper()
+				assert.JSONEq(t, `{"detail":"file not found", "status":404, "title":"Not Found"}`, string(body))
 			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"steam user not found", "status":401, "title":"Unauthorized"}`,
+		},
+		{
+			name: "FILE_NOT_FOUND_WRONG_TYPE",
+			path: "/v1/steam/filedetails?file_id=123",
+			setupMock: func(t *testing.T) *httptest.Server {
+				t.Helper()
+				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					if r.URL.Path != "/IPublishedFileService/GetDetails/v1/" {
+						http.Error(w, "wrong path", http.StatusNotFound)
+						return
+					}
+					fileID := uint64(123)
+					wrongType := uint32(1)
+					resp := &steamapi.CPublishedFile_GetDetails_Response{
+						Publishedfiledetails: []*steamapi.PublishedFileDetails{
+							{Publishedfileid: &fileID, FileType: &wrongType},
+						},
+					}
+					w.WriteHeader(http.StatusOK)
+					w.Write(mustMarshalProto(t, resp))
+				}))
+			},
+			expectedStatus: http.StatusNotFound,
+			assertBody: func(t *testing.T, body []byte) {
+				t.Helper()
+				assert.JSONEq(t, `{"detail":"file not found", "status":404, "title":"Not Found"}`, string(body))
+			},
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			config.Parsed = config.Config{
-				API: config.API{
-					PublicAddress: "localhost:8889",
-				},
-			}
-
 			_, api := humatest.New(t)
-
-			var steamAPIURL string
-			var steamAPIServer *httptest.Server
+			filedetails.RegisterRoute(api)
 
 			if tc.setupMock != nil {
-				steamAPIServer = tc.setupMock()
+				steamAPIServer := tc.setupMock(t)
 				defer steamAPIServer.Close()
-				steamAPIURL = steamAPIServer.URL
-				steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", steamAPIURL)
+				redirectSteamAPITo(t, steamAPIServer.URL)
 			}
 
-			user.RegisterRoutes(api)
-
-			var token string
-			if tc.setupToken != nil {
-				token = tc.setupToken()
-			}
-
-			var cookieHeader string
-			if token != "" {
-				cookieHeader = "Cookie: token=" + token
-			}
-
-			resp := api.Post("/v1/steam/userinfo", map[string]any{}, cookieHeader)
-
+			resp := api.Get(tc.path)
 			assert.Equal(t, tc.expectedStatus, resp.Code)
-			if tc.expectedResponse != "" {
-				assert.JSONEq(t, tc.expectedResponse, resp.Body.String())
+
+			if tc.contains != "" {
+				assert.True(t, strings.Contains(resp.Body.String(), tc.contains), "response body should contain %q, got: %s", tc.contains, resp.Body.String())
+			}
+			if tc.assertBody != nil {
+				tc.assertBody(t, resp.Body.Bytes())
 			}
 
 		})
