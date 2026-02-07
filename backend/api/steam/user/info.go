@@ -69,7 +69,7 @@ func registerRoutes(a huma.API) {
 			}
 
 			if len(info.Response.Players) == 0 {
-				return nil, huma.Error401Unauthorized("steam user not found")
+				return nil, huma.Error404NotFound("steam user not found")
 			}
 
 			player := info.Response.Players[0]

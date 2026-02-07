@@ -136,8 +136,8 @@ func TestSteamUserInfo(t *testing.T) {
 				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
 				return tokenString
 			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"steam user not found", "status":401, "title":"Unauthorized"}`,
+			expectedStatus:   http.StatusNotFound,
+			expectedResponse: `{"detail":"steam user not found", "status":404, "title":"Not Found"}`,
 		},
 	}
 
@@ -173,7 +173,12 @@ func TestSteamUserInfo(t *testing.T) {
 				cookieHeader = "Cookie: token=" + token
 			}
 
-			resp := api.Post("/v1/steam/userinfo", map[string]any{}, cookieHeader)
+			var resp *httptest.ResponseRecorder
+			if cookieHeader != "" {
+				resp = api.Get("/v1/steam/userinfo", cookieHeader)
+			} else {
+				resp = api.Get("/v1/steam/userinfo")
+			}
 
 			assert.Equal(t, tc.expectedStatus, resp.Code)
 			if tc.expectedResponse != "" {

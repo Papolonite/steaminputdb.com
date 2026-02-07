@@ -208,8 +208,8 @@ func TestSteamLogin(t *testing.T) {
 				"signed":         "signed,op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle",
 				"sig":            "5z/7Gwh1MhMbJ8JeU2pPNSit9l8=",
 			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"steam user not found", "status":401, "title":"Unauthorized"}`,
+			expectedStatus:   http.StatusNotFound,
+			expectedResponse: `{"detail":"steam user not found", "status":404, "title":"Not Found"}`,
 		},
 	}
 

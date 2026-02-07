@@ -181,7 +181,7 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 		}
 
 		if len(playerSummaries.Response.Players) == 0 {
-			return nil, huma.Error401Unauthorized("steam user not found")
+			return nil, huma.Error404NotFound("steam user not found")
 		}
 
 		playerInfo := user.PlayerInfo{
