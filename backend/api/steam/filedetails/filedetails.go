@@ -35,7 +35,7 @@ func (r *raw) fileDetailsQueryResponse()                 {}
 func (r *ResponseBodyWrapper) fileDetailsQueryResponse() {}
 
 type Request struct {
-	FileId            uint32 `query:"file_id" required:"true"`
+	FileID            uint32 `query:"file_id" required:"true"`
 	PlaytimeStatsDays uint32 `query:"playtime_stats,omitempty,omitzero" default:"30" doc:"Number of days for playtime statistics"` // days
 	Raw               bool   `query:"raw,omitempty" default:"false"`                                                               // if true, returns the raw steamapi.PublishedFileDetails instead of the processed ConfigResponseItem
 }
@@ -75,7 +75,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 			info, err := steamapi.DefaultClient.GetFileDetails(c,
 				&steamapi.CPublishedFile_GetDetails_Request{
 					Publishedfileids: []uint64{
-						uint64(req.FileId),
+						uint64(req.FileID),
 					},
 					Includekvtags:       new(true),
 					Includetags:         new(true),
@@ -95,7 +95,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 			}
 
 			if len(info.Publishedfiledetails) == 0 {
-				slog.Debug("no file details found", "file_id", req.FileId, "resp", info)
+				slog.Debug("no file details found", "file_id", req.FileID, "resp", info)
 				return nil, huma.Error404NotFound("file not found")
 			}
 
@@ -117,7 +117,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				break
 			}
 			if item == nil {
-				slog.Debug("no file with correct type found", "file_id", req.FileId, "resp", info)
+				slog.Debug("no file with correct type found", "file_id", req.FileID, "resp", info)
 				return nil, huma.Error404NotFound("file not found")
 			}
 

@@ -57,7 +57,7 @@ func GetStoreInfo(ctx context.Context, appID uint32) (*AppInfo, error) {
 type StoreAppDetails map[string]AppDetails
 
 type Subs struct {
-	Packageid                int    `json:"packageid"`
+	PackageID                int    `json:"packageid"`
 	PercentSavingsText       string `json:"percent_savings_text"`
 	PercentSavings           int    `json:"percent_savings"`
 	OptionText               string `json:"option_text"`
