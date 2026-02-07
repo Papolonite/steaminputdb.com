@@ -1,5 +1,5 @@
 <script lang="ts">
-import SC2 from '$lib/assets/SC2_Googley.svg?component';
+import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import { onMount } from 'svelte';
 let eyes = $state<{
 	left: HTMLElement;
@@ -114,13 +114,13 @@ p {
 	place-items: center;
 	margin-top: 2em;
 	gap: 1em;
-	& :first-child {
+	& > :first-child {
 		font-size: 1.8em;
 		@media screen and (max-width: 400px) {
 			font-size: 1.5em;
 		}
 	}
-	& :last-child {
+	& > :last-child {
 		color: var(--highlight-color);
 		font-size: 2em;
 		font-weight: bold;
