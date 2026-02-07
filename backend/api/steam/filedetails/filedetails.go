@@ -36,8 +36,8 @@ func (r *ResponseBodyWrapper) fileDetailsQueryResponse() {}
 
 type Request struct {
 	FileId            uint32 `query:"file_id" required:"true"`
-	PlaytimeStatsDays uint32 `query:"playtime_stats,omitempty,omitzero" default:"30"` // days
-	Raw               bool   `query:"raw,omitempty" default:"false"`                  // if true, returns the raw steamapi.PublishedFileDetails instead of the processed ConfigResponseItem
+	PlaytimeStatsDays uint32 `query:"playtime_stats,omitempty,omitzero" default:"30" doc:"Number of days for playtime statistics"` // days
+	Raw               bool   `query:"raw,omitempty" default:"false"`                                                               // if true, returns the raw steamapi.PublishedFileDetails instead of the processed ConfigResponseItem
 }
 
 func RegisterRoute(a huma.API) {
@@ -46,11 +46,13 @@ func RegisterRoute(a huma.API) {
 	huma.Register(
 		a,
 		huma.Operation{
-			Method:      http.MethodGet,
-			Path:        "/v1/steam/filedetails",
-			Tags:        []string{"steam", "filedetails"},
-			Summary:     "Get Steam file details",
-			Description: "Retrieve file details from Steam Store for a given file ID",
+			Method:  http.MethodGet,
+			Path:    "/v1/steam/filedetails",
+			Tags:    []string{"steam", "filedetails"},
+			Summary: "Get Controller config details",
+			Description: `
+Retrieve details for a given controller config file ID.  
+If a non-controller config file ID is provided, this will respond with a 404`,
 			Errors: []int{
 				http.StatusBadGateway, http.StatusNotFound,
 			},
@@ -60,7 +62,7 @@ func RegisterRoute(a huma.API) {
 						"application/json": {
 							Schema: &huma.Schema{
 								OneOf: []*huma.Schema{
-									registry.Schema(reflect.TypeFor[configs.ConfigsResponse](), true, ""),
+									registry.Schema(reflect.TypeFor[configs.ConfigResponseItem](), true, ""),
 									registry.Schema(reflect.TypeFor[steamapi.CPublishedFile_GetDetails_Response](), true, ""),
 								},
 							},

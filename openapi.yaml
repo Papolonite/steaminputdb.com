@@ -352,6 +352,16 @@ components:
         - store_url_path
         - type
       type: object
+    CPublishedFile_GetDetails_Response:
+      additionalProperties: false
+      properties:
+        publishedfiledetails:
+          items:
+            $ref: "#/components/schemas/PublishedFileDetails"
+          type:
+            - array
+            - "null"
+      type: object
     CPublishedFile_QueryFiles_Response:
       additionalProperties: false
       properties:
@@ -2585,6 +2595,74 @@ paths:
       tags:
         - steam
         - app
+  /v1/steam/filedetails:
+    get:
+      description: |-
+
+        Retrieve details for a given controller config file ID.  
+        If a non-controller config file ID is provided, this will respond with a 404
+      parameters:
+        - explode: false
+          in: query
+          name: file_id
+          required: true
+          schema:
+            format: int32
+            minimum: 0
+            type: integer
+        - description: Number of days for playtime statistics
+          explode: false
+          in: query
+          name: playtime_stats
+          schema:
+            default: 30
+            description: Number of days for playtime statistics
+            format: int32
+            minimum: 0
+            type: integer
+        - explode: false
+          in: query
+          name: raw
+          schema:
+            default: false
+            type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ConfigResponseItem"
+                  - $ref: "#/components/schemas/CPublishedFile_GetDetails_Response"
+          description: OK
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Not Found
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Internal Server Error
+        "502":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Bad Gateway
+      summary: Get Controller config details
+      tags:
+        - steam
+        - filedetails
   /v1/steam/login:
     get:
       description: Authenticate user via Steam OpenID and return JWT token in Cookie
