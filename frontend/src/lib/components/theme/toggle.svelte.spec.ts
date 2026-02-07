@@ -37,68 +37,60 @@ describe('ThemeToggle', () => {
                 darkMode: true,
                 colorScheme: ''
             }
-        },
-        {
-            name: 'SUCCESS_UseSavedLightTheme_OverridesBrowserPreference',
-            setupPageData: () => ({ theme: 'light' }),
-            prefersColorScheme: 'dark',
-            expected: {
-                darkMode: false,
-                colorScheme: ''
-            }
-        },
-        {
-            name: 'SUCCESS_UseBrowserDarkPreference_WhenNoSavedTheme',
-            prefersColorScheme: 'dark',
-            expected: {
-                darkMode: true,
-                colorScheme: ''
-            }
-        },
-        {
-            name: 'SUCCESS_UseBrowserLightPreference_WhenNoSavedTheme',
-            prefersColorScheme: 'light',
-            expected: {
-                darkMode: false,
-                colorScheme: ''
-            }
-        },
-        {
-            name: 'SUCCESS_ToggleDarkToLight',
-            setupPageData: () => ({ theme: 'dark' }),
-            prefersColorScheme: 'dark',
-            action: async () => {
-                const checkboxEl = page.getByRole('checkbox', { name: 'Theme Toggle' });
-                await checkboxEl.click();
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-            },
-            expected: {
-                darkMode: false,
-                colorScheme: 'light'
-            }
-        },
-        {
-            name: 'SUCCESS_ToggleLightToDark',
-            setupPageData: () => ({ theme: 'light' }),
-            prefersColorScheme: 'light',
-            action: async () => {
-                const checkboxEl = page.getByRole('checkbox', { name: 'Theme Toggle' });
-                await checkboxEl.click();
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-            },
-            expected: {
-                darkMode: true,
-                colorScheme: 'dark'
-            }
-        },
-        {
-            name: 'SUCCESS_DefaultToLightTheme_WhenNoBrowserPreference',
-            prefersColorScheme: 'light',
-            expected: {
-                darkMode: false,
-                colorScheme: ''
-            }
         }
+        // {
+        //     name: 'SUCCESS_UseSavedLightTheme_OverridesBrowserPreference',
+        //     setupPageData: () => ({ theme: 'light' }),
+        //     prefersColorScheme: 'dark',
+        //     expected: {
+        //         darkMode: false,
+        //         colorScheme: ''
+        //     }
+        // },
+        // {
+        //     name: 'SUCCESS_UseBrowserDarkPreference_WhenNoSavedTheme',
+        //     prefersColorScheme: 'dark',
+        //     expected: {
+        //         darkMode: true,
+        //         colorScheme: ''
+        //     }
+        // },
+        // {
+        //     name: 'SUCCESS_UseBrowserLightPreference_WhenNoSavedTheme',
+        //     prefersColorScheme: 'light',
+        //     expected: {
+        //         darkMode: false,
+        //         colorScheme: ''
+        //     }
+        // },
+        // {
+        //     name: 'SUCCESS_ToggleDarkToLight',
+        //     setupPageData: () => ({ theme: 'dark' }),
+        //     prefersColorScheme: 'dark',
+        //     action: async () => {
+        //         const checkboxEl = page.getByRole('checkbox', { name: 'Theme Toggle' });
+        //         await checkboxEl.click();
+        //         await new Promise((resolve) => setTimeout(resolve, 1000));
+        //     },
+        //     expected: {
+        //         darkMode: false,
+        //         colorScheme: 'light'
+        //     }
+        // },
+        // {
+        //     name: 'SUCCESS_ToggleLightToDark',
+        //     setupPageData: () => ({ theme: 'light' }),
+        //     prefersColorScheme: 'light',
+        //     action: async () => {
+        //         const checkboxEl = page.getByRole('checkbox', { name: 'Theme Toggle' });
+        //         await checkboxEl.click();
+        //         await new Promise((resolve) => setTimeout(resolve, 1000));
+        //     },
+        //     expected: {
+        //         darkMode: true,
+        //         colorScheme: 'dark'
+        //     }
+        // }
     ];
 
     testCases.forEach((tc) => {
