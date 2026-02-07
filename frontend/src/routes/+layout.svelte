@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onNavigate } from '$app/navigation';
-import favicon from '$lib/assets/favicon.svg';
+import favicon from '$lib/assets/favicon.svg?url';
 import Footer from '$lib/components/Footer.svelte';
 import Header from '$lib/components/header/Header.svelte';
 import '../css/main.pcss';
