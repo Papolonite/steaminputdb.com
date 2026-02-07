@@ -1,0 +1,202 @@
+package filedetails
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"net/http"
+	"reflect"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/Alia5/steaminputdb.com/api/search/configs"
+	"github.com/Alia5/steaminputdb.com/steamapi"
+	"github.com/danielgtaylor/huma/v2"
+)
+
+var ControllerConfigFileTypeReturn = uint32(12) // steam api returns 12, query uses 15? o.O
+
+type Response struct {
+	Body responseBody
+}
+
+type raw steamapi.CPublishedFile_GetDetails_Response
+
+type responseBody interface {
+	fileDetailsQueryResponse()
+}
+
+type ResponseBodyWrapper struct {
+	configs.ConfigResponseItem
+}
+
+func (r *raw) fileDetailsQueryResponse()                 {}
+func (r *ResponseBodyWrapper) fileDetailsQueryResponse() {}
+
+type Request struct {
+	FileId            uint32 `query:"file_id" required:"true"`
+	PlaytimeStatsDays uint32 `query:"playtime_stats,omitempty,omitzero" default:"30"` // days
+	Raw               bool   `query:"raw,omitempty" default:"false"`                  // if true, returns the raw steamapi.PublishedFileDetails instead of the processed ConfigResponseItem
+}
+
+func RegisterRoute(a huma.API) {
+	registry := a.OpenAPI().Components.Schemas
+
+	huma.Register(
+		a,
+		huma.Operation{
+			Method:      http.MethodGet,
+			Path:        "/v1/steam/filedetails",
+			Tags:        []string{"steam", "filedetails"},
+			Summary:     "Get Steam file details",
+			Description: "Retrieve file details from Steam Store for a given file ID",
+			Errors: []int{
+				http.StatusBadGateway, http.StatusNotFound,
+			},
+			Responses: map[string]*huma.Response{
+				"200": {
+					Content: map[string]*huma.MediaType{
+						"application/json": {
+							Schema: &huma.Schema{
+								OneOf: []*huma.Schema{
+									registry.Schema(reflect.TypeFor[configs.ConfigsResponse](), true, ""),
+									registry.Schema(reflect.TypeFor[steamapi.CPublishedFile_GetDetails_Response](), true, ""),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		func(c context.Context, req *Request) (*Response, error) {
+			info, err := steamapi.DefaultClient.GetFileDetails(c,
+				&steamapi.CPublishedFile_GetDetails_Request{
+					Publishedfileids: []uint64{
+						uint64(req.FileId),
+					},
+					Includekvtags:       new(true),
+					Includetags:         new(true),
+					Includevotes:        new(true),
+					Includemetadata:     new(true),
+					ReturnPlaytimeStats: &req.PlaytimeStatsDays,
+					Includereactions:    new(true),
+				})
+			if err != nil {
+				if errors.Is(err, steamapi.ErrInfoNotFound) {
+					return nil, huma.Error404NotFound("file not found")
+				}
+				if errors.Is(err, steamapi.ErrRequest) {
+					return nil, huma.Error502BadGateway("failed to get steam file details: %v", err)
+				}
+				return nil, err
+			}
+
+			if len(info.Publishedfiledetails) == 0 {
+				slog.Debug("no file details found", "file_id", req.FileId, "resp", info)
+				return nil, huma.Error404NotFound("file not found")
+			}
+
+			if req.Raw {
+				return &Response{
+					Body: (*raw)(info),
+				}, nil
+			}
+
+			var item *steamapi.PublishedFileDetails
+			for _, itm := range info.Publishedfiledetails {
+				if itm == nil {
+					continue
+				}
+				if itm.FileType == nil || *itm.FileType != ControllerConfigFileTypeReturn {
+					continue
+				}
+				item = itm
+				break
+			}
+			if item == nil {
+				slog.Debug("no file with correct type found", "file_id", req.FileId, "resp", info)
+				return nil, huma.Error404NotFound("file not found")
+			}
+
+			resultInfo := &configs.ConfigResponseItem{
+				Title:       item.Title,
+				Description: item.FileDescription,
+				// AppID:       &appID,
+				// AppIDString: &appIDStr,
+				FileID:    item.Publishedfileid,
+				FileName:  item.Filename,
+				FileURL:   item.FileUrl,
+				FileSize:  item.FileSize,
+				CreatorID: item.Creator,
+				// ControllerType: tags
+				// ControllerTypeNice: tags
+				// ControllerNative: tags
+				// TimeCreated: item.TimeCreated,
+				// TimeUpdated: item.TimeUpdated,
+				// Playtime: item.LifetimePlaytime,
+				PlaytimeSessions: item.LifetimePlaytimeSessions,
+				Subscriptions:    item.LifetimeSubscriptions,
+			}
+			if item.LifetimePlaytime != nil {
+				resultInfo.PlaytimeSeconds = item.LifetimePlaytime
+			}
+			if item.TimeCreated != nil {
+				resultInfo.TimeCreated = time.Unix(int64(*item.TimeCreated), 0)
+			}
+			if item.TimeUpdated != nil {
+				resultInfo.TimeUpdated = time.Unix(int64(*item.TimeUpdated), 0)
+			}
+			if item.Tags != nil {
+				for _, tag := range item.Tags {
+					if tag == nil || tag.Tag == nil {
+						continue
+					}
+					if *tag.Tag == "controller_native" {
+						resultInfo.ControllerNative = true
+					} else if strings.HasPrefix(*tag.Tag, "controller_") {
+						resultInfo.ControllerType = (*configs.ControllerType)(tag.Tag)
+					}
+				}
+			}
+			if resultInfo.ControllerType != nil && *resultInfo.ControllerType != "" {
+				resultInfo.ControllerTypeNice = resultInfo.ControllerType.NiceName()
+			}
+			if item.Kvtags != nil {
+				var appIDStr string
+				for _, tag := range item.Kvtags {
+					if tag == nil || tag.Key == nil || tag.Value == nil {
+						continue
+					}
+					kv := tag
+					if *kv.Key == "app" {
+						appIDStr = *kv.Value
+						break
+					}
+				}
+				var appID uint32
+				if appIDStr != "" {
+					var parsed uint64
+					parsed, err = strconv.ParseUint(appIDStr, 10, 32)
+					if err == nil {
+						appID = uint32(parsed)
+						resultInfo.AppID = &appID
+					}
+				}
+				resultInfo.AppIDString = &appIDStr
+			}
+
+			if item.VoteData != nil {
+				resultInfo.Votes.Score = item.VoteData.Score
+				resultInfo.Votes.Up = item.VoteData.VotesUp
+				resultInfo.Votes.Down = item.VoteData.VotesDown
+			}
+
+			return &Response{
+				Body: &ResponseBodyWrapper{
+					ConfigResponseItem: *resultInfo,
+				},
+			}, nil
+		},
+	)
+}
