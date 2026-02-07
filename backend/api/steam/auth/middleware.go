@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Alia5/steaminputdb.com/api/ctx"
+	"github.com/Alia5/steaminputdb.com/config"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -21,7 +22,7 @@ func Middleware(a huma.API) func(c huma.Context, next func(huma.Context)) {
 		}
 
 		token, err := jwt.Parse(cookie.Value, func(t *jwt.Token) (any, error) {
-			return []byte("TODO:FIXME!"), nil
+			return []byte(config.Parsed.JWTSecret), nil
 		}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}))
 		if err != nil || !token.Valid {
 			err := huma.WriteErr(a, c, http.StatusUnauthorized, "invalid token")

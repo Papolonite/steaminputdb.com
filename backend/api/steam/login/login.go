@@ -56,7 +56,6 @@ type Response struct {
 	URL         string `header:"Location"`
 }
 
-const jwtSecret = "TODO:FIXME!"
 const jwtValidity = time.Hour * 24
 
 func RegisterWithURL(a huma.API, steamURL string) {
@@ -208,7 +207,7 @@ func handler(loginURL string) func(ctx context.Context, req *OpenIDRequest) (*Re
 		}
 
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenString, err := token.SignedString([]byte(jwtSecret))
+		tokenString, err := token.SignedString([]byte(config.Parsed.JWTSecret))
 		if err != nil {
 			return nil, huma.Error500InternalServerError("failed to generate token")
 		}

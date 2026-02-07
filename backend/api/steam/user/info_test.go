@@ -59,7 +59,7 @@ func TestSteamUserInfo(t *testing.T) {
 					"exp": time.Now().Add(time.Hour).Unix(),
 				}
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
+				tokenString, _ := token.SignedString([]byte(config.Parsed.JWTSecret))
 				return tokenString
 			},
 			expectedStatus: http.StatusOK,
@@ -110,7 +110,7 @@ func TestSteamUserInfo(t *testing.T) {
 					"exp": time.Now().Add(time.Hour).Unix(),
 				}
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
+				tokenString, _ := token.SignedString([]byte(config.Parsed.JWTSecret))
 				return tokenString
 			},
 			expectedStatus: http.StatusBadGateway,
@@ -133,7 +133,7 @@ func TestSteamUserInfo(t *testing.T) {
 					"exp": time.Now().Add(time.Hour).Unix(),
 				}
 				token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-				tokenString, _ := token.SignedString([]byte("TODO:FIXME!"))
+				tokenString, _ := token.SignedString([]byte(config.Parsed.JWTSecret))
 				return tokenString
 			},
 			expectedStatus:   http.StatusNotFound,

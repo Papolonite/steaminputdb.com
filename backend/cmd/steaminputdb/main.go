@@ -57,6 +57,10 @@ func main() {
 	logging.SetupDefault(cfg.LogLevel)
 	config.Parsed = cfg
 
+	if config.Parsed.JWTSecret == "" || config.Parsed.JWTSecret == "testenv" {
+		panic("JWT secret must be set")
+	}
+
 	err := db.Init(cfg.DB)
 	if err != nil {
 		slog.Error("Failed to initialize database", "error", err)

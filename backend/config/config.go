@@ -9,6 +9,7 @@ type Config struct {
 	API         API     `embed:"" prefix:"api-"`
 	Metrics     Metrics `embed:"" prefix:"metrics-"`
 	DB          DB      `embed:"" prefix:"db-"`
+	JWTSecret   string  `help:"JWT secret for signing tokens" default:"testenv" env:"JWT_SECRET"`
 }
 
 type API struct {
