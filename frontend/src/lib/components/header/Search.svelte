@@ -57,9 +57,11 @@ const fetchLivePreview = (search_term = '') => {
 			debounced.unlock(true);
 		});
 };
-if ((previewResults?.games?.length || 0) === 0 || (previewResults?.configs?.length || 0) === 0) {
-	void fetchLivePreview();
-}
+(() => {
+	if ((previewResults?.games?.length || 0) === 0 || (previewResults?.configs?.length || 0) === 0) {
+		void fetchLivePreview();
+	}
+})();
 </script>
 
 <search onfocusin={() => (focusState.input = true)} onfocusout={() => (focusState.input = false)}>

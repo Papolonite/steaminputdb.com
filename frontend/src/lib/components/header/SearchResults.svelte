@@ -194,6 +194,9 @@ $effect(() => {
 	& > :last-child {
 		& .thumb {
 			border-radius: 0 0 0 0.7em;
+			& picture::before {
+				border-radius: 0 0 0 0.7em;
+			}
 		}
 		&::before {
 			display: none;
@@ -207,8 +210,9 @@ $effect(() => {
 	}
 
 	overflow: clip;
-	overflow-clip-margin: 0;
 	border-radius: 0 0 1em 1em;
+
+	--transition-delay: var(--transition-duration);
 
 	&::after {
 		content: '';
@@ -222,10 +226,10 @@ $effect(() => {
 		opacity: 0;
 
 		transition:
-			top calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903),
-			bottom calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903),
-			left calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903),
-			right calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903),
+			top calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903)
+				var(--transition-delay),
+			bottom calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903)
+				var(--transition-delay),
 			opacity var(--transition-duration) var(--default-ease);
 
 		position-anchor: --hovered-link;
@@ -241,6 +245,11 @@ $effect(() => {
 		right: anchor(right);
 		bottom: anchor(bottom);
 		opacity: 0.3;
+		--transition-delay: 0ms;
+	}
+	&:has(a:hover:is(:last-child))::after,
+	&:has(a:focus-visible:is(:last-child))::after {
+		border-radius: 0 0 1em 1em;
 	}
 }
 
@@ -252,7 +261,6 @@ a {
 	row-gap: 0;
 	grid-template-columns: 33% 66%;
 	color: var(--text-color);
-	overflow: hidden;
 	position: relative;
 	isolation: isolate;
 	&::before {
