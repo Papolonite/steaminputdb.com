@@ -20,21 +20,21 @@ a {
 	border-radius: 0.1em;
 }
 
-a:not(.button) {
+a:not(.button):not(.plain) {
 	&:hover,
 	&:focus-visible {
 		outline: 1px solid transparent;
 	}
 }
 
-a:not(.button):has(+ :hover) {
+a:not(.button):not(.plain):has(+ :hover) {
 	&::after {
 		translate: 100%;
 		--scale-delay: var(--transition-duration);
 		--translate-delay: var(--transition-duration);
 	}
 }
-a:not(.button)::after {
+a:not(.button):not(.plain)::after {
 	content: '';
 	height: 0.1em;
 	width: 100%;
@@ -47,8 +47,8 @@ a:not(.button)::after {
 		scale var(--transition-duration) var(--scale-delay, 0ms) var(--default-ease),
 		translate calc(var(--transition-duration) * 2) var(--translate-delay, 0ms) var(--default-ease);
 }
-a:not(.button):hover,
-a:not(.button):focus-within {
+a:not(.button):not(.plain):hover,
+a:not(.button):not(.plain):focus-within {
 	&::after {
 		scale: 1 1;
 	}

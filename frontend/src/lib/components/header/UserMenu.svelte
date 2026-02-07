@@ -6,7 +6,9 @@ const userInfo = $state(page.data.userInfo);
 
 <a href={resolve('/logout')}>
 	{#if userInfo?.avatar}
-		<enhanced:img src={userInfo.avatar} alt="User Avatar" height="100%"></enhanced:img>
+		<picture>
+			<enhanced:img src={userInfo.avatar} alt="User Avatar" height="100%"></enhanced:img>
+		</picture>
 	{:else}
 		<span>{userInfo?.personaname?.split(/(\.|\[|\]|\s)/g)?.pop()?.[0] || '¯\\_(ツ)_/¯'}</span>
 	{/if}

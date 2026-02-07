@@ -34,9 +34,7 @@ const toggleTheme = () => {
 		return;
 	}
 	try {
-		// firefox does not support view-transition OPTIONS yet...
-		// it doesnt show the same transition artifacts as chrome for some reason
-		// so no view-transition is actually fine!
+		// for firefox it'd be better to not use a view-transition here, but oh well...
 		document.startViewTransition({
 			types: ['theme'],
 			update: wrap
@@ -83,10 +81,12 @@ onMount(() => {
 	position: relative;
 	&::view-transition-old(theme, theme-icon) {
 		animation-name: none !important;
+		animation: none !important;
 	}
 
 	&::view-transition-new(theme, theme-icon) {
 		animation-name: none !important;
+		animation: none !important;
 	}
 }
 

@@ -66,7 +66,11 @@ header {
 	padding: 1em;
 
 	background: var(--card-background-noise);
+	background-color: var(--card-color);
 	width: 100%;
+	overflow-x: clip;
+
+	z-index: 1;
 
 	display: grid;
 	grid-template-columns: minmax(3.2em, 1fr) auto minmax(2em, 1fr);
@@ -96,6 +100,7 @@ header {
 		overflow: clip;
 		max-width: 100%;
 		padding: 0.25em;
+		overflow-clip-margin: 2em;
 	}
 }
 .home {

@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/Alia5/steaminputdb.com/api/steam/appinfo"
 	"github.com/Alia5/steaminputdb.com/api/steam/login"
 	"github.com/Alia5/steaminputdb.com/api/steam/user"
 	"github.com/danielgtaylor/huma/v2"
@@ -13,6 +14,7 @@ import (
 func RegisterRoutes(a huma.API) {
 	login.RegisterRoutes(a)
 	user.RegisterRoutes(a)
+	appinfo.RegisterRoute(a)
 }
 
 func OpenIDAuthorizationURL(callbackAddress string) string {

@@ -1,10 +1,14 @@
 <script lang="ts">
+import type { HTMLInputAttributes } from 'svelte/elements';
 import IcOutlineSearch from '~icons/ic/outline-search';
 let {
-	value = $bindable()
+	value = $bindable(),
+	...props
 }: {
 	value?: unknown;
-} = $props();
+	'--box-shadow'?: string;
+	'--font-size'?: string;
+} & HTMLInputAttributes = $props();
 </script>
 
 <label for="config-search">
@@ -13,8 +17,11 @@ let {
 		name="config-search"
 		type="text"
 		bind:value={value}
+		{...props}
 		placeholder="Search configurations or games..." />
-	<IcOutlineSearch />
+	<button class="plain" type="submit">
+		<IcOutlineSearch />
+	</button>
 </label>
 
 <style lang="postcss">
@@ -55,14 +62,6 @@ label {
 		background: var(--background-neutral-alpha);
 		border-radius: 100em;
 	}
-
-	& > :global(svg) {
-		width: var(--font-size);
-		height: var(--font-size);
-		margin-right: 1em;
-		opacity: 0.5;
-		transition: all var(--transition-duration) var(--default-ease);
-	}
 }
 input[type='text'] {
 	font-size: var(--font-size);
@@ -75,6 +74,28 @@ input[type='text'] {
 	outline: none;
 	&:is(:hover, :focus) {
 		outline: none;
+	}
+}
+
+button {
+	padding: 0;
+	outline: 1px solid transparent;
+	box-shadow: none;
+	border: none;
+	height: 100%;
+	display: grid;
+	place-items: center;
+	& > :global(svg) {
+		width: var(--font-size);
+		height: var(--font-size);
+		margin-right: 1em;
+		opacity: 0.5;
+		transition: all var(--transition-duration) var(--default-ease);
+	}
+	&:hover,
+	&:focus-visible {
+		color: var(--highlight-color);
+		filter: drop-shadow(0 0 0.2em var(--color-primary));
 	}
 }
 </style>
