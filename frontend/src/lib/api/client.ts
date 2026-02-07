@@ -1,16 +1,22 @@
-import { PUBLIC_API_BASE_URL, PUBLIC_API_BASE_URL_LOCAL, PUBLIC_DEV } from '$env/static/public';
+import { browser } from '$app/environment';
+import { PUBLIC_API_BASE_URL, PUBLIC_API_BASE_URL_LOCAL, PUBLIC_API_SERVER_URL, PUBLIC_DEV } from '$env/static/public';
 import { log } from '$lib/log';
 import createClient, { type FetchResponse } from 'openapi-fetch';
 import type { paths } from './openapi';
 
 
-log.debug('Creating API client with', 'url', PUBLIC_DEV ? PUBLIC_API_BASE_URL_LOCAL : PUBLIC_API_BASE_URL);
+let apiURL = PUBLIC_DEV ? PUBLIC_API_BASE_URL_LOCAL : PUBLIC_API_BASE_URL;
+if (!browser) {
+    apiURL = PUBLIC_API_SERVER_URL || apiURL;
+}
+
+log.debug('Creating API client with', 'url', apiURL);
 export const client = createClient<paths>({
-    baseUrl: PUBLIC_DEV ? PUBLIC_API_BASE_URL_LOCAL : PUBLIC_API_BASE_URL
+    baseUrl: apiURL
 });
 
 export const clientWithSvelteFetch = (fetch: typeof window.fetch) => createClient<paths>({
-    baseUrl: PUBLIC_DEV ? PUBLIC_API_BASE_URL_LOCAL : PUBLIC_API_BASE_URL,
+    baseUrl: apiURL,
     fetch
 });
 
