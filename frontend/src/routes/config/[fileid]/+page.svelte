@@ -6,6 +6,7 @@ import { sectionInfo } from './sectionInfo.svelte';
 
 const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.data.fileInfo);
 const appInfo: components['schemas']['AppInfo'] = $derived(page.data.appInfo);
+const creatorInfo: components['schemas']['PlayerInfo'] | null = $derived(page.data.creatorInfo);
 
 $inspect(page);
 </script>
@@ -13,7 +14,7 @@ $inspect(page);
 <main style={appInfo?.background ? `--bg: url('${appInfo?.background}')` : ''}>
 	<div>
 		{@render sectionHead({ fileInfo, appInfo })}
-		{@render sectionInfo({ fileInfo, appInfo })}
+		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}
 	</div>
 </main>
 

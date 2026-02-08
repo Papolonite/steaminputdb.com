@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -30,34 +31,40 @@ type Response struct {
 	Body PlayerInfo
 }
 
-func RegisterWithURL(a huma.API) {
-	registerRoutes(a)
+type UserInfoRequest struct {
+	UserID string `query:"user_id,omitempty,omitzero"` // this is the user_id query parameter, but it's named something else to avoid confusion with the steamID that can be extracted from the context. if this is 0, we'll attempt to use the steamID from the context instead.
 }
 
 func RegisterRoutes(a huma.API) {
-	registerRoutes(a)
-}
-func registerRoutes(a huma.API) {
 	huma.Register(
 		a,
 		huma.Operation{
-			Method:      http.MethodGet,
-			Path:        "/v1/steam/userinfo",
-			Tags:        []string{"steam", "user"},
-			Summary:     "Get Steam user info",
-			Description: "Retrieve user information from Steam for the currently authenticated user",
+			Method:  http.MethodGet,
+			Path:    "/v1/steam/userinfo",
+			Tags:    []string{"steam", "user"},
+			Summary: "Get Steam user info",
+			Description: `Retrieve user information from Steam for the provided userId,  
+or for attempt authenticated user if no userId is provided  
+Returns 401 if no id provided and token is invalid or missing`,
 			Errors: []int{
-				http.StatusBadGateway, http.StatusUnauthorized,
+				http.StatusBadGateway, http.StatusUnauthorized, http.StatusNotFound,
 			},
 			Middlewares: huma.Middlewares{
-				auth.Middleware(a),
+				auth.ExtractSteamIDMiddleware,
 			},
 		},
-		func(c context.Context, _ *struct{}) (*Response, error) {
+		func(c context.Context, req *UserInfoRequest) (*Response, error) {
+			slog.Debug("get_user_info", "req", req, "uid", req.UserID)
 
-			steamID, ok := c.Value(ctx.KeySteamID).(string)
-			if !ok || steamID == "" {
-				return nil, huma.Error401Unauthorized("missing steamid")
+			var steamID string
+			if req.UserID == "" {
+				var ok bool
+				steamID, ok = c.Value(ctx.KeySteamID).(string)
+				if !ok || steamID == "" {
+					return nil, huma.Error401Unauthorized("no authentication token provided")
+				}
+			} else {
+				steamID = req.UserID
 			}
 
 			info, err := steamapi.DefaultClient.GetPlayerSummaries(c, steamID)

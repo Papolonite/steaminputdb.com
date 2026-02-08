@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func Middleware(a huma.API) func(c huma.Context, next func(huma.Context)) {
+func ForceAuthMiddleware(a huma.API) func(c huma.Context, next func(huma.Context)) {
 	return func(c huma.Context, next func(huma.Context)) {
 		cookie, err := huma.ReadCookie(c, "token")
 		if err != nil {
@@ -53,4 +54,37 @@ func Middleware(a huma.API) func(c huma.Context, next func(huma.Context)) {
 		c = huma.WithValue(c, ctx.KeySteamID, steamID)
 		next(c)
 	}
+}
+
+func ExtractSteamIDMiddleware(c huma.Context, next func(huma.Context)) {
+	c = huma.WithContext(c, context.Background())
+	cookie, err := huma.ReadCookie(c, "token")
+	if err != nil {
+		next(c)
+		return
+	}
+
+	token, err := jwt.Parse(cookie.Value, func(t *jwt.Token) (any, error) {
+		next(c)
+		return []byte(config.Parsed.JWTSecret), nil
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}))
+	if err != nil || !token.Valid {
+		next(c)
+		return
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		next(c)
+		return
+	}
+
+	steamID, ok := claims["sub"].(string)
+	if !ok || steamID == "" {
+		next(c)
+		return
+	}
+
+	c = huma.WithValue(c, ctx.KeySteamID, steamID)
+	next(c)
 }

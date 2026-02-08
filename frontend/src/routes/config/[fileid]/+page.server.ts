@@ -1,4 +1,4 @@
-import { clientWithSvelteFetch, type ResponseType } from '$lib/api/client';
+import { client, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import { log } from '$lib/log';
 import { error } from '@sveltejs/kit';
@@ -14,9 +14,13 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         throw error(400, 'Invalid file ID');
     }
 
+    // lets not use sveltes fetch here...
+    // it somehow fails in unidici
+    // havent looked.
+    // don't care
     let infoResp: Awaited<ResponseType<'GET', '/v1/steam/filedetails'>>;
     try {
-        infoResp = await clientWithSvelteFetch(fetch).GET('/v1/steam/filedetails', {
+        infoResp = await client.GET('/v1/steam/filedetails', {
             params: {
                 query: {
                     file_id,
@@ -48,38 +52,76 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         fileInfo: components['schemas']['ConfigResponseItem'];
         nonSteam: boolean;
         appInfo?: components['schemas']['AppInfo'];
+        creatorInfo?: components['schemas']['PlayerInfo'];
     } = {
         fileInfo,
         nonSteam: ! (!!fileInfo.app_id && Number.isInteger(fileInfo.app_id))
     };
 
-    if (fileInfo.app_id) {
-        try {
-            const appInfoResp = await clientWithSvelteFetch(fetch).GET('/v1/steam/appinfo', {
-                params: {
-                    query: {
-                        app_id: fileInfo.app_id,
-                        raw: false
+    await Promise.allSettled([(async () => {
+
+
+        if (fileInfo.app_id) {
+            try {
+                const appInfoResp = await client.GET('/v1/steam/appinfo', {
+                    params: {
+                        query: {
+                            app_id: fileInfo.app_id,
+                            raw: false
+                        }
                     }
+                });
+                if (appInfoResp.error) {
+                    log.error(
+                        'Failed to fetch app details',
+                        'file_id', file_id,
+                        'app_id', fileInfo.app_id,
+                        'status', appInfoResp.error.status,
+                        'error', appInfoResp.error
+                    );
                 }
-            });
-            if (appInfoResp.error) {
-                log.error(
-                    'Failed to fetch app details',
-                    'file_id', file_id,
-                    'app_id', fileInfo.app_id,
-                    'status', appInfoResp.error.status,
-                    'error', appInfoResp.error
-                );
+                if (!appInfoResp.data) {
+                    log.error('No app details data received',' file_id', file_id, 'app_id', fileInfo.app_id);
+                }
+                resData.appInfo = appInfoResp.data;
+            } catch (err) {
+                log.error('Failed to fetch app details', 'file_id', file_id, 'app_id', fileInfo.app_id, 'error', err);
+
             }
-            if (!appInfoResp.data) {
-                log.error('No app details data received',' file_id', file_id, 'app_id', fileInfo.app_id);
-            }
-            resData.appInfo = appInfoResp.data;
-        } catch (err) {
-            log.error('Failed to fetch app details', 'file_id', file_id, 'app_id', fileInfo.app_id, 'error', err);
         }
-    }
+
+
+    })(), (async () => {
+
+
+        if (fileInfo.creator_id) {
+            try {
+                const creatorInfoResp = await client.GET('/v1/steam/userinfo', {
+                    params: {
+                        query: {
+                            user_id: `${fileInfo.creator_id}`
+                        }
+                    }
+                });
+                if (creatorInfoResp.error) {
+                    log.error(
+                        'Failed to fetch creator details',
+                        'file_id', file_id,
+                        'creator_id', fileInfo.creator_id,
+                        'status', creatorInfoResp.error.status,
+                        'error', creatorInfoResp.error
+                    );
+                }
+                if (!creatorInfoResp.data) {
+                    log.error('No creator details data received',' file_id', file_id,'creator_id', fileInfo.creator_id);
+                }
+                resData.creatorInfo = creatorInfoResp.data;
+            } catch (err) {
+                log.error('Failed to fetch creator details', 'file_id', file_id, 'creator_id', fileInfo.creator_id, 'error', err);
+            }
+        }
+
+    })()]);
 
     return resData;
 

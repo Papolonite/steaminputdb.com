@@ -3059,7 +3059,16 @@ paths:
         - auth
   /v1/steam/userinfo:
     get:
-      description: Retrieve user information from Steam for the currently authenticated user
+      description: |-
+        Retrieve user information from Steam for the provided userId,  
+        or for attempt authenticated user if no userId is provided  
+        Returns 401 if no id provided and token is invalid or missing
+      parameters:
+        - explode: false
+          in: query
+          name: user_id
+          schema:
+            type: string
       responses:
         "200":
           content:
@@ -3073,6 +3082,18 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
           description: Unauthorized
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Not Found
+        "422":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Unprocessable Entity
         "500":
           content:
             application/problem+json:

@@ -54,7 +54,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			{#if creatorInfo}
 				<dt>Author</dt>
 				<dd>
-					{creatorInfo.personaname}
+					{creatorInfo.personaname} <i>(SteamID: {fileInfo.creator_id})</i>
 				</dd>
 			{/if}
 			<dt>Author ID</dt>
@@ -455,6 +455,7 @@ aside {
 			& > :nth-child(2n) {
 				font-size: 1em;
 				font-weight: normal;
+				text-align: center;
 			}
 
 			& i {
