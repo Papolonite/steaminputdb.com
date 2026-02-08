@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"context"
 	"log/slog"
 	"net/http"
 
@@ -57,7 +56,7 @@ func ForceAuthMiddleware(a huma.API) func(c huma.Context, next func(huma.Context
 }
 
 func ExtractSteamIDMiddleware(c huma.Context, next func(huma.Context)) {
-	c = huma.WithContext(c, context.Background())
+
 	cookie, err := huma.ReadCookie(c, "token")
 	if err != nil {
 		next(c)
@@ -65,7 +64,6 @@ func ExtractSteamIDMiddleware(c huma.Context, next func(huma.Context)) {
 	}
 
 	token, err := jwt.Parse(cookie.Value, func(t *jwt.Token) (any, error) {
-		next(c)
 		return []byte(config.Parsed.JWTSecret), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Name}))
 	if err != nil || !token.Valid {

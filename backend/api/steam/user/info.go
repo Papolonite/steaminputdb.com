@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -45,17 +44,15 @@ func RegisterRoutes(a huma.API) {
 			Summary: "Get Steam user info",
 			Description: `Retrieve user information from Steam for the provided userId,  
 or for attempt authenticated user if no userId is provided  
-Returns 401 if no id provided and token is invalid or missing`,
+Returns 401 if no id provided and token is invalid and 400 if everything is missing`,
 			Errors: []int{
-				http.StatusBadGateway, http.StatusUnauthorized, http.StatusNotFound,
+				http.StatusBadGateway, http.StatusUnauthorized, http.StatusNotFound, http.StatusBadRequest,
 			},
 			Middlewares: huma.Middlewares{
 				auth.ExtractSteamIDMiddleware,
 			},
 		},
 		func(c context.Context, req *UserInfoRequest) (*Response, error) {
-			slog.Debug("get_user_info", "req", req, "uid", req.UserID)
-
 			var steamID string
 			if req.UserID == "" {
 				var ok bool
@@ -65,6 +62,9 @@ Returns 401 if no id provided and token is invalid or missing`,
 				}
 			} else {
 				steamID = req.UserID
+			}
+			if steamID == "" {
+				return nil, huma.Error400BadRequest("no user ID provided")
 			}
 
 			info, err := steamapi.DefaultClient.GetPlayerSummaries(c, steamID)

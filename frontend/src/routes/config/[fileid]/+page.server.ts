@@ -1,4 +1,4 @@
-import { client, type ResponseType } from '$lib/api/client';
+import { clientWithSvelteFetch, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import { log } from '$lib/log';
 import { error } from '@sveltejs/kit';
@@ -14,10 +14,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         throw error(400, 'Invalid file ID');
     }
 
-    // lets not use sveltes fetch here...
-    // it somehow fails in unidici
-    // havent looked.
-    // don't care
+    const client = clientWithSvelteFetch(fetch);
     let infoResp: Awaited<ResponseType<'GET', '/v1/steam/filedetails'>>;
     try {
         infoResp = await client.GET('/v1/steam/filedetails', {
