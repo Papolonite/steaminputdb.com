@@ -444,6 +444,191 @@ components:
         - id
         - description
       type: object
+    ConfigDetailResponse:
+      additionalProperties: false
+      properties:
+        app_id:
+          examples:
+            - 420
+          format: int32
+          minimum: 0
+          type: integer
+        app_id_string:
+          description: AppID as string or name for Non-Steam Games
+          examples:
+            - "420"
+          type:
+            - string
+            - "null"
+        controller_native:
+          description: Unsure
+          examples:
+            - true
+          type: boolean
+        controller_type:
+          description: Type of controller this configuration is designed for
+          examples:
+            - controller_steamcontroller_gordon
+          type: string
+        controller_type_nice:
+          description: Human-friendly name of the controller type
+          examples:
+            - Steam Controller (2015)
+          type: string
+        creator_id:
+          description: Steam User ID of the configuration creator
+          examples:
+            - 76561198000000000
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        description:
+          examples:
+            - An awesome configuration for an awesome game
+          type:
+            - string
+            - "null"
+        file_id:
+          examples:
+            - 1234567890
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        file_name:
+          examples:
+            - controllerconfig.vdf
+          type:
+            - string
+            - "null"
+        file_size:
+          description: File size in bytes
+          examples:
+            - 2048
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        file_url:
+          examples:
+            - https://cdn.steamusercontent.com/ugc/UGCID/HASH
+          type:
+            - string
+            - "null"
+        lifetime_playtime_seconds:
+          description: Total playtime in seconds
+          examples:
+            - 4474585092
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        lifetime_playtime_sessions:
+          description: Total number of playtime sessions
+          examples:
+            - 1234
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        playtime_seconds:
+          description: Total playtime in seconds with the specified time period
+          examples:
+            - 4474585092
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        playtime_sessions:
+          description: Total number of playtime sessions within the specified time period
+          examples:
+            - 1234
+          format: int64
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        subscriptions:
+          description: Total number of Downloads
+          examples:
+            - 1500
+          format: int32
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        time_created:
+          format: date-time
+          type: string
+        time_updated:
+          format: date-time
+          type: string
+        title:
+          examples:
+            - My Awesome Config
+          type:
+            - string
+            - "null"
+        votes:
+          $ref: "#/components/schemas/ConfigDetailResponseVotesStruct"
+      required:
+        - playtime_seconds
+        - playtime_sessions
+        - title
+        - description
+        - app_id_string
+        - file_id
+        - file_name
+        - file_url
+        - file_size
+        - creator_id
+        - time_created
+        - time_updated
+        - lifetime_playtime_seconds
+        - lifetime_playtime_sessions
+        - subscriptions
+      type: object
+    ConfigDetailResponseVotesStruct:
+      additionalProperties: false
+      properties:
+        down:
+          description: Number of downvotes
+          examples:
+            - 20
+          format: int32
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        score:
+          description: Average vote score
+          examples:
+            - 4.5
+          format: float
+          type:
+            - number
+            - "null"
+        up:
+          description: Number of upvotes
+          examples:
+            - 100
+          format: int32
+          minimum: 0
+          type:
+            - integer
+            - "null"
+      required:
+        - score
+        - up
+        - down
+      type: object
     ConfigFilter:
       additionalProperties: false
       properties:
@@ -621,7 +806,7 @@ components:
           type:
             - string
             - "null"
-        playtime_seconds:
+        lifetime_playtime_seconds:
           description: Total playtime in seconds
           examples:
             - 4474585092
@@ -630,8 +815,8 @@ components:
           type:
             - integer
             - "null"
-        playtime_sessions:
-          description: Total number of playtime sessions(?)
+        lifetime_playtime_sessions:
+          description: Total number of playtime sessions
           examples:
             - 1234
           format: int64
@@ -673,8 +858,8 @@ components:
         - creator_id
         - time_created
         - time_updated
-        - playtime_seconds
-        - playtime_sessions
+        - lifetime_playtime_seconds
+        - lifetime_playtime_sessions
         - subscriptions
       type: object
     ConfigResponseItemVotesStruct:
@@ -2632,7 +2817,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/ConfigResponseItem"
+                  - $ref: "#/components/schemas/ConfigDetailResponse"
                   - $ref: "#/components/schemas/CPublishedFile_GetDetails_Response"
           description: OK
         "404":

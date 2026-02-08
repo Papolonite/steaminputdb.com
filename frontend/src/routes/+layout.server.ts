@@ -2,9 +2,8 @@ import { log } from '$lib/log';
 import type { LayoutServerLoad } from './$types';
 
 
-export const load: LayoutServerLoad = async ({ parent, cookies }) => {
+export const load: LayoutServerLoad = async ({ cookies }) => {
     const res = {
-        ...(await parent()),
         theme: cookies.get('theme')
     };
 

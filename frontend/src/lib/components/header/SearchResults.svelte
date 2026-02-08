@@ -98,26 +98,23 @@ $effect(() => {
 	<a class="plain" href={resolve(link_suffix as '/')}>
 		<div class="thumb">
 			{#if resultAppIdMap?.[app_id || 0]?.assets}
-				<!-- literally checked above... -->
-				<!-- eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain -->
-				{#each [resultAppIdMap[app_id!]!.assets!]! as assets, idx (idx)}
-					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
-						<enhanced:img
-							src={`${assetUrlBase}${assets.asset_url_format?.replace(
-								'${FILENAME}',
-								assets.small_capsule ??
-									assets.main_capsule ??
-									assets.header ??
-									assets.library_hero ??
-									assets.hero_capsule ??
-									assets.library_capsule ??
-									assets.page_background ??
-									'none.svg'
-							)}`}
-							alt="Thumbnail"
-							height="100%"></enhanced:img>
-					</picture>
-				{/each}
+				{@const assets = resultAppIdMap[app_id!]!.assets!}
+				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
+					<enhanced:img
+						src={`${assetUrlBase}${assets.asset_url_format?.replace(
+							'${FILENAME}',
+							assets.small_capsule ??
+								assets.main_capsule ??
+								assets.header ??
+								assets.library_hero ??
+								assets.hero_capsule ??
+								assets.library_capsule ??
+								assets.page_background ??
+								'none.svg'
+						)}`}
+						alt="Thumbnail"
+						height="100%"></enhanced:img>
+				</picture>
 			{:else if infoAppIdMap?.[app_id || 0]}
 				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
 					<enhanced:img

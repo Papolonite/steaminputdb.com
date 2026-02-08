@@ -27,12 +27,14 @@ type responseBody interface {
 	fileDetailsQueryResponse()
 }
 
-type ResponseBodyWrapper struct {
+type ConfigDetailResponse struct {
 	configs.ConfigResponseItem
+	PlaytimeSeconds  *uint64 `json:"playtime_seconds" example:"4474585092" doc:"Total playtime in seconds with the specified time period"`
+	PlaytimeSessions *uint64 `json:"playtime_sessions" example:"1234" doc:"Total number of playtime sessions within the specified time period"`
 }
 
-func (r *raw) fileDetailsQueryResponse()                 {}
-func (r *ResponseBodyWrapper) fileDetailsQueryResponse() {}
+func (r *raw) fileDetailsQueryResponse()                  {}
+func (r *ConfigDetailResponse) fileDetailsQueryResponse() {}
 
 type Request struct {
 	FileID            uint32 `query:"file_id" required:"true"`
@@ -62,7 +64,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 						"application/json": {
 							Schema: &huma.Schema{
 								OneOf: []*huma.Schema{
-									registry.Schema(reflect.TypeFor[configs.ConfigResponseItem](), true, ""),
+									registry.Schema(reflect.TypeFor[ConfigDetailResponse](), true, ""),
 									registry.Schema(reflect.TypeFor[steamapi.CPublishedFile_GetDetails_Response](), true, ""),
 								},
 							},
@@ -137,11 +139,11 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				// TimeCreated: item.TimeCreated,
 				// TimeUpdated: item.TimeUpdated,
 				// Playtime: item.LifetimePlaytime,
-				PlaytimeSessions: item.LifetimePlaytimeSessions,
-				Subscriptions:    item.LifetimeSubscriptions,
+				LifetimePlaytimeSessions: item.LifetimePlaytimeSessions,
+				Subscriptions:            item.LifetimeSubscriptions,
 			}
 			if item.LifetimePlaytime != nil {
-				resultInfo.PlaytimeSeconds = item.LifetimePlaytime
+				resultInfo.LifetimePlaytimeSeconds = item.LifetimePlaytime
 			}
 			if item.TimeCreated != nil {
 				resultInfo.TimeCreated = time.Unix(int64(*item.TimeCreated), 0)
@@ -193,11 +195,21 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				resultInfo.Votes.Up = item.VoteData.VotesUp
 				resultInfo.Votes.Down = item.VoteData.VotesDown
 			}
+			res := &ConfigDetailResponse{
+				ConfigResponseItem: *resultInfo,
+			}
+
+			if item.PlaytimeStats != nil {
+				if item.PlaytimeStats.PlaytimeSeconds != nil {
+					res.PlaytimeSeconds = item.PlaytimeStats.PlaytimeSeconds
+				}
+				if item.PlaytimeStats.NumSessions != nil {
+					res.PlaytimeSessions = item.PlaytimeStats.NumSessions
+				}
+			}
 
 			return &Response{
-				Body: &ResponseBodyWrapper{
-					ConfigResponseItem: *resultInfo,
-				},
+				Body: res,
 			}, nil
 		},
 	)

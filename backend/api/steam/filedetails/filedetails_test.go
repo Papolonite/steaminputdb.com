@@ -155,10 +155,10 @@ func TestFileDetails(t *testing.T) {
 				assert.True(t, got.TimeCreated.Equal(time.Unix(1700000000, 0)), "expected TimeCreated to match")
 				assert.True(t, got.TimeUpdated.Equal(time.Unix(1700000123, 0)), "expected TimeUpdated to match")
 
-				require.NotNil(t, got.PlaytimeSeconds)
-				assert.Equal(t, uint64(600), *got.PlaytimeSeconds)
-				require.NotNil(t, got.PlaytimeSessions)
-				assert.Equal(t, uint64(42), *got.PlaytimeSessions)
+				require.NotNil(t, got.LifetimePlaytimeSeconds)
+				assert.Equal(t, uint64(600), *got.LifetimePlaytimeSeconds)
+				require.NotNil(t, got.LifetimePlaytimeSessions)
+				assert.Equal(t, uint64(42), *got.LifetimePlaytimeSessions)
 				require.NotNil(t, got.Subscriptions)
 				assert.Equal(t, uint32(9001), *got.Subscriptions)
 

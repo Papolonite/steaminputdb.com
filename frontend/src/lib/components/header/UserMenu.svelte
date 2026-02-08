@@ -1,7 +1,7 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
-const userInfo = $state(page.data.userInfo);
+const userInfo = $derived(page.data.userInfo);
 </script>
 
 <a href={resolve('/logout')}>

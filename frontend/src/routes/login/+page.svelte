@@ -13,8 +13,7 @@ import Icon from '@iconify/svelte';
 			website is not affiliated with Valve Corporation or Steam. You can delete your account and all of the
 			data at any time. We use cookies to keep your session active.
 		</p>
-		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-		<a class="button" href={buildSteamLoginUrl(page.url.origin)}
+		<a class="button" href={buildSteamLoginUrl(page.url.origin)} rel="external"
 			>Sign in through <Icon icon="mdi:steam" width="1.4em" height="1.4em" /> Steam
 		</a>
 	</div>

@@ -112,7 +112,7 @@ dialog[open] {
 	margin-top: 0.5em;
 	background: var(--card-background-noise);
 	background-color: var(--card-color);
-	box-shadow: 0 0.5em 1em -0.5em var(--shadow-color);
+	box-shadow: 0 0.5em 1.5em -0.5em var(--shadow-color);
 
 	&::before {
 		@supports (corner-shape: scoop) {

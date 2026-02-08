@@ -61,6 +61,7 @@
     },
     "dependencies": {
         "@sveltejs/adapter-node": "^5.5.2",
+        "date-fns": "^4.1.0",
         "openapi-fetch": "^0.15.0",
         "prom-client": "^15.1.3"
     }

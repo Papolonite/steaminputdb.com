@@ -154,12 +154,12 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 			// TimeCreated: item.TimeCreated,
 			// TimeUpdated: item.TimeUpdated,
 			// Playtime: item.LifetimePlaytime,
-			PlaytimeSessions: item.LifetimePlaytimeSessions,
-			Subscriptions:    item.LifetimeSubscriptions,
+			LifetimePlaytimeSessions: item.LifetimePlaytimeSessions,
+			Subscriptions:            item.LifetimeSubscriptions,
 			// Votes: if requested
 		}
 		if item.LifetimePlaytime != nil {
-			resultItems[i].PlaytimeSeconds = item.LifetimePlaytime
+			resultItems[i].LifetimePlaytimeSeconds = item.LifetimePlaytime
 		}
 		if item.TimeCreated != nil {
 			resultItems[i].TimeCreated = time.Unix(int64(*item.TimeCreated), 0)

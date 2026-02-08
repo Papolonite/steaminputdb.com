@@ -3,6 +3,17 @@ import { page } from '$app/state';
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import { onMount } from 'svelte';
 
+const statusCodeNames: Record<number, string> = {
+	400: 'Bad Request',
+	401: 'Unauthorized',
+	403: 'Forbidden',
+	404: 'Not Found',
+	// 500: 'Internal Server Error',
+	502: 'Bad Gateway',
+	503: 'Service Unavailable',
+	504: 'Gateway Timeout'
+};
+
 let eyes = $state<{
 	left: HTMLElement;
 	right: HTMLElement;
@@ -43,6 +54,9 @@ onMount(() => {
 <main>
 	<div>
 		<h1>{page.status}</h1>
+		{#if statusCodeNames[page.status] && statusCodeNames[page.status] !== page.error?.message}
+			<h3>{statusCodeNames[page.status]}</h3>
+		{/if}
 		<h2>{page.error?.message}</h2>
 		<div id="sc2">
 			<SC2
@@ -74,6 +88,10 @@ h1 {
 h2 {
 	color: var(--highlight-color);
 	font-size: 2em;
+}
+
+h3 {
+	translate: 0 -1em;
 }
 
 #sc2 {

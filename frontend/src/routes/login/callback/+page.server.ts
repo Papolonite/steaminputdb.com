@@ -3,8 +3,7 @@ import { log } from '$lib/log';
 import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ parent, url }) => {
-    const parentData = await parent();
+export const load: PageServerLoad = async ({ url }) => {
 
     const openIdParams = url.searchParams.entries().reduce(
         (acc, [k, v]) => {
@@ -23,9 +22,7 @@ export const load: PageServerLoad = async ({ parent, url }) => {
     }
 
 
-    return {
-        ...parentData
-    };
+    return {};
 };
 
 

@@ -28,10 +28,10 @@
 		color-mix(in srgb, var(--color-primary), var(--text-color) 60%)
 	);
 	--inverse-text-color: light-dark(var(--text-color-dark), var(--text-color-light));
-	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 25%);
+	--text-muted: color-mix(in srgb, var(--text-color), var(--inverse-text-color) 20%);
 	--color-primary: light-dark(#8c4fe7, #a971ff);
 	--color-primary-active: color-mix(in srgb, var(--color-primary), var(--text-color) 75%);
-	--card-color: light-dark(#edecf7fc, #29262efc);
+	--card-color: light-dark(#edecf7cc, #29262efc);
 	--inverse-card-color: light-dark(#29262efc, #edecf7fc);
 	--background-color: light-dark(#f8f7fa, #171820);
 	--shadow-color: light-dark(#0f0f0f3f, #0e0e0ea1);
@@ -56,7 +56,10 @@
 		var(--background-neutral-alpha) 75%
 	);
 
+	--card-shadow: 0.1em 0.2em 0.5em 0 var(--shadow-color);
+
 	--bg-noise: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><filter id='noice'><feTurbulence type='fractalNoise' baseFrequency='1.24' numOctaves='4' stitchTiles='stitch'></feTurbulence><feColorMatrix type='saturate' values='0'></feColorMatrix><feComponentTransfer><feFuncR type='linear' slope='0.46'></feFuncR><feFuncG type='linear' slope='0.46'></feFuncG><feFuncB type='linear' slope='0.46'></feFuncB><feFuncA type='linear' slope='0.56'></feFuncA></feComponentTransfer><feComponentTransfer><feFuncR type='linear' slope='1.47' intercept='-0.23' /><feFuncG type='linear' slope='1.47' intercept='-0.23' /><feFuncB type='linear' slope='1.47' intercept='-0.23' /></feComponentTransfer></filter><rect width='100vw' height='100vh' filter='url(#noice)'></rect></svg>");
+	--bg-noise-transparent: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><filter id='noice'><feTurbulence type='fractalNoise' baseFrequency='1.24' numOctaves='4' stitchTiles='stitch'></feTurbulence><feColorMatrix type='saturate' values='0'></feColorMatrix><feComponentTransfer><feFuncR type='linear' slope='0.46'></feFuncR><feFuncG type='linear' slope='0.46'></feFuncG><feFuncB type='linear' slope='0.46'></feFuncB><feFuncA type='linear' slope='0.56'></feFuncA></feComponentTransfer><feComponentTransfer><feFuncR type='linear' slope='1.47' intercept='-0.23' /><feFuncG type='linear' slope='1.47' intercept='-0.23' /><feFuncB type='linear' slope='1.47' intercept='-0.23' /></feComponentTransfer></filter><rect width='100vw' height='100vh' filter='url(#noice) opacity(0.25)'></rect></svg>");
 	--noise-filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='1.24' numOctaves='4' stitchTiles='stitch'></feTurbulence><feColorMatrix type='saturate' values='0'></feColorMatrix><feComponentTransfer><feFuncR type='linear' slope='0.46'></feFuncR><feFuncG type='linear' slope='0.46'></feFuncG><feFuncB type='linear' slope='0.46'></feFuncB><feFuncA type='linear' slope='0.56'></feFuncA></feComponentTransfer><feComponentTransfer><feFuncR type='linear' slope='1.47' intercept='-0.23' /><feFuncG type='linear' slope='1.47' intercept='-0.23' /><feFuncB type='linear' slope='1.47' intercept='-0.23' /></feComponentTransfer></filter></svg>#noise");
 
 	--noise-card-color: light-dark(
@@ -65,6 +68,14 @@
 	);
 	--card-background-noise:
 		linear-gradient(var(--noise-card-color), var(--noise-card-color)), var(--bg-noise);
+
+	--card-glass:
+		linear-gradient(
+			165deg,
+			color-mix(in srgb, var(--card-color), transparent 25%) 0%,
+			color-mix(in srgb, var(--card-color), transparent 60%) 70%
+		),
+		var(--bg-noise-transparent);
 
 	--noise-background-color: light-dark(
 		color-mix(in srgb, var(--background-color), transparent 18%),

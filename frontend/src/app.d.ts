@@ -9,6 +9,7 @@ declare global {
     namespace App {
         interface Error {
             message: string;
+            err?: unknown;
             [key: string]: unknown;
         }
         // interface Locals {}
