@@ -56,11 +56,12 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 				<dd>
 					{creatorInfo.personaname} <i>(SteamID: {fileInfo.creator_id})</i>
 				</dd>
+			{:else}
+				<dt>Author ID</dt>
+				<dd>
+					{fileInfo.creator_id}
+				</dd>
 			{/if}
-			<dt>Author ID</dt>
-			<dd>
-				{fileInfo.creator_id}
-			</dd>
 			<dt>Created</dt>
 			<dd>
 				{format(new Date(fileInfo.time_created), 'PPpp')}
