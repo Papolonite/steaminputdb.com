@@ -40,5 +40,6 @@ onNavigate((navigation) => {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	min-height: 100dvh;
+	max-width: 100dvw;
 }
 </style>

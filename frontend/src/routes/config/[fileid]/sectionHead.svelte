@@ -56,21 +56,19 @@ import { fade } from 'svelte/transition';
 <style lang="postcss">
 section {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(25ch, auto));
-	width: 100%;
+	max-width: 100%;
 	gap: 1em;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 25ch), auto));
 
-	padding: 0 2em;
-	@media (orientation: portrait) {
-		padding: 0 1em;
-	}
+	padding: 0 1em;
+	isolation: isolate;
+
 	& > :first-child {
 		margin: auto;
 		display: grid;
 		place-items: center;
 		width: 100%;
 		height: fit-content;
-		overflow: hidden;
 		gap: 1em;
 		padding: 1em 0;
 
@@ -81,10 +79,13 @@ section {
 			height: 100%;
 			width: 100%;
 			background: linear-gradient(135deg, white -70%, transparent 120%);
-			img {
+			position: relative;
+			& img {
 				object-fit: cover;
 				object-position: center;
 			}
+			z-index: -1;
+			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
 		}
 
 		& > :nth-child(2) {
@@ -97,10 +98,15 @@ section {
 
 			& > :first-child {
 				grid-column: 1 / span 2;
+				text-align: start;
+				width: 100%;
+				color: var(--text-color-dark);
+				filter: drop-shadow(1px 1px 2px black);
 			}
 			& :global(> :nth-child(1n + 2)) {
-				color: var(--highlight-color);
+				color: color-mix(in srgb, var(--color-primary), var(--text-color-dark) 60%);
 				font-size: 1.8em;
+				filter: drop-shadow(1px 1px 2px black);
 			}
 			& > :last-child {
 				margin-right: auto;
@@ -122,6 +128,7 @@ section {
 			align-items: center;
 			justify-content: center;
 			gap: 0.5ch;
+			font-weight: bold;
 			background: linear-gradient(
 				215deg,
 				color-mix(in srgb, var(--card-color), transparent 35%) 0%,
@@ -129,6 +136,20 @@ section {
 			);
 			& > span {
 				width: fit-content;
+			}
+		}
+		& .button {
+			&:hover,
+			&:focus-visible {
+				color: var(--text-color-dark);
+				background-color: var(--color-primary);
+			}
+		}
+		& .button:is(:first-child) {
+			background-color: #1a9fff;
+			&:hover,
+			&:focus-visible {
+				background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
 			}
 		}
 	}
