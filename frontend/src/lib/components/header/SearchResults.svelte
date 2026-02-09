@@ -98,16 +98,16 @@ $effect(() => {
 		class="plain"
 		href={resolve(link_suffix as '/')}
 		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-		<div class="thumb">
+		<div class="thumb" style={`view-transition-name: header-${app_id};`}>
 			{#if resultAppIdMap?.[app_id || 0]?.assets}
 				{@const assets = resultAppIdMap[app_id || 0]!.assets!}
 				{@const srcChosen = assets?.asset_url_format
 					? `${assetUrlBase}${assets?.asset_url_format?.replace(
 							'${FILENAME}',
 							assets.small_capsule ??
-								assets.hero_capsule ??
-								assets.header ??
 								assets.main_capsule ??
+								assets.header ??
+								assets.hero_capsule ??
 								assets.library_hero ??
 								assets.library_capsule ??
 								assets.page_background ??
@@ -125,9 +125,9 @@ $effect(() => {
 					? `${assetUrlBase}${assets?.asset_url_format?.replace(
 							'${FILENAME}',
 							assets.small_capsule ??
-								assets.hero_capsule ??
-								assets.header ??
 								assets.main_capsule ??
+								assets.header ??
+								assets.hero_capsule ??
 								assets.library_hero ??
 								assets.library_capsule ??
 								assets.page_background ??

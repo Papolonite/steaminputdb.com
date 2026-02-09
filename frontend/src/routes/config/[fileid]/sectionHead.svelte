@@ -18,7 +18,7 @@ import { fade } from 'svelte/transition';
 	appInfo?: components['schemas']['AppsSearchItem'];
 })}
 	<section>
-		<div>
+		<div style={`view-transition-name: header-${appInfo.app_id};`}>
 			{#if appInfo?.assets}
 				{@const assets = appInfo?.assets}
 				{@const assetChosen =

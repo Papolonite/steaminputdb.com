@@ -85,12 +85,13 @@ button {
 	height: 100%;
 	display: grid;
 	place-items: center;
+	transition: none;
+
 	& > :global(svg) {
 		width: var(--font-size);
 		height: var(--font-size);
 		margin-right: 1em;
 		opacity: 0.5;
-		transition: all var(--transition-duration) var(--default-ease);
 	}
 	&:hover,
 	&:focus-visible {

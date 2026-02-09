@@ -102,8 +102,8 @@ const fetchLivePreview = (search_term = '') => {
 			bind:value={debounced.input} />
 	</form>
 	{#if shouldShowWhat}
-		<div
-			class="preview"
+		<dialog
+			open
 			in:slide={{ delay: 0, duration: 196, easing: cubicOut }}
 			out:fly|global={{ y: '-100%', x: 0, delay: 0, duration: 196, easing: cubicIn, opacity: 0 }}>
 			{#if shouldShowWhat === 'loading'}
@@ -123,7 +123,7 @@ const fetchLivePreview = (search_term = '') => {
 					<SearchResults results={previewResults} />
 				</div>
 			{/if}
-		</div>
+		</dialog>
 	{/if}
 </search>
 
@@ -131,6 +131,7 @@ const fetchLivePreview = (search_term = '') => {
 search {
 	position: relative;
 	z-index: 3;
+	isolation: isolate;
 }
 
 form {
@@ -146,7 +147,7 @@ form {
 	padding: 2em;
 }
 
-.preview {
+dialog[open] {
 	--oversize: 50%;
 	--corner-radius: 1em;
 	position: absolute;
