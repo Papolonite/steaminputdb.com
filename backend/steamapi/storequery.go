@@ -14,3 +14,15 @@ func (c *Client) SearchSuggestions(ctx context.Context, req *CStoreQuery_SearchS
 	)
 	return resp, err
 }
+
+func (c *Client) GetItems(ctx context.Context, req *CStoreBrowse_GetItems_Request) (*CStoreBrowse_GetItems_Response, error) {
+	resp := &CStoreBrowse_GetItems_Response{}
+	err := GetWithResp(
+		ctx,
+		Endpoint{Interface: "IStoreBrowseService", Method: "GetItems"},
+		req,
+		resp,
+		&Auth{Key: c.apiKey},
+	)
+	return resp, err
+}

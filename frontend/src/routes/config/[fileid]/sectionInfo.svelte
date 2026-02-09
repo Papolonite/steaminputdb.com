@@ -17,7 +17,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 	creatorInfo
 }: {
 	fileInfo: components['schemas']['ConfigDetailResponse'];
-	appInfo?: components['schemas']['AppInfo'];
+	appInfo?: components['schemas']['AppsSearchItem'];
 
 	creatorInfo?: components['schemas']['PlayerInfo'];
 })}
@@ -147,8 +147,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			<dt>{appInfo ? 'Game' : 'Shortcut'}</dt>
 			<dd>
 				{#if appInfo}
-					<a href={resolve(`/app/${appInfo.steam_appid}`)}>
-						{appInfo.name} <i>({appInfo.steam_appid})</i></a>
+					<a href={resolve(`/app/${appInfo.app_id}`)}> {appInfo.name} <i>({appInfo.app_id})</i></a>
 				{:else}
 					{fileInfo.app_id_string}
 				{/if}

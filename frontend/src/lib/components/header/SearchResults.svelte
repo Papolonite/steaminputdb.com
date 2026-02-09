@@ -4,11 +4,10 @@ import { client, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import { log } from '$lib/log';
+import { assetUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
-import { cubicOut } from 'svelte/easing';
-import { fade } from 'svelte/transition';
-
-const assetUrlBase = 'https://shared.akamai.steamstatic.com/store_item_assets/';
+import { cubicInOut, cubicOut } from 'svelte/easing';
+import { fade, slide } from 'svelte/transition';
 
 type Config = components['schemas']['ConfigResponseItem'];
 type Game = components['schemas']['AppsSearchItem'];
@@ -33,7 +32,7 @@ let resultAppIdMap = $derived.by(() => {
 	return map;
 });
 
-let infoAppIdMap = $state<Record<number, components['schemas']['AppInfo']>>({});
+let infoAppIdMap = $state<Record<number, components['schemas']['AppsSearchItem']>>({});
 
 $effect(() => {
 	results?.configs?.forEach((cfg) => {
@@ -95,39 +94,51 @@ $effect(() => {
 	app_id_string?: string | null
 )}
 	<!-- TODO: fix types -->
-	<a class="plain" href={resolve(link_suffix as '/')}>
+	<a
+		class="plain"
+		href={resolve(link_suffix as '/')}
+		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<div class="thumb">
 			{#if resultAppIdMap?.[app_id || 0]?.assets}
-				{@const assets = resultAppIdMap[app_id!]!.assets!}
-				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
-					<enhanced:img
-						src={`${assetUrlBase}${assets.asset_url_format?.replace(
+				{@const assets = resultAppIdMap[app_id || 0]!.assets!}
+				{@const srcChosen = assets?.asset_url_format
+					? `${assetUrlBase}${assets?.asset_url_format?.replace(
 							'${FILENAME}',
 							assets.small_capsule ??
-								assets.main_capsule ??
-								assets.header ??
-								assets.library_hero ??
 								assets.hero_capsule ??
+								assets.header ??
+								assets.main_capsule ??
+								assets.library_hero ??
 								assets.library_capsule ??
 								assets.page_background ??
-								'none.svg'
-						)}`}
-						alt="Thumbnail"
-						height="100%"></enhanced:img>
-				</picture>
+								'undefined'
+						)}`
+					: undefined}
+				{#if srcChosen}
+					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
+						<enhanced:img src={srcChosen} alt="Thumbnail" height="100%"></enhanced:img>
+					</picture>
+				{/if}
 			{:else if infoAppIdMap?.[app_id || 0]}
-				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
-					<enhanced:img
-						src={`${
-							infoAppIdMap[app_id!]!.capsule_imagev5 ??
-							infoAppIdMap[app_id!]!.capsule_image ??
-							infoAppIdMap[app_id!]!.header_image ??
-							infoAppIdMap[app_id!]!.background ??
-							'none.svg'
-						}`}
-						alt="Thumbnail"
-						height="100%"></enhanced:img>
-				</picture>
+				{@const assets = infoAppIdMap[app_id || 0]!.assets!}
+				{@const srcChosen = assets?.asset_url_format
+					? `${assetUrlBase}${assets?.asset_url_format?.replace(
+							'${FILENAME}',
+							assets.small_capsule ??
+								assets.hero_capsule ??
+								assets.header ??
+								assets.main_capsule ??
+								assets.library_hero ??
+								assets.library_capsule ??
+								assets.page_background ??
+								'undefined'
+						)}`
+					: undefined}
+				{#if srcChosen}
+					<picture transition:fade={{ duration: 196, easing: cubicOut }}>
+						<enhanced:img src={srcChosen} alt="Thumbnail" height="100%"></enhanced:img>
+					</picture>
+				{/if}
 			{/if}
 			<div>
 				{#if type === 'game'}
@@ -145,7 +156,7 @@ $effect(() => {
 					{#if app_id}
 						<Icon icon="mdi:steam" width="1.2em" />
 					{:else}
-						<Icon icon="mdi:forbid" width="1.2em" />
+						<Icon icon="mdi:link-variant" width="1.2em" />
 					{/if}
 					{resultAppIdMap?.[app_id || 0]?.name ??
 						infoAppIdMap?.[app_id || 0]?.name ??
@@ -188,6 +199,7 @@ $effect(() => {
 <style lang="postcss">
 .results {
 	display: grid;
+
 	& > :last-child {
 		& .thumb {
 			border-radius: 0 0 0 0.7em;
@@ -291,7 +303,7 @@ a {
 }
 
 .thumb {
-	aspect-ratio: 21 / 9;
+	aspect-ratio: 21 / 8;
 	width: 100%;
 	height: 100%;
 

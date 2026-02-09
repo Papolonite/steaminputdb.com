@@ -1,17 +1,24 @@
 <script lang="ts">
 import { page } from '$app/state';
 import type { components } from '$lib/api/openapi';
+import { assetUrlBase } from '$lib/steamapi/const';
 import { sectionHead } from './sectionHead.svelte';
 import { sectionInfo } from './sectionInfo.svelte';
 
 const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.data.fileInfo);
-const appInfo: components['schemas']['AppInfo'] = $derived(page.data.appInfo);
+const appInfo: components['schemas']['AppsSearchItem'] = $derived(page.data.appInfo);
 const creatorInfo: components['schemas']['PlayerInfo'] | null = $derived(page.data.creatorInfo);
 
 $inspect(page);
 </script>
 
-<main style={appInfo?.background ? `--bg: url('${appInfo?.background}')` : ''}>
+<main
+	style={appInfo?.assets?.page_background
+		? `--bg: url('${`${assetUrlBase}${appInfo?.assets?.asset_url_format?.replace(
+				'${FILENAME}',
+				appInfo?.assets?.page_background
+			)}`}')`
+		: ''}>
 	<div>
 		{@render sectionHead({ fileInfo, appInfo })}
 		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}

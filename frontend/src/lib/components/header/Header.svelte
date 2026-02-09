@@ -70,7 +70,7 @@ header {
 	width: 100%;
 	overflow-x: clip;
 
-	z-index: 1;
+	z-index: 10;
 
 	display: grid;
 	grid-template-columns: minmax(3.2em, 1fr) auto minmax(2em, 1fr);

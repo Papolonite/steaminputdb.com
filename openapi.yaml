@@ -1,21 +1,5 @@
 components:
   schemas:
-    Achievements:
-      additionalProperties: false
-      properties:
-        highlighted:
-          items:
-            $ref: "#/components/schemas/Highlighted"
-          type:
-            - array
-            - "null"
-        total:
-          format: int64
-          type: integer
-      required:
-        - total
-        - highlighted
-      type: object
     AppFilter:
       additionalProperties: false
       properties:
@@ -31,161 +15,6 @@ components:
           default: false
           description: Include mods in the search results
           type: boolean
-      type: object
-    AppInfo:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          examples:
-            - http://localhost:8889/schemas/AppInfo.json
-          format: uri
-          readOnly: true
-          type: string
-        about_the_game:
-          type: string
-        achievements:
-          $ref: "#/components/schemas/Achievements"
-        background:
-          type: string
-        background_raw:
-          type: string
-        capsule_image:
-          type: string
-        capsule_imagev5:
-          type: string
-        categories:
-          items:
-            $ref: "#/components/schemas/Categories"
-          type:
-            - array
-            - "null"
-        content_descriptors:
-          $ref: "#/components/schemas/ContentDescriptors"
-        controller_support:
-          type: string
-        detailed_description:
-          type: string
-        developers:
-          items:
-            type: string
-          type:
-            - array
-            - "null"
-        dlc:
-          items:
-            format: int64
-            type: integer
-          type:
-            - array
-            - "null"
-        genres:
-          items:
-            $ref: "#/components/schemas/Genres"
-          type:
-            - array
-            - "null"
-        header_image:
-          type: string
-        is_free:
-          type: boolean
-        linux_requirements: {}
-        mac_requirements: {}
-        metacritic:
-          $ref: "#/components/schemas/Metacritic"
-        movies:
-          items:
-            $ref: "#/components/schemas/Movies"
-          type:
-            - array
-            - "null"
-        name:
-          type: string
-        package_groups:
-          items:
-            $ref: "#/components/schemas/PackageGroups"
-          type:
-            - array
-            - "null"
-        packages:
-          items:
-            format: int64
-            type: integer
-          type:
-            - array
-            - "null"
-        pc_requirements: {}
-        platforms:
-          $ref: "#/components/schemas/Platforms"
-        publishers:
-          items:
-            type: string
-          type:
-            - array
-            - "null"
-        ratings:
-          $ref: "#/components/schemas/Ratings"
-        recommendations:
-          $ref: "#/components/schemas/Recommendations"
-        release_date:
-          $ref: "#/components/schemas/ReleaseDate"
-        required_age: {}
-        screenshots:
-          items:
-            $ref: "#/components/schemas/Screenshots"
-          type:
-            - array
-            - "null"
-        short_description:
-          type: string
-        steam_appid:
-          format: int64
-          type: integer
-        support_info:
-          $ref: "#/components/schemas/SupportInfo"
-        supported_languages:
-          type: string
-        type:
-          type: string
-        website:
-          type: string
-      required:
-        - type
-        - name
-        - steam_appid
-        - required_age
-        - is_free
-        - controller_support
-        - dlc
-        - detailed_description
-        - about_the_game
-        - short_description
-        - supported_languages
-        - header_image
-        - capsule_image
-        - capsule_imagev5
-        - website
-        - pc_requirements
-        - mac_requirements
-        - linux_requirements
-        - developers
-        - publishers
-        - packages
-        - package_groups
-        - platforms
-        - metacritic
-        - categories
-        - genres
-        - screenshots
-        - movies
-        - recommendations
-        - achievements
-        - release_date
-        - support_info
-        - background
-        - background_raw
-        - content_descriptors
-        - ratings
       type: object
     AppsInclude:
       additionalProperties: false
@@ -431,18 +260,6 @@ components:
           type:
             - array
             - "null"
-      type: object
-    Categories:
-      additionalProperties: false
-      properties:
-        description:
-          type: string
-        id:
-          format: int64
-          type: integer
-      required:
-        - id
-        - description
       type: object
     ConfigDetailResponse:
       additionalProperties: false
@@ -909,42 +726,6 @@ components:
           format: int64
           type: integer
       type: object
-    ContentDescriptors:
-      additionalProperties: false
-      properties:
-        ids:
-          items: {}
-          type:
-            - array
-            - "null"
-        notes:
-          type: string
-      required:
-        - ids
-        - notes
-      type: object
-    Dejus:
-      additionalProperties: false
-      properties:
-        banned:
-          type: string
-        descriptors:
-          type: string
-        rating:
-          type: string
-        rating_generated:
-          type: string
-        required_age: {}
-        use_age_gate:
-          type: string
-      required:
-        - rating_generated
-        - rating
-        - required_age
-        - banned
-        - use_age_gate
-        - descriptors
-      type: object
     ErrorDetail:
       additionalProperties: false
       properties:
@@ -1004,28 +785,6 @@ components:
           format: uri
           type: string
       type: object
-    Genres:
-      additionalProperties: false
-      properties:
-        description:
-          type: string
-        id:
-          type: string
-      required:
-        - id
-        - description
-      type: object
-    Highlighted:
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-        path:
-          type: string
-      required:
-        - name
-        - path
-      type: object
     LoginResponse:
       additionalProperties: false
       properties:
@@ -1074,45 +833,6 @@ components:
         - timecreated
         - loccountrycode
       type: object
-    Metacritic:
-      additionalProperties: false
-      properties:
-        score:
-          format: int64
-          type: integer
-        url:
-          type: string
-      required:
-        - score
-        - url
-      type: object
-    Movies:
-      additionalProperties: false
-      properties:
-        dash_av1:
-          type: string
-        dash_h264:
-          type: string
-        highlight:
-          type: boolean
-        hls_h264:
-          type: string
-        id:
-          format: int64
-          type: integer
-        name:
-          type: string
-        thumbnail:
-          type: string
-      required:
-        - id
-        - name
-        - thumbnail
-        - dash_av1
-        - dash_h264
-        - hls_h264
-        - highlight
-      type: object
     OpenIDBody:
       additionalProperties: false
       properties:
@@ -1158,38 +878,6 @@ components:
         - signed
         - sig
       type: object
-    PackageGroups:
-      additionalProperties: false
-      properties:
-        description:
-          type: string
-        display_type: {}
-        is_recurring_subscription:
-          type: string
-        name:
-          type: string
-        save_text:
-          type: string
-        selection_text:
-          type: string
-        subs:
-          items:
-            $ref: "#/components/schemas/Subs"
-          type:
-            - array
-            - "null"
-        title:
-          type: string
-      required:
-        - name
-        - title
-        - description
-        - selection_text
-        - save_text
-        - display_type
-        - is_recurring_subscription
-        - subs
-      type: object
     Ping:
       additionalProperties: false
       properties:
@@ -1207,20 +895,6 @@ components:
       required:
         - service
         - version
-      type: object
-    Platforms:
-      additionalProperties: false
-      properties:
-        linux:
-          type: boolean
-        mac:
-          type: boolean
-        windows:
-          type: boolean
-      required:
-        - windows
-        - mac
-        - linux
       type: object
     PlayerInfo:
       additionalProperties: false
@@ -1677,55 +1351,6 @@ components:
           minimum: 0
           type: integer
       type: object
-    Ratings:
-      additionalProperties: false
-      properties:
-        dejus:
-          $ref: "#/components/schemas/Dejus"
-        steam_germany:
-          $ref: "#/components/schemas/SteamGermany"
-        usk:
-          $ref: "#/components/schemas/Usk"
-      required:
-        - usk
-        - dejus
-        - steam_germany
-      type: object
-    Recommendations:
-      additionalProperties: false
-      properties:
-        total:
-          format: int64
-          type: integer
-      required:
-        - total
-      type: object
-    ReleaseDate:
-      additionalProperties: false
-      properties:
-        coming_soon:
-          type: boolean
-        date:
-          type: string
-      required:
-        - coming_soon
-        - date
-      type: object
-    Screenshots:
-      additionalProperties: false
-      properties:
-        id:
-          format: int64
-          type: integer
-        path_full:
-          type: string
-        path_thumbnail:
-          type: string
-      required:
-        - id
-        - path_thumbnail
-        - path_full
-      type: object
     SearchRequestBody:
       additionalProperties: false
       properties:
@@ -1779,28 +1404,6 @@ components:
           type:
             - array
             - "null"
-      type: object
-    SteamGermany:
-      additionalProperties: false
-      properties:
-        banned:
-          type: string
-        descriptors:
-          type: string
-        rating:
-          type: string
-        rating_generated:
-          type: string
-        required_age: {}
-        use_age_gate:
-          type: string
-      required:
-        - rating_generated
-        - rating
-        - required_age
-        - banned
-        - use_age_gate
-        - descriptors
       type: object
     StoreBrowseFilterFailure:
       additionalProperties: false
@@ -2532,57 +2135,6 @@ components:
         type:
           type: string
       type: object
-    Subs:
-      additionalProperties: false
-      properties:
-        can_get_free_license:
-          type: string
-        is_free_license:
-          type: boolean
-        option_description:
-          type: string
-        option_text:
-          type: string
-        packageid:
-          format: int64
-          type: integer
-        percent_savings:
-          format: int64
-          type: integer
-        percent_savings_text:
-          type: string
-        price_in_cents_with_discount:
-          format: int64
-          type: integer
-      required:
-        - packageid
-        - percent_savings_text
-        - percent_savings
-        - option_text
-        - option_description
-        - can_get_free_license
-        - is_free_license
-        - price_in_cents_with_discount
-      type: object
-    SupportInfo:
-      additionalProperties: false
-      properties:
-        email:
-          type: string
-        url:
-          type: string
-      required:
-        - url
-        - email
-      type: object
-    Usk:
-      additionalProperties: false
-      properties:
-        rating:
-          type: string
-      required:
-        - rating
-      type: object
   securitySchemes:
     Steam OpenID:
       flows:
@@ -2745,12 +2297,17 @@ paths:
             format: int32
             minimum: 0
             type: integer
+        - explode: false
+          in: query
+          name: raw
+          schema:
+            default: false
+            type: boolean
       responses:
         "200":
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/AppInfo"
+              schema: {}
           description: OK
         "404":
           content:

@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     const resData: {
         fileInfo: components['schemas']['ConfigResponseItem'];
         nonSteam: boolean;
-        appInfo?: components['schemas']['AppInfo'];
+        appInfo?: components['schemas']['AppsSearchItem'];
         creatorInfo?: components['schemas']['PlayerInfo'];
     } = {
         fileInfo,
@@ -56,8 +56,6 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     };
 
     await Promise.allSettled([(async () => {
-
-
         if (fileInfo.app_id) {
             try {
                 const appInfoResp = await client.GET('/v1/steam/appinfo', {
@@ -66,7 +64,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
                             app_id: fileInfo.app_id,
                             raw: false
                         }
-                    }
+                    },
+                    signal: AbortSignal.timeout(1000)
                 });
                 if (appInfoResp.error) {
                     log.error(
@@ -86,11 +85,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
             }
         }
-
-
     })(), (async () => {
-
-
         if (fileInfo.creator_id) {
             try {
                 const creatorInfoResp = await client.GET('/v1/steam/userinfo', {
@@ -98,7 +93,9 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
                         query: {
                             user_id: `${fileInfo.creator_id}`
                         }
-                    }
+                    },
+                    signal: AbortSignal.timeout(1000)
+
                 });
                 if (creatorInfoResp.error) {
                     log.error(
@@ -117,7 +114,6 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
                 log.error('Failed to fetch creator details', 'file_id', file_id, 'creator_id', fileInfo.creator_id, 'error', err);
             }
         }
-
     })()]);
 
     return resData;

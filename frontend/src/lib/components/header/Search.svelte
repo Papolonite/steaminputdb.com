@@ -2,9 +2,10 @@
 import { client, type ResponseType } from '$lib/api/client';
 import { Debounced } from '$lib/debounce.svelte';
 import { log } from '$lib/log';
-import { cubicIn, cubicOut } from 'svelte/easing';
-import { slide } from 'svelte/transition';
+import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
+import { fly, slide } from 'svelte/transition';
 import Searchbar from '../search/searchbar.svelte';
+import Spinner from '../Spinner.svelte';
 import SearchResults from './SearchResults.svelte';
 
 let form = $state<HTMLFormElement>()!;
@@ -16,14 +17,29 @@ let previewResults = $state<ResponseType<'POST', '/v1/search/'>['data']>({
 	configs: []
 });
 
-let shouldShowPreview = $derived.by(() => {
+let forceShowLoading = $state(false);
+let showError = $state(false);
+
+let shouldShowWhat = $derived.by(() => {
 	if (!focusState.value) {
 		return false;
 	}
-	if ((previewResults?.games?.length || 0) === 0 && (previewResults?.configs?.length || 0) === 0) {
-		return false;
+
+	if (forceShowLoading) {
+		return 'loading';
 	}
-	return true;
+
+	if (showError) {
+		return 'error';
+	}
+
+	if ((previewResults?.games?.length || 0) === 0 && (previewResults?.configs?.length || 0) === 0) {
+		if (debounced.isLocked()) {
+			return 'loading';
+		}
+		return 'no_results';
+	}
+	return 'results';
 });
 
 $effect(() => {
@@ -32,6 +48,12 @@ $effect(() => {
 
 const fetchLivePreview = (search_term = '') => {
 	debounced.lock();
+
+	const timeout = setTimeout(() => {
+		forceShowLoading = true;
+	}, 1250);
+
+	showError = false;
 	client
 		.POST('/v1/search/', {
 			body: {
@@ -39,22 +61,30 @@ const fetchLivePreview = (search_term = '') => {
 				limit_games: 3,
 				limit_configs: 5,
 				limit: 10
-			}
+			},
+			signal: AbortSignal.timeout(2500)
 		})
 		.then((res) => {
+			forceShowLoading = false;
 			if (res.error) {
+				showError = true;
 				log.error('Error fetching search preview', 'err', res.error);
 				return;
 			}
 			if (res.data) {
 				previewResults = res.data;
+				return;
 			}
+			showError = true;
 		})
 		.catch((err) => {
+			forceShowLoading = false;
+			showError = true;
 			log.error('Error fetching search preview', 'err', err);
 		})
 		.finally(() => {
 			debounced.unlock(true);
+			clearTimeout(timeout);
 		});
 };
 (() => {
@@ -71,20 +101,36 @@ const fetchLivePreview = (search_term = '') => {
 			--box-shadow="inset 0 0.4em 0.4em 0 var(--shadow-color-dark)"
 			bind:value={debounced.input} />
 	</form>
-	{#if shouldShowPreview}
-		<dialog
-			open
-			in:slide={{ axis: 'y', duration: 196, easing: cubicOut }}
-			out:slide={{ axis: 'y', duration: 196, easing: cubicIn }}>
-			<SearchResults results={previewResults} />
-		</dialog>
+	{#if shouldShowWhat}
+		<div
+			class="preview"
+			in:slide={{ delay: 0, duration: 196, easing: cubicOut }}
+			out:fly|global={{ y: '-100%', x: 0, delay: 0, duration: 196, easing: cubicIn, opacity: 0 }}>
+			{#if shouldShowWhat === 'loading'}
+				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<Spinner size="min(100dvw, 15em)" thickness="0.3em" />
+				</div>
+			{:else if shouldShowWhat === 'no_results'}
+				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<span>No results found</span>
+				</div>
+			{:else if shouldShowWhat === 'error'}
+				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<strong>Error fetching results</strong>
+				</div>
+			{:else}
+				<div transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<SearchResults results={previewResults} />
+				</div>
+			{/if}
+		</div>
 	{/if}
 </search>
 
 <style lang="postcss">
 search {
 	position: relative;
-	isolation: isolate;
+	z-index: 3;
 }
 
 form {
@@ -94,16 +140,24 @@ form {
 	z-index: 1;
 }
 
-dialog[open] {
+.ctr {
+	display: grid;
+	place-items: center;
+	padding: 2em;
+}
+
+.preview {
 	--oversize: 50%;
 	--corner-radius: 1em;
 	position: absolute;
 	isolation: isolate;
 	top: 100%;
 	left: 50%;
+	min-height: 2em;
 	translate: -50% 0;
 	width: calc(100% + var(--oversize));
 	max-width: 100dvw;
+	z-index: 1;
 
 	padding-top: 0.5em;
 
@@ -113,6 +167,13 @@ dialog[open] {
 	background: var(--card-background-noise);
 	background-color: var(--card-color);
 	box-shadow: 0 0.5em 1.5em -0.5em var(--shadow-color);
+
+	display: grid;
+	place-items: center;
+	& > * {
+		grid-area: 1 / 1;
+		width: 100%;
+	}
 
 	&::before {
 		@supports (corner-shape: scoop) {
