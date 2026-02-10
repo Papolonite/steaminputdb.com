@@ -1,4 +1,5 @@
 <script lang="ts">
+import { browser } from '$app/environment';
 import { page } from '$app/state';
 import type { components } from '$lib/api/openapi';
 import { assetUrlBase, storePageBackgroundBase } from '$lib/steamapi/const';
@@ -30,11 +31,19 @@ const pageBGURL = $derived.by(() => {
 		return `${storePageBackgroundBase}${appInfo.assets.page_background_path}`;
 	}
 });
+
+let isMobileBrowser = $state(false);
+if (browser) {
+	const uaDataMobile =
+		navigator.userAgent.toLowerCase().includes('mobile') ||
+		(navigator as unknown as { userAgentData?: { mobile?: boolean } }).userAgentData?.mobile;
+	isMobileBrowser = !!uaDataMobile;
+}
 </script>
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
-		{@render sectionHead({ fileInfo, appInfo })}
+		{@render sectionHead({ fileInfo, appInfo, isMobileBrowser })}
 		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}
 	</div>
 </main>

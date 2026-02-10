@@ -321,6 +321,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 						linear-gradient(black, black) border-box,
 						linear-gradient(black, black) padding-box;
 					mask-composite: subtract;
+					z-index: -1;
 				}
 			}
 		}

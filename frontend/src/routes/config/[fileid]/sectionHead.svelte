@@ -12,10 +12,12 @@ import { fade } from 'svelte/transition';
 
 {#snippet sectionHead({
 	fileInfo,
-	appInfo
+	appInfo,
+	isMobileBrowser
 }: {
 	fileInfo: components['schemas']['ConfigResponseItem'];
 	appInfo?: components['schemas']['AppsSearchItem'];
+	isMobileBrowser?: boolean;
 })}
 	<section>
 		<div>
@@ -64,21 +66,25 @@ import { fade } from 'svelte/transition';
 			</div>
 		</div>
 		<div>
-			<div class="hov-over">
-				<a
-					href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`}
-					class="button blue">
-					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
-					<span>Preview | Apply</span>
-				</a>
-				<div class="content bottom">
-					<div class="card glass">
-						<p style="white-space: nowrap; text-align: center;">Preview this config in Steam</p>
-						<p>You must own the game</p>
-						<code>steam://controllerconfig/{fileInfo.file_id}</code>
+			{#if !isMobileBrowser}
+				<div class="hov-over">
+					<a
+						href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`}
+						class="button blue">
+						<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
+						<span>Preview | Apply</span>
+					</a>
+					<div class="content bottom">
+						<div class="card glass">
+							<p style="white-space: nowrap; text-align: center;">
+								Preview this config in Steam
+							</p>
+							<p>You must own the game</p>
+							<code>steam://controllerconfig/{fileInfo.file_id}</code>
+						</div>
 					</div>
 				</div>
-			</div>
+			{/if}
 			{#if fileInfo.file_url}
 				<a href={fileInfo.file_url} class="button" rel="external">
 					<Icon icon="mdi:download" width="1.4em" height="1.4em" />
@@ -177,17 +183,19 @@ section {
 			font-weight: bold;
 			border: 10px solid transparent;
 			border: none !important;
-			background: linear-gradient(
-				215deg,
-				color-mix(in srgb, var(--card-color), transparent 35%) 0%,
-				color-mix(in srgb, var(--card-color), transparent 60%) 70%
-			);
 
 			& > span {
 				width: fit-content;
 			}
 		}
 		& .button {
+			background:
+				linear-gradient(
+					215deg,
+					color-mix(in srgb, var(--card-color), transparent 75%) 0%,
+					color-mix(in srgb, var(--card-color), transparent 90%) 70%
+				),
+				var(--bg-noise-transparent);
 			&:hover,
 			&:focus-visible {
 				color: var(--text-color-dark);
