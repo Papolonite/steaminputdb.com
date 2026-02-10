@@ -4,6 +4,7 @@ export { sectionHead };
 
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
+import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { assetUrlBase, communityUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
@@ -66,25 +67,29 @@ import { fade } from 'svelte/transition';
 			</div>
 		</div>
 		<div>
-			{#if !isMobileBrowser}
-				<div class="hov-over">
-					<a
-						href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`}
-						class="button blue">
-						<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
-						<span>Preview | Apply</span>
-					</a>
-					<div class="content bottom">
-						<div class="card glass">
-							<p style="white-space: nowrap; text-align: center;">
-								Preview this config in Steam
-							</p>
-							<p>You must own the game</p>
-							<code>steam://controllerconfig/{fileInfo.file_id}</code>
-						</div>
+			{#if true || !isMobileBrowser}
+				{#snippet tooltipContent()}
+					<div>
+						<p style="white-space: nowrap; text-align: center;">Preview this config in Steam</p>
+						<p>You must own the game</p>
+						<code>steam://controllerconfig/{fileInfo.file_id}</code>
 					</div>
-				</div>
+				{/snippet}
+				<a
+					href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`}
+					class="button blue"
+					{@attach tooltip({
+						snippet: tooltipContent,
+						snippetInDefaultBackground: true,
+						outDelay: 200,
+						arrow: true,
+						arrowFollowCursor: true
+					})}>
+					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
+					<span>Preview | Apply</span>
+				</a>
 			{/if}
+
 			{#if fileInfo.file_url}
 				<a href={fileInfo.file_url} class="button" rel="external">
 					<Icon icon="mdi:download" width="1.4em" height="1.4em" />
@@ -212,34 +217,8 @@ section {
 	}
 }
 
-.content {
-	--out-delay: 20ms;
-	padding-top: 1em;
-
-	&::after {
-		content: '';
-		position: absolute;
-		width: 1em;
-		height: 1em;
-		top: 1em;
-		border: 1px solid rgb(255 255 255 / 0.1);
-		left: 50%;
-		translate: -50% -50%;
-		transform: rotate(45deg);
-		border-radius: 0;
-		background: var(--card-background-noise);
-		z-index: -1;
-	}
-	& > :first-child {
-		display: grid;
-		border-radius: 0.5em;
-		place-items: center;
-		font-weight: normal;
-		background-color: var(--card-color);
-		code {
-			user-select: all;
-			margin-top: 0.5em;
-		}
-	}
+code {
+	user-select: all;
+	margin-top: 0.5em;
 }
 </style>
