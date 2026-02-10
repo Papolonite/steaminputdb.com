@@ -22,7 +22,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 	creatorInfo?: components['schemas']['PlayerInfo'];
 })}
 	<section id="info">
-		<dl>
+		<dl class="card glass">
 			<dt>Controller</dt>
 			<dd>
 				{#if fileInfo.controller_type === 'controller_neptune'}
@@ -242,7 +242,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 					</div>
 				{/if}
 			</section>
-			<p>
+			<p class="card glass">
 				<span>Creator Description</span>
 				{fileInfo.description?.replace(/\s\s/g, '\n')}
 			</p>
@@ -263,11 +263,9 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 	padding: 0 1em;
 
 	& > :first-child {
-		border-radius: var(--border-radius);
-		background: var(--card-glass);
-		box-shadow: var(--card-shadow);
 		padding: 1em;
 		overflow-x: hidden;
+		position: relative;
 
 		& > dt {
 			font-size: 1.2em;
@@ -312,12 +310,23 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 					border-radius: var(--border-radius);
 					z-index: -1;
 				}
+				&::after {
+					content: '';
+					position: absolute;
+					inset: 0;
+					border-radius: inherit;
+					border: 1px solid transparent;
+					background: var(--card-border-pseudo-gradient) border-box;
+					mask:
+						linear-gradient(black, black) border-box,
+						linear-gradient(black, black) padding-box;
+					mask-composite: subtract;
+				}
 			}
 		}
 	}
 
 	@media (max-width: 200ch) {
-		/* @container main (width < 800px) { */
 		& > :first-child {
 			flex-basis: 0;
 			flex: 1;
@@ -383,10 +392,8 @@ aside {
 	& > p {
 		overflow: auto;
 		overflow-x: hidden;
+		contain: inline-size;
 
-		border-radius: var(--border-radius);
-		background: var(--card-glass);
-		box-shadow: var(--card-shadow);
 		padding: 1em;
 		& > span {
 			font-weight: bold;

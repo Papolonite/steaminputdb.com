@@ -44,7 +44,7 @@ $effect(() => {
 		}
 		const idCopy = cfg.app_id;
 		client
-			.GET(`/v1/steam/appinfo`, {
+			.GET('/v1/steam/appinfo', {
 				params: {
 					query: {
 						app_id: idCopy
@@ -60,7 +60,7 @@ $effect(() => {
 					log.error('No data in response when fetching store info', 'appid', idCopy);
 					return;
 				}
-				infoAppIdMap[idCopy] = resp.data;
+				infoAppIdMap[idCopy] = resp.data as components['schemas']['AppsSearchItem'];
 			})
 			.catch((err) => {
 				log.error('Error fetching store info', 'appid', idCopy, 'error', err);
@@ -98,7 +98,7 @@ $effect(() => {
 		class="plain"
 		href={resolve(link_suffix as '/')}
 		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-		<div class="thumb" style={`view-transition-name: header-${app_id};`}>
+		<div class="thumb">
 			{#if resultAppIdMap?.[app_id || 0]?.assets}
 				{@const assets = resultAppIdMap[app_id || 0]!.assets!}
 				{@const srcChosen = assets?.asset_url_format
@@ -199,7 +199,7 @@ $effect(() => {
 <style lang="postcss">
 .results {
 	display: grid;
-
+	isolation: isolate;
 	& > :last-child {
 		& .thumb {
 			border-radius: 0 0 0 0.7em;
@@ -211,7 +211,6 @@ $effect(() => {
 			display: none;
 		}
 	}
-	isolation: isolate;
 	anchor-name: --hovered-link;
 	a:hover,
 	a:focus-visible {

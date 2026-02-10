@@ -35,8 +35,6 @@ onMount(() => {
 			return;
 		}
 
-		console.log(e);
-
 		Object.values(eyes).forEach((eye, idx) => {
 			const rect = eye.getBoundingClientRect();
 			const eyeX = rect.left + rect.width / 2;

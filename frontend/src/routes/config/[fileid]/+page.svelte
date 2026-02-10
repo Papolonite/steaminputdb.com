@@ -1,7 +1,7 @@
 <script lang="ts">
 import { page } from '$app/state';
 import type { components } from '$lib/api/openapi';
-import { assetUrlBase } from '$lib/steamapi/const';
+import { assetUrlBase, storePageBackgroundBase } from '$lib/steamapi/const';
 import { sectionHead } from './sectionHead.svelte';
 import { sectionInfo } from './sectionInfo.svelte';
 
@@ -9,16 +9,30 @@ const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.da
 const appInfo: components['schemas']['AppsSearchItem'] = $derived(page.data.appInfo);
 const creatorInfo: components['schemas']['PlayerInfo'] | null = $derived(page.data.creatorInfo);
 
-$inspect(page);
+const pageBGURL = $derived.by(() => {
+	if (!appInfo?.assets) {
+		return;
+	}
+	if (appInfo.assets.page_background) {
+		return `${assetUrlBase}${appInfo.assets.asset_url_format?.replace(
+			'${FILENAME}',
+			appInfo.assets.page_background
+		)}`;
+	}
+	if (appInfo.assets.raw_page_background) {
+		// TODO: find out if is correct base url
+		return `${storePageBackgroundBase}${appInfo.assets.asset_url_format?.replace(
+			'${FILENAME}',
+			appInfo.assets.raw_page_background
+		)}`;
+	}
+	if (appInfo.assets.page_background_path) {
+		return `${storePageBackgroundBase}${appInfo.assets.page_background_path}`;
+	}
+});
 </script>
 
-<main
-	style={appInfo?.assets?.page_background
-		? `--bg: url('${`${assetUrlBase}${appInfo?.assets?.asset_url_format?.replace(
-				'${FILENAME}',
-				appInfo?.assets?.page_background
-			)}`}')`
-		: ''}>
+<main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
 		{@render sectionHead({ fileInfo, appInfo })}
 		{@render sectionInfo({ fileInfo, appInfo, creatorInfo })}
@@ -50,13 +64,13 @@ main {
 			var(--bg, transparent) top/cover no-repeat;
 		z-index: -2;
 	}
-	&::after {
+	/* &::after {
 		content: '';
 		position: absolute;
 		inset: 0;
 		z-index: -1;
 		backdrop-filter: blur(12px);
-	}
+	} */
 }
 div {
 	display: grid;
@@ -69,7 +83,6 @@ div {
 	isolation: isolate;
 	/* container: main / inline-size;*/
 	:global(> :first-child) {
-		z-index: -1;
 		width: 100%;
 	}
 }

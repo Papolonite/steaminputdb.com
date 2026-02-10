@@ -98,13 +98,21 @@ const fetchLivePreview = (search_term = '') => {
 	<!-- TODO: change endpoint -->
 	<form bind:this={form} method="POST" action="/?/search">
 		<Searchbar
+			placeholder="Search configurations or games..."
 			--box-shadow="inset 0 0.4em 0.4em 0 var(--shadow-color-dark)"
 			bind:value={debounced.input} />
 	</form>
 	{#if shouldShowWhat}
 		<dialog
 			open
-			in:slide={{ delay: 0, duration: 196, easing: cubicOut }}
+			in:fly={{
+				y: '-100%',
+				x: 0,
+				delay: 196 /* wait for child layout */,
+				opacity: 0,
+				duration: 196,
+				easing: cubicOut
+			}}
 			out:fly|global={{ y: '-100%', x: 0, delay: 0, duration: 196, easing: cubicIn, opacity: 0 }}>
 			{#if shouldShowWhat === 'loading'}
 				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
@@ -119,7 +127,7 @@ const fetchLivePreview = (search_term = '') => {
 					<strong>Error fetching results</strong>
 				</div>
 			{:else}
-				<div transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+				<div transition:slide|global={{ duration: 196, delay: 0, easing: cubicInOut }}>
 					<SearchResults results={previewResults} />
 				</div>
 			{/if}
@@ -130,15 +138,12 @@ const fetchLivePreview = (search_term = '') => {
 <style lang="postcss">
 search {
 	position: relative;
-	z-index: 3;
-	isolation: isolate;
 }
 
 form {
 	place-self: center;
 	display: grid;
 	grid-template-columns: minmax(16ch, 48ch);
-	z-index: 1;
 }
 
 .ctr {
@@ -151,14 +156,13 @@ dialog[open] {
 	--oversize: 50%;
 	--corner-radius: 1em;
 	position: absolute;
-	isolation: isolate;
 	top: 100%;
 	left: 50%;
 	min-height: 2em;
 	translate: -50% 0;
 	width: calc(100% + var(--oversize));
 	max-width: 100dvw;
-	z-index: 1;
+	z-index: -10;
 
 	padding-top: 0.5em;
 
@@ -171,6 +175,7 @@ dialog[open] {
 
 	display: grid;
 	place-items: center;
+
 	& > * {
 		grid-area: 1 / 1;
 		width: 100%;

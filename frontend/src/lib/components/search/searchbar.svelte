@@ -3,9 +3,11 @@ import type { HTMLInputAttributes } from 'svelte/elements';
 import IcOutlineSearch from '~icons/ic/outline-search';
 let {
 	value = $bindable(),
+	placeholder,
 	...props
 }: {
 	value?: unknown;
+	placeholder: string;
 	'--box-shadow'?: string;
 	'--font-size'?: string;
 } & HTMLInputAttributes = $props();
@@ -15,10 +17,10 @@ let {
 	<input
 		id="config-search"
 		name="config-search"
-		type="text"
+		type="search"
 		bind:value={value}
 		{...props}
-		placeholder="Search configurations or games..." />
+		placeholder={placeholder} />
 	<button class="plain" type="submit">
 		<IcOutlineSearch />
 	</button>
@@ -63,7 +65,7 @@ label {
 		border-radius: 100em;
 	}
 }
-input[type='text'] {
+input[type='search'] {
 	font-size: var(--font-size);
 	width: 100%;
 	border: none;

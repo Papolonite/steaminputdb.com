@@ -18,7 +18,7 @@ import { fade } from 'svelte/transition';
 	appInfo?: components['schemas']['AppsSearchItem'];
 })}
 	<section>
-		<div style={`view-transition-name: header-${appInfo.app_id};`}>
+		<div>
 			{#if appInfo?.assets}
 				{@const assets = appInfo?.assets}
 				{@const assetChosen =
@@ -64,10 +64,21 @@ import { fade } from 'svelte/transition';
 			</div>
 		</div>
 		<div>
-			<a href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`} class="button">
-				<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
-				<span>Preview | Apply</span>
-			</a>
+			<div class="hov-over">
+				<a
+					href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`}
+					class="button blue">
+					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
+					<span>Preview | Apply</span>
+				</a>
+				<div class="content bottom">
+					<div class="card glass">
+						<p style="white-space: nowrap; text-align: center;">Preview this config in Steam</p>
+						<p>You must own the game</p>
+						<code>steam://controllerconfig/{fileInfo.file_id}</code>
+					</div>
+				</div>
+			</div>
 			{#if fileInfo.file_url}
 				<a href={fileInfo.file_url} class="button" rel="external">
 					<Icon icon="mdi:download" width="1.4em" height="1.4em" />
@@ -86,7 +97,6 @@ section {
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 25ch), auto));
 
 	padding: 0 1em;
-	isolation: isolate;
 
 	& > :first-child {
 		margin: auto;
@@ -153,6 +163,10 @@ section {
 		width: 100%;
 		grid-template-columns: repeat(auto-fit, minmax(19ch, auto));
 
+		& > .hov-over {
+			width: 100%;
+		}
+
 		& > a {
 			width: 100%;
 			white-space: nowrap;
@@ -161,11 +175,14 @@ section {
 			justify-content: center;
 			gap: 0.5ch;
 			font-weight: bold;
+			border: 10px solid transparent;
+			border: none !important;
 			background: linear-gradient(
 				215deg,
 				color-mix(in srgb, var(--card-color), transparent 35%) 0%,
 				color-mix(in srgb, var(--card-color), transparent 60%) 70%
 			);
+
 			& > span {
 				width: fit-content;
 			}
@@ -177,12 +194,43 @@ section {
 				background-color: var(--color-primary);
 			}
 		}
-		& .button:is(:first-child) {
+		& .button:is(.blue) {
 			background-color: #1a9fff;
 			&:hover,
 			&:focus-visible {
 				background-color: color-mix(in srgb, #1a9fff, var(--color-primary) 50%);
 			}
+		}
+	}
+}
+
+.content {
+	--out-delay: 20ms;
+	padding-top: 1em;
+
+	&::after {
+		content: '';
+		position: absolute;
+		width: 1em;
+		height: 1em;
+		top: 1em;
+		border: 1px solid rgb(255 255 255 / 0.1);
+		left: 50%;
+		translate: -50% -50%;
+		transform: rotate(45deg);
+		border-radius: 0;
+		background: var(--card-background-noise);
+		z-index: -1;
+	}
+	& > :first-child {
+		display: grid;
+		border-radius: 0.5em;
+		place-items: center;
+		font-weight: normal;
+		background-color: var(--card-color);
+		code {
+			user-select: all;
+			margin-top: 0.5em;
 		}
 	}
 }

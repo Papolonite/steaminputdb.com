@@ -1,5 +1,6 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
+import { page } from '$app/state';
 import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import { setStylePropertyCallback } from '$lib/attachments/setStylePropertyCallback.svelte';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
@@ -20,6 +21,7 @@ let modal = $state<Modal>()!;
 		<span>SteamInputDB</span>
 	</a>
 	<button
+		class="plain"
 		onclick={() => {
 			modal.setScrimOpacityMulti(1);
 			modal.toggle();
@@ -27,7 +29,11 @@ let modal = $state<Modal>()!;
 		aria-label="Menu">
 		<Icon icon="mdi:menu" width="100%" height="100%" />
 	</button>
-	<Search />
+	{#if !page.url.pathname.endsWith('/search')}
+		<Search />
+	{:else}
+		<div></div>
+	{/if}
 	<div>
 		<User />
 		<div>
@@ -64,9 +70,21 @@ let modal = $state<Modal>()!;
 <style lang="postcss">
 header {
 	padding: 1em;
+	position: relative;
+	isolation: isolate;
 
-	background: var(--card-background-noise);
-	background-color: var(--card-color);
+	min-height: 6em;
+	z-index: 2;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: var(--card-background-noise);
+		background-color: var(--card-color);
+	}
+
 	width: 100%;
 	overflow-x: clip;
 
@@ -168,7 +186,6 @@ aside {
 		color-mix(in srgb, var(--card-color), transparent 20%)
 	);
 
-	isolation: isolate;
 	/* &::before {
 		content: '';
 		position: absolute;
