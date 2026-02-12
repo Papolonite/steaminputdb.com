@@ -8,7 +8,7 @@ import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { assetUrlBase, communityUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
-import { fade } from 'svelte/transition';
+import { fade, slide } from 'svelte/transition';
 </script>
 
 {#snippet sectionHead({
@@ -67,9 +67,12 @@ import { fade } from 'svelte/transition';
 			</div>
 		</div>
 		<div>
-			{#if true || !isMobileBrowser}
+			{#if !isMobileBrowser}
 				{#snippet tooltipContent()}
-					<div>
+					<div
+						style="display: grid; place-items: center;"
+						in:slide={{ duration: 196, easing: cubicOut }}
+						out:fade={{ duration: 196, easing: cubicOut }}>
 						<p style="white-space: nowrap; text-align: center;">Preview this config in Steam</p>
 						<p>You must own the game</p>
 						<code>steam://controllerconfig/{fileInfo.file_id}</code>
@@ -93,7 +96,7 @@ import { fade } from 'svelte/transition';
 			{#if fileInfo.file_url}
 				<a href={fileInfo.file_url} class="button" rel="external">
 					<Icon icon="mdi:download" width="1.4em" height="1.4em" />
-					<span>Download</span>
+					<span>Download .vdf</span>
 				</a>
 			{/if}
 		</div>
