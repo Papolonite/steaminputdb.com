@@ -47,4 +47,9 @@ onNavigate((navigation) => {
 	grid-row: 2 / span 1;
 	grid-column: 1 / span 1;
 }
+
+:global(footer) {
+	grid-row: 3 / span 1;
+	grid-column: 1 / span 1;
+}
 </style>

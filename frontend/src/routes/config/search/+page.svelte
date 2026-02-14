@@ -9,6 +9,7 @@ import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
+import { statusCodeNames } from '$lib/statuscodes';
 import { assetUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
@@ -147,6 +148,14 @@ afterNavigate(() => {
 						<span>No results found</span>
 					{/if}
 					{#if searchError}
+						{#if searchError.status}
+							<h2>
+								{searchError.status}
+								{#if statusCodeNames[searchError.status] && statusCodeNames[searchError.status] !== searchError?.message}
+									{statusCodeNames[searchError.status]}
+								{/if}
+							</h2>
+						{/if}
 						<span>{searchError?.message ?? 'An unknown error occurred'}</span>
 					{/if}
 					<SC2
@@ -163,7 +172,7 @@ afterNavigate(() => {
 							class="plain"
 							style={loading ? 'pointer-events: none; opacity: 0.4;' : ''}
 							href={resolve(`/config/${item.file_id}`)}
-							transition:slide={{ duration: 196, easing: cubicInOut }}>
+							transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 							<div class="thumb">
 								{#if infoAppIdMap?.[item.app_id || 0]}
 									{@const assets = infoAppIdMap[item.app_id || 0]!.assets!}
@@ -322,6 +331,17 @@ search {
 			transform: rotate(3deg);
 			transform-origin: 25% 25%;
 			translate: -0.1em 0.1em;
+		}
+
+		h2 {
+			color: var(--highlight-color);
+			font-size: 2em;
+		}
+
+		& span {
+			color: var(--text-color);
+			font-size: 1.4em;
+			font-weight: bold;
 		}
 	}
 }

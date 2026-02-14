@@ -1,18 +1,8 @@
 <script lang="ts">
 import { page } from '$app/state';
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
+import { statusCodeNames } from '$lib/statuscodes';
 import { onMount } from 'svelte';
-
-const statusCodeNames: Record<number, string> = {
-	400: 'Bad Request',
-	401: 'Unauthorized',
-	403: 'Forbidden',
-	404: 'Not Found',
-	// 500: 'Internal Server Error',
-	502: 'Bad Gateway',
-	503: 'Service Unavailable',
-	504: 'Gateway Timeout'
-};
 
 let eyes = $state<{
 	left: HTMLElement;
