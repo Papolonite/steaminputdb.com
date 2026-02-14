@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ url }) => {
     );
     if (!Object.keys(openIdParams).length) {
         log.error('Missing OpenID parameters in login callback');
-        throw error(400, { message: 'Missing OpenID parameters' });
+        error(400, { message: 'Missing OpenID parameters' });
     }
 
 

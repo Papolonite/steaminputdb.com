@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
     const file_id = parseInt(fileid, 10);
     if (isNaN(file_id) || !file_id) {
-        throw error(400, 'Invalid file ID');
+        error(400, 'Invalid file ID');
     }
 
     const client = clientWithSvelteFetch(fetch);
@@ -28,20 +28,20 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         });
     } catch (err) {
         log.error('Failed to fetch file details', 'file_id', file_id, 'error', err);
-        throw error(500, {
+        error(500, {
             message: 'An unexpected error occurred while fetching file details',
             err
         });
     }
     if (infoResp.error) {
         log.error('Failed to fetch file details', 'file_id', file_id, 'error', infoResp.error);
-        throw error(infoResp.error.status || 503, {
+        error(infoResp.error.status || 503, {
             message: infoResp.error.detail || 'Failed to fetch file details',
             error: infoResp.error
         });
     }
     if (!infoResp.data) {
-        throw error(404, 'File not found');
+        error(404, 'File not found');
     }
 
     const fileInfo = infoResp.data as components['schemas']['ConfigResponseItem'];

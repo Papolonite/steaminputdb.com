@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
     const app_id = parseInt(appid, 10);
     if (isNaN(app_id) || !app_id) {
-        throw error(400, 'Invalid app ID');
+        error(400, 'Invalid app ID');
     }
 
     const client = clientWithSvelteFetch(fetch);
@@ -27,20 +27,20 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         });
     } catch (err) {
         log.error('Failed to fetch app details', 'app_id', app_id, 'error', err);
-        throw error(500, {
+        error(500, {
             message: 'An unexpected error occurred while fetching app details',
             err
         });
     }
     if (infoResp.error) {
         log.error('Failed to fetch app details', 'app_id', app_id, 'error', infoResp.error);
-        throw error(infoResp.error.status || 503, {
+        error(infoResp.error.status || 503, {
             message: infoResp.error.detail || 'Failed to fetch app details',
             error: infoResp.error
         });
     }
-    if (!infoResp.data) {
-        throw error(404, 'App not found');
+    if (!infoResp.data || !infoResp.data.name) {
+        error(404, 'App not found');
     }
 
     return {

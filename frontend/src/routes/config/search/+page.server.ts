@@ -1,46 +1,49 @@
 import { clientWithSvelteFetch } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import { log } from '$lib/log';
-import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { PageServerLoad } from './$types';
 
+export const load: PageServerLoad = async ({  url, fetch }) => {
+    log.debug('Config search page load', 'searchParams', Array.from(url.searchParams.entries()));
 
-export const actions = {
-    search: async ({ request, fetch }) => {
-        log.debug('config search action', 'request', request);
-        const data = await request.formData();
-        log.debug('config search action', 'form data', Array.from(data.entries()));
+    const loadRes: {
+        hasSearched?: boolean;
+        results?: components['schemas']['ConfigsResponse'];
+        searchError?: {
+            status?: number;
+            message?: string;
+        } & Record<string, unknown>;
+    } = {};
 
-        let rankby = data.get('sort-by');
+    if (url.searchParams.size > 0) {
+        loadRes.hasSearched = true;
+        let rankby = url.searchParams.get('sort-by');
         switch (rankby) {
             case 'trend':
                 break;
             case 'playtime':
                 rankby = 'lifetime_avg_playtime';
                 break;
-            // TODO:
+                // TODO:
         }
         if (!rankby) {
             rankby = 'trend';
         }
-
         const apiclient = clientWithSvelteFetch(fetch);
-
-        let results: components['schemas']['ConfigsResponse'] = {};
         try {
             const r = await apiclient.POST('/v1/search/configs', {
                 body: {
                     limit: 20,
-                    query_text: data.get('searchtext') as string,
+                    query_text: url.searchParams.get('searchtext') as string,
                     raw: false,
                     page: 1,
                     rank: {
                         by: rankby as 'trend',
-                        trending_period: 14
+                        trending_period: 30
                     },
                     filter: {
                         // TODO: fix types....
-                        controller_type: data.get('controller-type') as 'controller_neptune' || undefined
+                        controller_type: url.searchParams.get('controller-type') as 'controller_neptune' || undefined
                         // TODO: additional filters
                     },
                     include: {
@@ -48,25 +51,31 @@ export const actions = {
                     }
                 }
             });
-            log.debug('config search action', 'API response', r);
+                // log.debug('config search action', 'API response', r);
             if (r.error) {
-                return fail(r.error.status || 502, {
-                    ...r.error,
-                    message: r.error.title || 'Failed to complete search'
-                });
+                loadRes.searchError = {
+                    status: r.error.status || 502,
+                    message: r.error.title  || 'Failed to complete search',
+                    ...r.error
+                };
             }
             if (!r.data) {
                 log.error('No data received from search endpoint');
-                return fail(502, { message: 'No data received from search endpoint' });
+                loadRes.searchError = {
+                    status: 502,
+                    message: 'No data received from search endpoint'
+                };
             }
-            results = r.data;
-
+            loadRes.results = r.data;
         } catch (e) {
-            return fail(502, { message: 'Error contacting search endpoint', error: `${e}` });
+            loadRes.searchError = {
+                status: 502,
+                message: 'Error contacting search endpoint',
+                error: `${e}`
+            };
         }
 
-        return {
-            results
-        };
     }
-} satisfies Actions;
+
+    return loadRes;
+};
