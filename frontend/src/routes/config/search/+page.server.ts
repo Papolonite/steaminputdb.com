@@ -67,6 +67,7 @@ export const load: PageServerLoad = async ({  url, fetch }) => {
                 };
             }
             loadRes.results = r.data;
+
         } catch (e) {
             loadRes.searchError = {
                 status: 502,

@@ -5,6 +5,6 @@ import type { Actions } from './$types';
 export const actions = {
     search: async (event) => {
         const params = await event.request.formData();
-        throw redirect(302, resolve( `/config/search?term=${params.get('searchtext')}`));
+        throw redirect(302, resolve( `/config/search?searchtext=${params.get('searchtext')}&sort-by=vote`));
     }
 } satisfies Actions;

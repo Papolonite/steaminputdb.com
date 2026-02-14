@@ -24,7 +24,7 @@ footer {
 ::view-transition-group(*),
 ::view-transition-old(*),
 ::view-transition-new(*) {
-	animation-duration: var(--transition-duration);
+	animation-duration: calc(var(--transition-duration) * 2);
 	animation-fill-mode: forwards;
 	animation-timing-function: var(--default-ease);
 }

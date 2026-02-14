@@ -15,6 +15,7 @@ let {
 	disabled = false,
 	method = 'GET',
 	values = $bindable({}),
+	submitOnChange = false,
 	enhanceParams,
 	...rest
 }: {
@@ -25,8 +26,15 @@ let {
 	disabled?: boolean;
 	method?: string;
 	values?: Record<string, unknown>;
+	submitOnChange?: boolean;
 	enhanceParams?: Parameters<typeof enhance>[1];
 } & HTMLFormAttributes = $props();
+
+const changeSubmitHandler = () => {
+	if (submitOnChange) {
+		form!.requestSubmit();
+	}
+};
 </script>
 
 {#if method === 'POST' || method === 'post'}
@@ -50,7 +58,12 @@ let {
 		<button type="submit" disabled={disabled}>Search</button>
 		<label for="sort-by">
 			<span>Sort by:</span>
-			<select id="sort-by" name="sort-by" disabled={disabled} bind:value={values['sort-by']}>
+			<select
+				id="sort-by"
+				name="sort-by"
+				disabled={disabled}
+				bind:value={values['sort-by']}
+				onchange={changeSubmitHandler}>
 				<option value="vote">Votes</option>
 				<option value="trend">Trend</option>
 				<option value="playtime">Playtime</option>
@@ -61,7 +74,7 @@ let {
 	{#if showControllerFilter}
 		<fieldset
 			id="controller-type"
-			transition:slide|global={{ duration: 196, easing: cubicInOut }}
+			transition:slide={{ duration: 196, easing: cubicInOut }}
 			disabled={disabled}>
 			<legend>Controller Type</legend>
 			<label for="controller_neptune">
@@ -69,7 +82,8 @@ let {
 					type="checkbox"
 					id="controller_neptune"
 					name="controller_neptune"
-					bind:checked={values['controller_neptune'] as boolean} />
+					bind:checked={values['controller_neptune'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="simple-icons:steamdeck" width="1.2em" />
 				<span> Steam Deck </span>
 			</label>
@@ -78,7 +92,8 @@ let {
 					type="checkbox"
 					id="controller_triton"
 					name="controller_triton"
-					bind:checked={values['controller_triton'] as boolean} />
+					bind:checked={values['controller_triton'] as boolean}
+					onchange={changeSubmitHandler} />
 				<SC2 width="1.2em" />
 				<span> Steam Controller </span>
 			</label>
@@ -87,7 +102,8 @@ let {
 					type="checkbox"
 					id="controller_steamcontroller_gordon"
 					name="controller_steamcontroller_gordon"
-					bind:checked={values['controller_steamcontroller_gordon'] as boolean} />
+					bind:checked={values['controller_steamcontroller_gordon'] as boolean}
+					onchange={changeSubmitHandler} />
 				<SC2 width="1.2em" />
 				<span> Steam Controller (2015) </span>
 			</label>
@@ -96,7 +112,8 @@ let {
 					type="checkbox"
 					id="controller_ps5"
 					name="controller_ps5"
-					bind:checked={values['controller_ps5'] as boolean} />
+					bind:checked={values['controller_ps5'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="simple-icons:playstation5" width="1.2em" />
 				<span> DualSense </span>
 			</label>
@@ -105,7 +122,8 @@ let {
 					type="checkbox"
 					id="controller_ps4"
 					name="controller_ps4"
-					bind:checked={values['controller_ps4'] as boolean} />
+					bind:checked={values['controller_ps4'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
 				<span> DualShock 4 </span>
 			</label>
@@ -114,7 +132,8 @@ let {
 					type="checkbox"
 					id="controller_xbox360"
 					name="controller_xbox360"
-					bind:checked={values['controller_xbox360'] as boolean} />
+					bind:checked={values['controller_xbox360'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
 				<span> Xbox 360 </span>
 			</label>
@@ -123,7 +142,8 @@ let {
 					type="checkbox"
 					id="controller_xboxone"
 					name="controller_xboxone"
-					bind:checked={values['controller_xboxone'] as boolean} />
+					bind:checked={values['controller_xboxone'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
 				<span> Xbox One </span>
 			</label>
@@ -132,21 +152,23 @@ let {
 					type="checkbox"
 					id="controller_switch_pro"
 					name="controller_switch_pro"
-					bind:checked={values['controller_switch_pro'] as boolean} />
+					bind:checked={values['controller_switch_pro'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:controller" width="1.2em" />
 				<span> Switch Pro </span>
 			</label>
 		</fieldset>
 	{/if}
 	{#if showFeatureFilter}
-		<fieldset id="features" transition:slide|global={{ duration: 196, easing: cubicInOut }} disabled>
+		<fieldset id="features" transition:slide={{ duration: 196, easing: cubicInOut }} disabled>
 			<legend>Must have (currently disabled)</legend>
 			<label for="feature_gamepad">
 				<input
 					type="checkbox"
 					id="feature_gamepad"
 					name="feature_gamepad"
-					bind:checked={values['feature_gamepad'] as boolean} />
+					bind:checked={values['feature_gamepad'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:controller" width="1.2em" />
 				<span>Gamepad Inputs</span>
 			</label>
@@ -156,7 +178,8 @@ let {
 					type="checkbox"
 					id="feature_keyboard"
 					name="feature_keboard"
-					bind:checked={values['feature_keboard'] as boolean} />
+					bind:checked={values['feature_keboard'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:keyboard" width="1.2em" />
 				<span>Keyboard Inputs</span>
 			</label>
@@ -165,7 +188,8 @@ let {
 					type="checkbox"
 					id="feature_mouse"
 					name="feature_mouse"
-					bind:checked={values['feature_mouse'] as boolean} />
+					bind:checked={values['feature_mouse'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:mouse" width="1.2em" />
 				<span>Mouse Inputs</span>
 			</label>
@@ -174,7 +198,8 @@ let {
 					type="checkbox"
 					id="feature_gyro"
 					name="feature_gyro"
-					bind:checked={values['feature_gyro'] as boolean} />
+					bind:checked={values['feature_gyro'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="game-icons:gyroscope" width="1.2em" />
 				<span>Gyro Inputs</span>
 			</label>
@@ -183,7 +208,8 @@ let {
 					type="checkbox"
 					id="feature_touchmenu"
 					name="feature_touchmenu"
-					bind:checked={values['feature_touchmenu'] as boolean} />
+					bind:checked={values['feature_touchmenu'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:gesture-touch" width="1.2em" />
 				<span>Touch Menus</span>
 			</label>
@@ -192,7 +218,8 @@ let {
 					type="checkbox"
 					id="feature_radialmenu"
 					name="feature_radialmenu"
-					bind:checked={values['feature_radialmenu'] as boolean} />
+					bind:checked={values['feature_radialmenu'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="material-symbols:joystick" width="1.2em" />
 				<span>Radial Menus</span>
 			</label>
@@ -201,7 +228,8 @@ let {
 					type="checkbox"
 					id="feature_modeshift"
 					name="feature_modeshift"
-					bind:checked={values['feature_modeshift'] as boolean} />
+					bind:checked={values['feature_modeshift'] as boolean}
+					onchange={changeSubmitHandler} />
 				<Icon icon="material-symbols:layers-rounded" width="1.2em" />
 				<span>Mode Shifts</span>
 			</label>

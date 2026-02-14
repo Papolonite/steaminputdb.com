@@ -12,8 +12,8 @@ import { log } from '$lib/log';
 import { assetUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { onMount } from 'svelte';
-import { cubicIn, cubicOut } from 'svelte/easing';
-import { fade } from 'svelte/transition';
+import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
+import { fade, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
 
 let { data }: PageProps = $props();
@@ -121,10 +121,16 @@ afterNavigate(() => {
 
 <main>
 	<search>
-		<SearchForm bind:form={form} disabled={loading} method="GET" bind:values={formValues} />
+		<SearchForm
+			bind:form={form}
+			disabled={loading}
+			method="GET"
+			bind:values={formValues}
+			submitOnChange={true} />
 		<div class="results">
 			{#if loading}
 				<div
+					class="loading"
 					in:fade|global={{ duration: 196, easing: cubicOut }}
 					out:fade|global={{ duration: 196, easing: cubicIn }}>
 					<Spinner size="16em" />
@@ -150,10 +156,14 @@ afterNavigate(() => {
 						--eyes-border-color="light-dark(var(--text-color-light), transparent)" />
 				</div>
 			{/if}
-			{#if !loading && !searchError && (results?.items?.length ?? 0) > 0}
-				<div class="list" transition:fade>
-					{#each results!.items! as item (item.file_id)}
-						<a class="plain" href={resolve(`/config/${item.file_id}`)}>
+			{#if !searchError}
+				<div class="list" transition:fade={{ duration: 196, easing: cubicInOut }}>
+					{#each results?.items ?? [] as item (item.file_id)}
+						<a
+							class="plain"
+							style={loading ? 'pointer-events: none; opacity: 0.4;' : ''}
+							href={resolve(`/config/${item.file_id}`)}
+							transition:slide={{ duration: 196, easing: cubicInOut }}>
 							<div class="thumb">
 								{#if infoAppIdMap?.[item.app_id || 0]}
 									{@const assets = infoAppIdMap[item.app_id || 0]!.assets!}
@@ -319,6 +329,7 @@ search {
 .results .list {
 	width: 100%;
 	display: grid;
+	position: relative;
 }
 
 a {
@@ -352,7 +363,7 @@ a {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	font-size: 1.8em;
+	font-size: 1.4em;
 }
 
 .thumb {
@@ -400,12 +411,14 @@ a {
 	}
 
 	& i {
-		font-size: 1.2em;
-		padding: 1em;
+		font-size: 1.1em;
+		padding: 0.5em;
 		filter: drop-shadow(1px 1px 1px black) drop-shadow(0px 0px 4px rgb(0 0 0 / 0.25))
 			drop-shadow(0px 0px 2px black);
-		display: inline-flex;
+		display: grid;
+		grid-auto-flow: column;
 		align-items: center;
+		justify-content: start;
 		height: fit-content;
 		gap: 0.25em;
 		font-weight: bold;
@@ -431,5 +444,10 @@ a {
 		color: var(--highlight-color);
 		font-weight: bold;
 	}
+}
+
+.loading {
+	align-self: baseline;
+	z-index: 1;
 }
 </style>
