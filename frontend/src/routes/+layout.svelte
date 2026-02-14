@@ -42,4 +42,9 @@ onNavigate((navigation) => {
 	min-height: 100dvh;
 	max-width: 100dvw;
 }
+
+:global(main) {
+	grid-row: 2 / span 1;
+	grid-column: 1 / span 1;
+}
 </style>
