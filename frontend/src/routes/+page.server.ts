@@ -1,10 +1,10 @@
-import { log } from '$lib/log';
+import { resolve } from '$app/paths';
+import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions = {
     search: async (event) => {
-        // TODO register the user
-        log.debug('search', event);
-        return {};
+        const params = await event.request.formData();
+        throw redirect(302, resolve( `/config/search?term=${params.get('searchtext')}`));
     }
 } satisfies Actions;

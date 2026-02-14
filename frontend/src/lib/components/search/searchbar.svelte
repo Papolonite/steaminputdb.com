@@ -4,10 +4,12 @@ import IcOutlineSearch from '~icons/ic/outline-search';
 let {
 	value = $bindable(),
 	placeholder,
+	inlineButton = true,
 	...props
 }: {
 	value?: unknown;
 	placeholder: string;
+	inlineButton?: boolean;
 	'--box-shadow'?: string;
 	'--font-size'?: string;
 } & HTMLInputAttributes = $props();
@@ -21,9 +23,13 @@ let {
 		bind:value={value}
 		{...props}
 		placeholder={placeholder} />
-	<button class="plain" type="submit">
+	{#if inlineButton}
+		<button class="plain" type="submit">
+			<IcOutlineSearch />
+		</button>
+	{:else}
 		<IcOutlineSearch />
-	</button>
+	{/if}
 </label>
 
 <style lang="postcss">
@@ -42,6 +48,10 @@ label {
 	border-radius: 100em;
 	box-shadow: var(--box-shadow, var(--box-shadow-default));
 	transition: all var(--transition-duration) var(--default-ease);
+
+	&:has([disabled]) {
+		opacity: 0.5;
+	}
 
 	&:hover,
 	&:focus-within {
@@ -63,6 +73,13 @@ label {
 		z-index: -1;
 		background: var(--background-neutral-alpha);
 		border-radius: 100em;
+	}
+
+	:global(:last-child:is(svg)) {
+		width: var(--font-size);
+		height: var(--font-size);
+		margin-right: 1em;
+		opacity: 0.5;
 	}
 }
 input[type='search'] {

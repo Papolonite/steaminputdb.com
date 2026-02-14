@@ -98,6 +98,7 @@ const fetchLivePreview = (search_term = '') => {
 	<!-- TODO: change endpoint -->
 	<form bind:this={form} method="POST" action="/?/search">
 		<Searchbar
+			name="searchtext"
 			placeholder="Search configurations or games..."
 			--box-shadow="inset 0 0.4em 0.4em 0 var(--shadow-color-dark)"
 			bind:value={debounced.input} />
