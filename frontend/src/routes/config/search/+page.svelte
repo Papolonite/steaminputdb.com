@@ -34,6 +34,7 @@ $effect(() => {
 
 let loadingMore = $state(false);
 const loadMore = async () => {
+	return;
 	log.debug('Load more triggered');
 	if (!results?.items) {
 		log.error('No results to load more for');
@@ -164,7 +165,7 @@ afterNavigate(() => {
 					class="loading"
 					in:fade|global={{ duration: 196, easing: cubicOut }}
 					out:fade|global={{ duration: 196, easing: cubicIn }}>
-					<Spinner size="16em" />
+					<Spinner size="12em" />
 				</div>
 			{/if}
 			{#if !loading && (searchError || (results?.items?.length ?? 0) == 0)}
@@ -267,7 +268,7 @@ afterNavigate(() => {
 							{@attach intersectionObserver(() => {
 								loadMore();
 							})}>
-							<Spinner size="16em" />
+							<Spinner size="12em" />
 						</div>
 					{/if}
 				</div>
@@ -385,16 +386,22 @@ search {
 	& #load-more-trigger {
 		justify-self: center;
 		padding: 2em 1em;
+		overflow: hidden;
 	}
 }
 
 a {
 	display: grid;
-	--gap: 1em;
-	padding: calc(0.5 * var(--gap)) calc(0.5 * var(--gap));
-	column-gap: 1em;
-	row-gap: 0;
 	grid-template-columns: minmax(3em, 24em) auto;
+
+	@media (max-width: 1000px) {
+		grid-template-columns: 100%;
+	}
+
+	--gap: 1em;
+	column-gap: var(--gap);
+	row-gap: 0;
+	padding: calc(0.5 * var(--gap)) calc(0.5 * var(--gap));
 	width: 100%;
 	color: var(--text-color);
 	position: relative;
@@ -440,8 +447,10 @@ a {
 }
 
 .thumb {
+	aspect-ratio: 21 / 8;
 	width: auto;
 	height: 100%;
+	width: 100%;
 
 	border-radius: 0.5em;
 	box-shadow: var(--card-shadow);
@@ -511,7 +520,7 @@ a {
 		display: grid;
 		gap: 0.5em;
 		flex: 1;
-		flex-shrink: 1;
+		min-width: min(calc(100dvw - 2em), 300px);
 
 		& > strong {
 			padding-bottom: 0.5em;

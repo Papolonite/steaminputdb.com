@@ -64,7 +64,7 @@ import { fade, slide } from 'svelte/transition';
 					<Icon icon="mdi:link-variant" width="1.2em" />
 				{/if}
 				<h2>
-					<a href={resolve(`/app/${appInfo?.app_id}`)}>
+					<a href={resolve(`/app/${appInfo?.app_id || fileInfo.app_id_string}`)}>
 						{appInfo?.name || fileInfo.app_id_string}
 					</a>
 				</h2>

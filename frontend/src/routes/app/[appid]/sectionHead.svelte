@@ -10,17 +10,28 @@ import { cubicOut } from 'svelte/easing';
 import { fade } from 'svelte/transition';
 </script>
 
-{#snippet sectionHead({ appInfo }: { appInfo: components['schemas']['AppsSearchItem'] })}
+{#snippet sectionHead({
+	appInfo,
+	fallbackName
+}: {
+	appInfo?: components['schemas']['AppItem'];
+	fallbackName?: string;
+})}
 	<section>
 		<div>
-			<picture transition:fade={{ duration: 196, easing: cubicOut }}>
-				{#if appInfo.assets?.community_icon}
+			{#if appInfo?.assets?.community_icon}
+				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
 					<enhanced:img
 						src={`${communityUrlBase}${appInfo.app_id}/${appInfo.assets?.community_icon}.jpg`}
 						alt="Icon"></enhanced:img>
-				{/if}
-			</picture>
-			<h1>{appInfo?.name}</h1>
+				</picture>
+			{:else}
+				<Icon icon="mdi:link-variant" width="2.5em" height="2.5em" />
+			{/if}
+			{#if !appInfo && fallbackName}
+				<i>(Non Steam Shortcut)</i>
+			{/if}
+			<h1>{appInfo?.name ?? fallbackName}</h1>
 		</div>
 		<div>
 			<!-- 
@@ -30,15 +41,17 @@ import { fade } from 'svelte/transition';
 				<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
 				<span>Show Controller Config</span>
 			</a> -->
-			<a
-				href={steamStoreUrlBase + appInfo.store_url_path}
-				class="button"
-				target="_blank"
-				rel="external">
-				<!-- <Icon icon="mdi:steam" width="1.4em" height="1.4em" /> -->
-				<Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" />
-				<span>Storepage</span>
-			</a>
+			{#if appInfo?.store_url_path}
+				<a
+					href={steamStoreUrlBase + appInfo?.store_url_path}
+					class="button"
+					target="_blank"
+					rel="external">
+					<!-- <Icon icon="mdi:steam" width="1.4em" height="1.4em" /> -->
+					<Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" />
+					<span>Storepage</span>
+				</a>
+			{/if}
 		</div>
 	</section>
 {/snippet}
@@ -55,12 +68,13 @@ section {
 
 	& > :first-child {
 		margin: auto;
-		display: flex;
-		flex-direction: row;
+		display: grid;
+		grid-template-columns: minmax(min-content, 2em) auto;
 		align-items: center;
 		width: 100%;
 		height: fit-content;
-		gap: 1em;
+		grid-column-gap: 1em;
+		grid-row-gap: 0.25em;
 		padding: 1em 0;
 
 		& picture,
@@ -70,6 +84,11 @@ section {
 			overflow: hidden;
 			width: fit-content;
 			box-shadow: 0 0.2em 0.7em 0em var(--shadow-color);
+		}
+
+		& > i {
+			grid-row: 2 / span 1;
+			grid-column: 1 / span 2;
 		}
 
 		& > :last-child {

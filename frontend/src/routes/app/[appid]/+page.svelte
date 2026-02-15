@@ -23,7 +23,7 @@ import { sectionHead } from './sectionHead.svelte';
 
 let { data }: PageProps = $props();
 
-const appInfo: components['schemas']['AppItem'] = $derived(data.appInfo);
+const appInfo: components['schemas']['AppItem'] | undefined = $derived(data.appInfo);
 
 const pageBGURL = $derived.by(() => {
 	if (!appInfo?.assets) {
@@ -141,7 +141,7 @@ onMount(() => {
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
 		<div>
-			{@render sectionHead({ appInfo })}
+			{@render sectionHead({ appInfo, fallbackName: page.params.appid })}
 		</div>
 		<!-- TODO: show controller support and whatnot -->
 		<search>
@@ -157,7 +157,7 @@ onMount(() => {
 						class="loading"
 						in:fade|global={{ duration: 196, easing: cubicOut }}
 						out:fade|global={{ duration: 196, easing: cubicIn }}>
-						<Spinner size="16em" />
+						<Spinner size="12em" />
 					</div>
 				{/if}
 				{#if !loading && (searchError || (results?.items?.length ?? 0) == 0)}
@@ -230,7 +230,7 @@ onMount(() => {
 								{@attach intersectionObserver(() => {
 									loadMore();
 								})}>
-								<Spinner size="16em" />
+								<Spinner size="12em" />
 							</div>
 						{/if}
 					</div>
@@ -386,6 +386,7 @@ search {
 	& #load-more-trigger {
 		justify-self: center;
 		padding: 2em 1em;
+		overflow: hidden;
 	}
 
 	& > :first-child {
@@ -459,6 +460,7 @@ search {
 			gap: 0.5em;
 			flex: 1;
 			flex-shrink: 1;
+			min-width: min(100%, 300px);
 
 			& > strong {
 				padding-bottom: 0.5em;
