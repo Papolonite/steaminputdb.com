@@ -3,10 +3,12 @@ package appinfo
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/Alia5/steaminputdb.com/api/memcache"
 	"github.com/Alia5/steaminputdb.com/api/search/games"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
@@ -34,7 +36,15 @@ type Request struct {
 	Raw   bool   `query:"raw" default:"false"`
 }
 
-func RegisterRoute(a huma.API) {
+func RegisterRoute(a huma.API, opts ...bool) {
+	var useMemCache bool
+	if len(opts) > 0 {
+		useMemCache = opts[0]
+	} else {
+		useMemCache = true
+	}
+	cache := memcache.New(30*time.Minute, 1000)
+
 	huma.Register(
 		a,
 		huma.Operation{
@@ -48,6 +58,13 @@ func RegisterRoute(a huma.API) {
 			},
 		},
 		func(c context.Context, req *Request) (*Response, error) {
+
+			if useMemCache && !req.Raw {
+				cached, ok := memcache.Get[*Response](cache, fmt.Sprint(req.AppID))
+				if ok {
+					return cached, nil
+				}
+			}
 
 			resp, err := steamapi.DefaultClient.GetItems(c, &steamapi.CStoreBrowse_GetItems_Request{
 				Ids: []*steamapi.StoreItemID{
@@ -127,11 +144,16 @@ func RegisterRoute(a huma.API) {
 				}
 			}
 
-			return &Response{
+			res := &Response{
 				Body: &AppInfoWrapper{
 					*responseItem,
 				},
-			}, nil
+			}
+			if useMemCache {
+				cache.Store(fmt.Sprint(req.AppID), res)
+			}
+
+			return res, nil
 		},
 	)
 }

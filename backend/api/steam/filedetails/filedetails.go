@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Alia5/steaminputdb.com/api/memcache"
 	"github.com/Alia5/steaminputdb.com/api/search/configs"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
@@ -43,7 +44,15 @@ type Request struct {
 	Raw               bool   `query:"raw,omitempty" default:"false"`                                                               // if true, returns the raw steamapi.PublishedFileDetails instead of the processed ConfigResponseItem
 }
 
-func RegisterRoute(a huma.API) {
+func RegisterRoute(a huma.API, opts ...bool) {
+	var useMemCache bool
+	if len(opts) > 0 {
+		useMemCache = opts[0]
+	} else {
+		useMemCache = true
+	}
+	cache := memcache.New(30*time.Minute, 1000)
+
 	registry := a.OpenAPI().Components.Schemas
 
 	huma.Register(
@@ -75,6 +84,17 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 			},
 		},
 		func(c context.Context, req *Request) (*Response, error) {
+
+			if useMemCache && !req.Raw {
+				cached, ok := memcache.Get[*Response](
+					cache,
+					fmt.Sprintf("%v_%d", req.FileID, req.PlaytimeStatsDays),
+				)
+				if ok {
+					return cached, nil
+				}
+			}
+
 			info, err := steamapi.DefaultClient.GetFileDetails(c,
 				&steamapi.CPublishedFile_GetDetails_Request{
 					Publishedfileids: []uint64{
@@ -214,9 +234,17 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				}
 			}
 
-			return &Response{
+			response := &Response{
 				Body: res,
-			}, nil
+			}
+			if useMemCache {
+				cache.Store(
+					fmt.Sprintf("%v_%d", req.FileID, req.PlaytimeStatsDays),
+					response,
+				)
+			}
+
+			return response, nil
 		},
 	)
 }

@@ -17,42 +17,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-type roundTripperFunc func(*http.Request) (*http.Response, error)
-
-func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
-
-func redirectSteamAPITo(t *testing.T, targetBaseURL string) {
-	t.Helper()
-
-	orig := http.DefaultClient
-
-	u, err := url.Parse(targetBaseURL)
-	if err != nil {
-		t.Fatalf("failed to parse target base URL: %v", err)
-	}
-
-	http.DefaultClient = &http.Client{
-		Transport: roundTripperFunc(func(req *http.Request) (*http.Response, error) {
-			if req.URL.Host == "api.steampowered.com" {
-				req.URL.Scheme = u.Scheme
-				req.URL.Host = u.Host
-			}
-			return http.DefaultTransport.RoundTrip(req)
-		}),
-	}
-
-	t.Cleanup(func() {
-		http.DefaultClient = orig
-	})
-}
-
-func mustMarshalProto(t *testing.T, msg proto.Message) []byte {
-	t.Helper()
-	b, err := proto.Marshal(msg)
-	require.NoError(t, err)
-	return b
-}
-
 func TestFileDetails(t *testing.T) {
 	successMock := func(t *testing.T) *httptest.Server {
 		t.Helper()
@@ -62,39 +26,26 @@ func TestFileDetails(t *testing.T) {
 				return
 			}
 
-			created := uint32(1700000000)
-			updated := uint32(1700000123)
-			fileID := uint64(123)
-			fileType := uint32(12)
-			fileSize := uint64(2048)
-			creator := uint64(76561198000000000)
-			playtime := uint64(600)
-			sessions := uint64(42)
-			subs := uint32(9001)
-			score := float32(4.25)
-			up := uint32(100)
-			down := uint32(5)
-
 			resp := &steamapi.CPublishedFile_GetDetails_Response{
 				Publishedfiledetails: []*steamapi.PublishedFileDetails{
 					{
-						Publishedfileid:          &fileID,
-						FileType:                 &fileType,
+						Publishedfileid:          new(uint64(123)),
+						FileType:                 new(uint32(12)),
 						Title:                    new("My Config"),
 						FileDescription:          new("Cool config"),
 						Filename:                 new("controller.vdf"),
 						FileUrl:                  new("https://cdn.steamusercontent.com/ugc/abc"),
-						FileSize:                 &fileSize,
-						Creator:                  &creator,
-						TimeCreated:              &created,
-						TimeUpdated:              &updated,
-						LifetimePlaytime:         &playtime,
-						LifetimePlaytimeSessions: &sessions,
-						LifetimeSubscriptions:    &subs,
+						FileSize:                 new(uint64(2048)),
+						Creator:                  new(uint64(76561198000000000)),
+						TimeCreated:              new(uint32(1700000000)),
+						TimeUpdated:              new(uint32(1700000123)),
+						LifetimePlaytime:         new(uint64(600)),
+						LifetimePlaytimeSessions: new(uint64(42)),
+						LifetimeSubscriptions:    new(uint32(9001)),
 						VoteData: &steamapi.PublishedFileDetails_VoteData{
-							Score:     &score,
-							VotesUp:   &up,
-							VotesDown: &down,
+							Score:     new(float32(4.25)),
+							VotesUp:   new(uint32(100)),
+							VotesDown: new(uint32(5)),
 						},
 						Tags: []*steamapi.PublishedFileDetails_Tag{
 							{Tag: new(string(configs.ControllerTypeXboxOne))},
@@ -256,4 +207,40 @@ func TestFileDetails(t *testing.T) {
 		})
 	}
 
+}
+
+type roundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func redirectSteamAPITo(t testing.TB, targetBaseURL string) {
+	t.Helper()
+
+	orig := http.DefaultClient
+
+	u, err := url.Parse(targetBaseURL)
+	if err != nil {
+		t.Fatalf("failed to parse target base URL: %v", err)
+	}
+
+	http.DefaultClient = &http.Client{
+		Transport: roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+			if req.URL.Host == "api.steampowered.com" {
+				req.URL.Scheme = u.Scheme
+				req.URL.Host = u.Host
+			}
+			return http.DefaultTransport.RoundTrip(req)
+		}),
+	}
+
+	t.Cleanup(func() {
+		http.DefaultClient = orig
+	})
+}
+
+func mustMarshalProto(t testing.TB, msg proto.Message) []byte {
+	t.Helper()
+	b, err := proto.Marshal(msg)
+	require.NoError(t, err)
+	return b
 }
