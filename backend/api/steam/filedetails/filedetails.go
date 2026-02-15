@@ -147,10 +147,10 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				resultInfo.LifetimePlaytimeSeconds = item.LifetimePlaytime
 			}
 			if item.TimeCreated != nil {
-				resultInfo.TimeCreated = time.Unix(int64(*item.TimeCreated), 0)
+				resultInfo.TimeCreated = time.Unix(int64(*item.TimeCreated), 0).UTC()
 			}
 			if item.TimeUpdated != nil {
-				resultInfo.TimeUpdated = time.Unix(int64(*item.TimeUpdated), 0)
+				resultInfo.TimeUpdated = time.Unix(int64(*item.TimeUpdated), 0).UTC()
 			}
 			if item.Tags != nil {
 				tags := make([]string, 0, len(item.Tags))

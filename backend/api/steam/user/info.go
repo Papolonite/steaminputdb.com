@@ -90,9 +90,9 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 					AvatarMedium:             player.Avatarmedium,
 					AvatarFull:               player.Avatarfull,
 					AvatarHash:               player.Avatarhash,
-					LastLogOff:               time.Unix(int64(player.Lastlogoff), 0),
+					LastLogOff:               time.Unix(int64(player.Lastlogoff), 0).UTC(),
 					PrimaryClanID:            player.Primaryclanid,
-					TimeCreated:              time.Unix(int64(player.Timecreated), 0),
+					TimeCreated:              time.Unix(int64(player.Timecreated), 0).UTC(),
 					LocCountryCode:           player.Loccountrycode,
 				},
 			}, nil

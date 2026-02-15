@@ -85,7 +85,7 @@ func RegisterRoute(a huma.API) {
 			}
 
 			if len(resp.StoreItems) == 0 {
-				return nil, huma.Error404NotFound("item not found", err)
+				return nil, huma.Error404NotFound("item not found")
 			}
 
 			storeItem := resp.StoreItems[0]
