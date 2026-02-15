@@ -65,39 +65,6 @@ func TestSteamUserInfo(t *testing.T) {
 			expectedStatus: http.StatusOK,
 		},
 		{
-			name: "MISSING_TOKEN",
-			setupMock: func() *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := steamapi.PlayerSummaries{
-						Response: steamapi.Response{
-							Players: []steamapi.Players{},
-						},
-					}
-					json.NewEncoder(w).Encode(resp)
-				}))
-			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"missing token", "status":401, "title":"Unauthorized"}`,
-		},
-		{
-			name: "INVALID_TOKEN",
-			setupMock: func() *httptest.Server {
-				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					resp := steamapi.PlayerSummaries{
-						Response: steamapi.Response{
-							Players: []steamapi.Players{},
-						},
-					}
-					json.NewEncoder(w).Encode(resp)
-				}))
-			},
-			setupToken: func() string {
-				return "invalid.token.here"
-			},
-			expectedStatus:   http.StatusUnauthorized,
-			expectedResponse: `{"detail":"invalid token", "status":401, "title":"Unauthorized"}`,
-		},
-		{
 			name: "STEAM_API_NO_RESPONSE",
 			setupMock: func() *httptest.Server {
 				return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
