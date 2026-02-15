@@ -17,18 +17,7 @@ export const load: PageServerLoad = async ({  url, fetch }) => {
 
     if (url.searchParams.size > 0) {
         loadRes.hasSearched = true;
-        let rankby = url.searchParams.get('sort-by');
-        switch (rankby) {
-            case 'trend':
-                break;
-            case 'playtime':
-                rankby = 'lifetime_avg_playtime';
-                break;
-                // TODO:
-        }
-        if (!rankby) {
-            rankby = 'trend';
-        }
+        const rankby = url.searchParams.get('sort-by');
 
         const filterTags = Array.from(url.searchParams.entries())
             .map(([k ]) => k)
