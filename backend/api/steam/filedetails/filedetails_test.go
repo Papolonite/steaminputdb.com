@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/Alia5/steaminputdb.com/api/search/configs"
 	"github.com/Alia5/steaminputdb.com/api/steam/filedetails"
@@ -118,6 +117,7 @@ func TestFileDetails(t *testing.T) {
 		path           string
 		setupMock      func(t *testing.T) *httptest.Server
 		expectedStatus int
+		expectedBody   string
 		assertBody     func(t *testing.T, body []byte)
 		contains       string
 	}
@@ -128,47 +128,29 @@ func TestFileDetails(t *testing.T) {
 			path:           "/v1/steam/filedetails?file_id=123",
 			setupMock:      successMock,
 			expectedStatus: http.StatusOK,
-			assertBody: func(t *testing.T, body []byte) {
-				t.Helper()
-				var got configs.ConfigItem
-				require.NoError(t, json.Unmarshal(body, &got))
-
-				require.NotNil(t, got.Title)
-				assert.Equal(t, "My Config", *got.Title)
-				require.NotNil(t, got.Description)
-				assert.Equal(t, "Cool config", *got.Description)
-				require.NotNil(t, got.FileID)
-				assert.Equal(t, uint64(123), *got.FileID)
-				assert.Equal(t, "controller.vdf", *got.FileName)
-				assert.Equal(t, "https://cdn.steamusercontent.com/ugc/abc", *got.FileURL)
-				assert.Equal(t, uint64(2048), *got.FileSize)
-				assert.Equal(t, uint64(76561198000000000), *got.CreatorID)
-
-				assert.Equal(t, uint32(440), *got.AppID)
-				require.NotNil(t, got.AppIDString)
-				assert.Equal(t, "440", *got.AppIDString)
-				require.NotNil(t, got.ControllerType)
-				assert.Equal(t, configs.ControllerTypeXboxOne, *got.ControllerType)
-				assert.Equal(t, "Xbox One", got.ControllerTypeNice)
-				assert.True(t, got.ControllerNative)
-
-				assert.True(t, got.TimeCreated.Equal(time.Unix(1700000000, 0)), "expected TimeCreated to match")
-				assert.True(t, got.TimeUpdated.Equal(time.Unix(1700000123, 0)), "expected TimeUpdated to match")
-
-				require.NotNil(t, got.LifetimePlaytimeSeconds)
-				assert.Equal(t, uint64(600), *got.LifetimePlaytimeSeconds)
-				require.NotNil(t, got.LifetimePlaytimeSessions)
-				assert.Equal(t, uint64(42), *got.LifetimePlaytimeSessions)
-				require.NotNil(t, got.Subscriptions)
-				assert.Equal(t, uint32(9001), *got.Subscriptions)
-
-				require.NotNil(t, got.Votes.Score)
-				assert.InDelta(t, 4.25, float64(*got.Votes.Score), 0.0001)
-				require.NotNil(t, got.Votes.Up)
-				assert.Equal(t, uint32(100), *got.Votes.Up)
-				require.NotNil(t, got.Votes.Down)
-				assert.Equal(t, uint32(5), *got.Votes.Down)
-			},
+			expectedBody: `{
+				"title": "My Config",
+				"description": "Cool config",
+				"app_id": 440,
+				"app_id_string": "440",
+				"file_id": 123,
+				"file_name": "controller.vdf",
+				"file_url": "https://cdn.steamusercontent.com/ugc/abc",
+				"file_size": 2048,
+				"creator_id": "76561198000000000",
+				"controller_type": "controller_xboxone",
+				"controller_type_nice": "Xbox One",
+				"controller_native": true,
+				"time_created": "2023-11-14T23:13:20+01:00",
+				"time_updated": "2023-11-14T23:15:23+01:00",
+				"lifetime_playtime_seconds": 600,
+				"lifetime_playtime_sessions": 42,
+				"subscriptions": 9001,
+				"votes": {"score": 4.25, "up": 100, "down": 5},
+				"tags": ["controller_xboxone", "controller_native"],
+				"playtime_seconds": null,
+				"playtime_sessions": null
+			}`,
 		},
 		{
 			name:           "SUCCESS_RAW",
@@ -219,10 +201,7 @@ func TestFileDetails(t *testing.T) {
 				}))
 			},
 			expectedStatus: http.StatusNotFound,
-			assertBody: func(t *testing.T, body []byte) {
-				t.Helper()
-				assert.JSONEq(t, `{"detail":"file not found", "status":404, "title":"Not Found"}`, string(body))
-			},
+			expectedBody:   `{"detail":"file not found", "status":404, "title":"Not Found"}`,
 		},
 		{
 			name: "FILE_NOT_FOUND_WRONG_TYPE",
@@ -246,10 +225,7 @@ func TestFileDetails(t *testing.T) {
 				}))
 			},
 			expectedStatus: http.StatusNotFound,
-			assertBody: func(t *testing.T, body []byte) {
-				t.Helper()
-				assert.JSONEq(t, `{"detail":"file not found", "status":404, "title":"Not Found"}`, string(body))
-			},
+			expectedBody:   `{"detail":"file not found", "status":404, "title":"Not Found"}`,
 		},
 	}
 
@@ -269,6 +245,9 @@ func TestFileDetails(t *testing.T) {
 
 			if tc.contains != "" {
 				assert.True(t, strings.Contains(resp.Body.String(), tc.contains), "response body should contain %q, got: %s", tc.contains, resp.Body.String())
+			}
+			if tc.expectedBody != "" {
+				assert.JSONEq(t, tc.expectedBody, resp.Body.String())
 			}
 			if tc.assertBody != nil {
 				tc.assertBody(t, resp.Body.Bytes())
