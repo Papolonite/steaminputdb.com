@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Alia5/steaminputdb.com/api/ctx"
+	"github.com/Alia5/steaminputdb.com/api/memcache"
 	"github.com/Alia5/steaminputdb.com/api/steam/auth"
 	"github.com/Alia5/steaminputdb.com/steamapi"
 	"github.com/danielgtaylor/huma/v2"
@@ -34,7 +35,14 @@ type UserInfoRequest struct {
 	UserID string `query:"user_id,omitempty,omitzero"` // this is the user_id query parameter, but it's named something else to avoid confusion with the steamID that can be extracted from the context. if this is 0, we'll attempt to use the steamID from the context instead.
 }
 
-func RegisterRoutes(a huma.API) {
+func RegisterRoutes(a huma.API, opts ...bool) {
+	var useMemCache bool
+	if len(opts) > 0 {
+		useMemCache = opts[0]
+	} else {
+		useMemCache = true
+	}
+	cache := memcache.New(30*time.Minute, 1000)
 	huma.Register(
 		a,
 		huma.Operation{
@@ -62,6 +70,15 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 				}
 			} else {
 				steamID = req.UserID
+				if useMemCache {
+					cached, ok := memcache.Get[*Response](
+						cache,
+						steamID,
+					)
+					if ok {
+						return cached, nil
+					}
+				}
 			}
 			if steamID == "" {
 				return nil, huma.Error400BadRequest("no user ID provided")
@@ -81,7 +98,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 
 			player := info.Response.Players[0]
 
-			return &Response{
+			res := &Response{
 				Body: PlayerInfo{
 					CommunityVisibilityState: player.Communityvisibilitystate,
 					PersonaName:              player.Personaname,
@@ -95,7 +112,11 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 					TimeCreated:              time.Unix(int64(player.Timecreated), 0).UTC(),
 					LocCountryCode:           player.Loccountrycode,
 				},
-			}, nil
+			}
+			if useMemCache && req.UserID != "" {
+				cache.Store(steamID, res)
+			}
+			return res, nil
 		},
 	)
 }

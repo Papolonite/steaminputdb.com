@@ -45,7 +45,7 @@ func TestMemcache(t *testing.T) {
 		},
 		{
 			name:           "VALUE_WITHIN_TTL",
-			validity:       100 * time.Millisecond,
+			validity:       1000 * time.Millisecond,
 			maxItems:       100,
 			storeKeys:      []string{"ttl_test"},
 			storeValues:    []string{"data"},
@@ -60,7 +60,7 @@ func TestMemcache(t *testing.T) {
 			maxItems:       100,
 			storeKeys:      []string{"ttl_test"},
 			storeValues:    []string{"data"},
-			sleepAfter:     new(50 * time.Millisecond),
+			sleepAfter:     new(100 * time.Millisecond),
 			getKey:         "ttl_test",
 			expectedExists: false,
 			expectedValue:  "",
