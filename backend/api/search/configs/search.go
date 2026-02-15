@@ -98,9 +98,7 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 	}
 
 	if len(req.Body.Filter.Tags) > 0 {
-		for _, tag := range req.Body.Filter.Tags {
-			query.Requiredtags = append(query.Requiredtags, tag)
-		}
+		query.Requiredtags = append(query.Requiredtags, req.Body.Filter.Tags...)
 	}
 
 	queryResp, err := steamapi.DefaultClient.QueryFiles(ctx, query)

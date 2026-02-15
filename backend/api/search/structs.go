@@ -22,6 +22,6 @@ type SearchRequestBody struct {
 }
 
 type SearchResponseBody struct {
-	Games   []games.AppItem       `json:"games,omitempty"`
+	Games   []games.AppItem      `json:"games,omitempty"`
 	Configs []configs.ConfigItem `json:"configs,omitempty"`
 }
