@@ -78,12 +78,23 @@ import { fade, slide } from 'svelte/transition';
 						in:slide={{ duration: 196, easing: cubicOut }}
 						out:fade={{ duration: 196, easing: cubicOut }}>
 						<p style="white-space: nowrap; text-align: center;">Preview this config in Steam</p>
-						<p>You must own the game</p>
-						<code>steam://controllerconfig/{fileInfo.file_id}</code>
+						{#if !appInfo}
+							<p style="text-align: center;">
+								You must have a shortcut in Steam with the exact name "<em
+									style="font-weight: bold;">{fileInfo.app_id_string}</em
+								>"
+							</p>
+						{:else}
+							<p>You must own the game</p>
+						{/if}
+						<code
+							>steam://controllerconfig/{encodeURI(
+								fileInfo.app_id_string ?? ''
+							)}/{fileInfo.file_id}</code>
 					</div>
 				{/snippet}
 				<a
-					href={`steam://controllerconfig/${fileInfo.app_id_string}/${fileInfo.file_id}`}
+					href={`steam://controllerconfig/${encodeURI(fileInfo.app_id_string ?? '')}/${fileInfo.file_id}`}
 					class="button blue"
 					{@attach tooltip({
 						snippet: tooltipContent,

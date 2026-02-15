@@ -47,11 +47,13 @@ onMount(() => {
 			</div>
 			<div>
 				<h1>
-					Community driven database of <span>SteamInput</span> configurations
+					Community driven database of <span>SteamInput</span>
+					configurations
 					<strong>utilizing Steam API</strong>
 				</h1>
 				<p>SteamInputDB uses the same APIs as Steam itself</p>
 				<p>That means <strong>every</strong> configuration on Steam is also available here!</p>
+				<p>And yes, we have data for <strong>non-Steam</strong> games, too! 😎</p>
 			</div>
 		</div>
 		<div class="wip">
@@ -84,6 +86,10 @@ h1 {
 	}
 	& span {
 		color: var(--highlight-color);
+	}
+	& em {
+		font-size: 0.8em;
+		opacity: 0.8;
 	}
 }
 p {
