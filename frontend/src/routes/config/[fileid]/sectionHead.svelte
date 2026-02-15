@@ -3,6 +3,8 @@ export { sectionHead };
 </script>
 
 <script lang="ts">
+import { resolve } from '$app/paths';
+
 import type { components } from '$lib/api/openapi';
 import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { assetUrlBase, communityUrlBase } from '$lib/steamapi/const';
@@ -62,7 +64,9 @@ import { fade, slide } from 'svelte/transition';
 					<Icon icon="mdi:link-variant" width="1.2em" />
 				{/if}
 				<h2>
-					{appInfo?.name || fileInfo.app_id_string}
+					<a href={resolve(`/app/${appInfo?.app_id}`)}>
+						{appInfo?.name || fileInfo.app_id_string}
+					</a>
 				</h2>
 			</div>
 		</div>
