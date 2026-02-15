@@ -478,7 +478,7 @@ let {
 
 <style lang="postcss">
 [role='tooltip'] {
-	padding: 0.5em;
+	padding: 1em;
 	position: absolute;
 	z-index: 9999;
 	width: max-content;
@@ -510,7 +510,7 @@ let {
 			background: var(--bg, var(--card-glass));
 		}
 		&.def {
-			opacity: 0.5;
+			opacity: 0.666;
 
 			&::after {
 				background: var(--card-color);
@@ -531,7 +531,6 @@ let {
 						linear-gradient(black, black) border-box,
 						linear-gradient(black, black) padding-box;
 					mask-composite: subtract;
-					opacity: 0.5;
 					z-index: -1;
 				}
 			}
