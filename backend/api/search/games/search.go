@@ -89,7 +89,7 @@ func Handler(ctx context.Context, req *Request) (*Response, error) {
 		}, nil
 	}
 
-	items := make([]AppsSearchItem, len(queryResp.StoreItems))
+	items := make([]AppItem, len(queryResp.StoreItems))
 	for i, storeItem := range queryResp.StoreItems {
 		items[i].AppID = storeItem.Appid
 		items[i].Name = storeItem.Name

@@ -96,11 +96,10 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 		})
 	}
 
-	if req.Body.Filter.ControllerType != "" {
-		query.Requiredtags = append(query.Requiredtags, req.Body.Filter.ControllerType)
-	}
-	if req.Body.Filter.NativeControllerTypeSupport {
-		query.Requiredtags = append(query.Requiredtags, "controller_native")
+	if len(req.Body.Filter.Tags) > 0 {
+		for _, tag := range req.Body.Filter.Tags {
+			query.Requiredtags = append(query.Requiredtags, tag)
+		}
 	}
 
 	queryResp, err := steamapi.DefaultClient.QueryFiles(ctx, query)
@@ -117,7 +116,7 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 		}, nil
 	}
 
-	resultItems := make([]ConfigResponseItem, len(queryResp.Publishedfiledetails))
+	resultItems := make([]ConfigItem, len(queryResp.Publishedfiledetails))
 	for i, item := range queryResp.Publishedfiledetails {
 		var appIDStr string
 		for _, tag := range item.Kvtags {
@@ -138,7 +137,7 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 				appID = uint32(parsed)
 			}
 		}
-		resultItems[i] = ConfigResponseItem{
+		resultItems[i] = ConfigItem{
 			Title:       item.Title,
 			Description: item.FileDescription,
 			AppID:       &appID,
@@ -188,6 +187,18 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 			resultItems[i].Votes.Up = item.VoteData.VotesUp
 			resultItems[i].Votes.Down = item.VoteData.VotesDown
 		}
+
+		if req.Body.Include.Tags && item.Tags != nil {
+			tags := make([]string, 0, len(item.Tags))
+			for _, tag := range item.Tags {
+				if tag == nil || tag.Tag == nil {
+					continue
+				}
+				tags = append(tags, *tag.Tag)
+			}
+			resultItems[i].Tags = &tags
+		}
+
 	}
 
 	return &SearchResponse{

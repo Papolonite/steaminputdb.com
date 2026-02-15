@@ -16,6 +16,55 @@ components:
           description: Include mods in the search results
           type: boolean
       type: object
+    AppItem:
+      additionalProperties: false
+      properties:
+        app_id:
+          examples:
+            - 440
+          format: int32
+          minimum: 0
+          type:
+            - integer
+            - "null"
+        assets:
+          $ref: "#/components/schemas/StoreItem_Assets"
+        basic_info:
+          $ref: "#/components/schemas/StoreItem_BasicInfo"
+        links:
+          items:
+            type: string
+          type: array
+        name:
+          examples:
+            - Team Fortress 2
+          type:
+            - string
+            - "null"
+        platforms:
+          $ref: "#/components/schemas/AppsPlatforms"
+        release:
+          $ref: "#/components/schemas/AppsRelease"
+        store_url_path:
+          examples:
+            - app/440/Team_Fortress_2
+          type:
+            - string
+            - "null"
+        type:
+          enum:
+            - game
+            - demo
+            - mod
+          examples:
+            - game
+          type: string
+      required:
+        - app_id
+        - name
+        - store_url_path
+        - type
+      type: object
     AppsInclude:
       additionalProperties: false
       properties:
@@ -116,7 +165,7 @@ components:
       properties:
         items:
           items:
-            $ref: "#/components/schemas/AppsSearchItem"
+            $ref: "#/components/schemas/AppItem"
           type:
             - array
             - "null"
@@ -131,55 +180,6 @@ components:
       required:
         - total
         - items
-      type: object
-    AppsSearchItem:
-      additionalProperties: false
-      properties:
-        app_id:
-          examples:
-            - 440
-          format: int32
-          minimum: 0
-          type:
-            - integer
-            - "null"
-        assets:
-          $ref: "#/components/schemas/StoreItem_Assets"
-        basic_info:
-          $ref: "#/components/schemas/StoreItem_BasicInfo"
-        links:
-          items:
-            type: string
-          type: array
-        name:
-          examples:
-            - Team Fortress 2
-          type:
-            - string
-            - "null"
-        platforms:
-          $ref: "#/components/schemas/AppsPlatforms"
-        release:
-          $ref: "#/components/schemas/AppsRelease"
-        store_url_path:
-          examples:
-            - app/440/Team_Fortress_2
-          type:
-            - string
-            - "null"
-        type:
-          enum:
-            - game
-            - demo
-            - mod
-          examples:
-            - game
-          type: string
-      required:
-        - app_id
-        - name
-        - store_url_path
-        - type
       type: object
     CPublishedFile_GetDetails_Response:
       additionalProperties: false
@@ -381,6 +381,14 @@ components:
           type:
             - integer
             - "null"
+        tags:
+          description: List of tags associated with the configuration
+          examples:
+            - - controller_xboxone
+              - feature_gyro
+          items:
+            type: string
+          type: array
         time_created:
           format: date-time
           type: string
@@ -453,102 +461,27 @@ components:
           description: Only search configurations for this specific Steam App ID (Non-Steam Games use their name as AppID)
           maxLength: 100
           type: string
-        controller_type:
-          description: Filter results by controller type
-          enum:
-            - controller_xbox360
-            - controller_xboxone
-            - controller_xboxelite
-            - controller_ps3
-            - controller_ps4
-            - controller_ps5
-            - controller_steamcontroller_gordon
-            - controller_switch_pro
-            - controller_neptune
-            - controller_generic
-            - controller_mobile_touch
-            - controller_android
-          type: string
-        native_controller_type_support:
-          description: Filter results by whether they natively support the specified controller type
-          type: boolean
+        tags:
+          description: Filter results to only include configurations with all of the specified tags
+          items:
+            type: string
+          type:
+            - array
+            - "null"
       type: object
     ConfigInclude:
       additionalProperties: false
       properties:
+        tags:
+          default: false
+          description: Include tags
+          type: boolean
         votes:
           default: false
           description: Include vote data
           type: boolean
       type: object
-    ConfigQueryBody:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          examples:
-            - http://localhost:8889/schemas/ConfigQueryBody.json
-          format: uri
-          readOnly: true
-          type: string
-        filter:
-          $ref: "#/components/schemas/ConfigFilter"
-        include:
-          $ref: "#/components/schemas/ConfigInclude"
-        limit:
-          default: 5
-          description: Maximum number of results to return
-          format: int32
-          minimum: 0
-          type: integer
-        page:
-          description: Page number for paginated results
-          format: int32
-          minimum: 0
-          type: integer
-        query_text:
-          description: The search query string
-          maxLength: 100
-          type: string
-        rank:
-          $ref: "#/components/schemas/ConfigRank"
-        raw:
-          default: false
-          description: Return raw Steam API response
-          type: boolean
-      required:
-        - query_text
-      type: object
-    ConfigRank:
-      additionalProperties: false
-      properties:
-        by:
-          default: vote
-          description: Criterion to rank search results by
-          enum:
-            - vote
-            - publication
-            - trend
-            - subscriptions
-            - votes_asc
-            - votes_up
-            - text_search
-            - playtime_trend
-            - total_playtime
-            - avg_playtime_trend
-            - lifetime_avg_playtime
-            - playtime_sessions_trend
-            - lifetime_playtime_sessions
-            - updated
-          type: string
-        trending_period:
-          default: 30
-          description: Number of days to consider for trending rank
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    ConfigResponseItem:
+    ConfigItem:
       additionalProperties: false
       properties:
         app_id:
@@ -650,6 +583,14 @@ components:
           type:
             - integer
             - "null"
+        tags:
+          description: List of tags associated with the configuration
+          examples:
+            - - controller_xboxone
+              - feature_gyro
+          items:
+            type: string
+          type: array
         time_created:
           format: date-time
           type: string
@@ -663,7 +604,7 @@ components:
             - string
             - "null"
         votes:
-          $ref: "#/components/schemas/ConfigResponseItemVotesStruct"
+          $ref: "#/components/schemas/ConfigItemVotesStruct"
       required:
         - title
         - description
@@ -679,7 +620,7 @@ components:
         - lifetime_playtime_sessions
         - subscriptions
       type: object
-    ConfigResponseItemVotesStruct:
+    ConfigItemVotesStruct:
       additionalProperties: false
       properties:
         down:
@@ -713,12 +654,79 @@ components:
         - up
         - down
       type: object
+    ConfigQueryBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          examples:
+            - http://localhost:8889/schemas/ConfigQueryBody.json
+          format: uri
+          readOnly: true
+          type: string
+        filter:
+          $ref: "#/components/schemas/ConfigFilter"
+        include:
+          $ref: "#/components/schemas/ConfigInclude"
+        limit:
+          default: 5
+          description: Maximum number of results to return
+          format: int32
+          minimum: 0
+          type: integer
+        page:
+          description: Page number for paginated results
+          format: int32
+          minimum: 0
+          type: integer
+        query_text:
+          description: The search query string
+          maxLength: 100
+          type: string
+        rank:
+          $ref: "#/components/schemas/ConfigRank"
+        raw:
+          default: false
+          description: Return raw Steam API response
+          type: boolean
+      required:
+        - query_text
+      type: object
+    ConfigRank:
+      additionalProperties: false
+      properties:
+        by:
+          default: vote
+          description: Criterion to rank search results by
+          enum:
+            - vote
+            - publication
+            - trend
+            - subscriptions
+            - votes_asc
+            - votes_up
+            - text_search
+            - playtime_trend
+            - total_playtime
+            - avg_playtime_trend
+            - lifetime_avg_playtime
+            - playtime_sessions_trend
+            - lifetime_playtime_sessions
+            - updated
+          type: string
+        trending_period:
+          default: 30
+          description: Number of days to consider for trending rank
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
     ConfigsResponse:
       additionalProperties: false
       properties:
         items:
           items:
-            $ref: "#/components/schemas/ConfigResponseItem"
+            $ref: "#/components/schemas/ConfigItem"
           type:
             - array
             - "null"
@@ -1394,13 +1402,13 @@ components:
           type: string
         configs:
           items:
-            $ref: "#/components/schemas/ConfigResponseItem"
+            $ref: "#/components/schemas/ConfigItem"
           type:
             - array
             - "null"
         games:
           items:
-            $ref: "#/components/schemas/AppsSearchItem"
+            $ref: "#/components/schemas/AppItem"
           type:
             - array
             - "null"

@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     }
 
     return {
-        appInfo: infoResp.data as components['schemas']['AppsSearchItem']
+        appInfo: infoResp.data as components['schemas']['AppItem']
     };
 
 };

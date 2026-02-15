@@ -16,8 +16,8 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 	appInfo,
 	creatorInfo
 }: {
-	fileInfo: components['schemas']['ConfigDetailResponse'];
-	appInfo?: components['schemas']['AppsSearchItem'];
+	fileInfo: components['schemas']['ConfigItem'];
+	appInfo?: components['schemas']['AppItem'];
 
 	creatorInfo?: components['schemas']['PlayerInfo'];
 })}

@@ -12,9 +12,8 @@ type ConfigPagination struct {
 }
 
 type ConfigFilter struct {
-	AppID                       string `json:"app_id,omitempty,omitzero" maxLength:"100" doc:"Only search configurations for this specific Steam App ID (Non-Steam Games use their name as AppID)"`
-	ControllerType              string `json:"controller_type,omitempty,omitzero" enum:"controller_xbox360,controller_xboxone,controller_xboxelite,controller_ps3,controller_ps4,controller_ps5,controller_steamcontroller_gordon,controller_switch_pro,controller_neptune,controller_generic,controller_mobile_touch,controller_android" doc:"Filter results by controller type"`
-	NativeControllerTypeSupport bool   `json:"native_controller_type_support,omitempty,omitzero" doc:"Filter results by whether they natively support the specified controller type"`
+	AppID string   `json:"app_id,omitempty,omitzero" maxLength:"100" doc:"Only search configurations for this specific Steam App ID (Non-Steam Games use their name as AppID)"`
+	Tags  []string `json:"tags,omitempty,omitzero" doc:"Filter results to only include configurations with all of the specified tags"`
 }
 
 type ConfigRank struct {
@@ -24,6 +23,7 @@ type ConfigRank struct {
 
 type ConfigInclude struct {
 	Votes bool `json:"votes,omitempty,omitzero" default:"false" doc:"Include vote data"`
+	Tags  bool `json:"tags,omitempty,omitzero" default:"false" doc:"Include tags"`
 }
 
 type ConfigQueryBody struct {
@@ -39,7 +39,7 @@ type Request struct {
 	Body ConfigQueryBody `additionalProperties:"false"`
 }
 
-type ConfigResponseItem struct {
+type ConfigItem struct {
 	Title                    *string         `json:"title" example:"My Awesome Config"`
 	Description              *string         `json:"description" example:"An awesome configuration for an awesome game"`
 	AppID                    *uint32         `json:"app_id,omitempty,omitzero" example:"420"`
@@ -63,11 +63,13 @@ type ConfigResponseItem struct {
 		Up    *uint32  `json:"up" example:"100" doc:"Number of upvotes"`
 		Down  *uint32  `json:"down" example:"20" doc:"Number of downvotes"`
 	} `json:"votes,omitzero"`
+
+	Tags *[]string `json:"tags,omitempty,omitzero" example:"[\"controller_xboxone\", \"feature_gyro\"]" doc:"List of tags associated with the configuration"`
 }
 
 type ConfigsResponse struct {
-	Total int                  `json:"total,omitempty"`
-	Items []ConfigResponseItem `json:"items,omitempty"`
+	Total int          `json:"total,omitempty"`
+	Items []ConfigItem `json:"items,omitempty"`
 }
 
 type raw steamapi.CPublishedFile_QueryFiles_Response

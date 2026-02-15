@@ -130,7 +130,7 @@ func TestFileDetails(t *testing.T) {
 			expectedStatus: http.StatusOK,
 			assertBody: func(t *testing.T, body []byte) {
 				t.Helper()
-				var got configs.ConfigResponseItem
+				var got configs.ConfigItem
 				require.NoError(t, json.Unmarshal(body, &got))
 
 				require.NotNil(t, got.Title)

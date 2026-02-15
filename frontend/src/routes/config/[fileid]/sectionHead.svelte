@@ -16,8 +16,8 @@ import { fade, slide } from 'svelte/transition';
 	appInfo,
 	isMobileBrowser
 }: {
-	fileInfo: components['schemas']['ConfigResponseItem'];
-	appInfo?: components['schemas']['AppsSearchItem'];
+	fileInfo: components['schemas']['ConfigItem'];
+	appInfo?: components['schemas']['AppItem'];
 	isMobileBrowser?: boolean;
 })}
 	<section>

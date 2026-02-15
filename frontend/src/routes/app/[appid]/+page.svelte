@@ -4,7 +4,7 @@ import type { components } from '$lib/api/openapi';
 import { assetUrlBase, storePageBackgroundBase } from '$lib/steamapi/const';
 import { sectionHead } from './sectionHead.svelte';
 
-const appInfo: components['schemas']['AppsSearchItem'] = $derived(page.data.appInfo);
+const appInfo: components['schemas']['AppItem'] = $derived(page.data.appInfo);
 
 const pageBGURL = $derived.by(() => {
 	if (!appInfo?.assets) {

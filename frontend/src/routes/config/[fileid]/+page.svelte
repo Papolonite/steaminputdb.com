@@ -7,7 +7,7 @@ import { sectionHead } from './sectionHead.svelte';
 import { sectionInfo } from './sectionInfo.svelte';
 
 const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.data.fileInfo);
-const appInfo: components['schemas']['AppsSearchItem'] = $derived(page.data.appInfo);
+const appInfo: components['schemas']['AppItem'] = $derived(page.data.appInfo);
 const creatorInfo: components['schemas']['PlayerInfo'] | null = $derived(page.data.creatorInfo);
 
 const pageBGURL = $derived.by(() => {

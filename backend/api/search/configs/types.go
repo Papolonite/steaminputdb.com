@@ -9,16 +9,17 @@ import (
 type ControllerType string
 
 const (
-	ControllerTypeXbox360      ControllerType = "controller_xbox360"
-	ControllerTypeXboxOne      ControllerType = "controller_xboxone"
-	ControllerTypeXboxElite    ControllerType = "controller_xboxelite"
-	ControllerTypePS3          ControllerType = "controller_ps3"
-	ControllerTypePS4          ControllerType = "controller_ps4"
-	ControllerTypePS5          ControllerType = "controller_ps5"
-	ControllerTypeSteamControl ControllerType = "controller_steamcontroller_gordon"
-	ControllerTypeSwitchPro    ControllerType = "controller_switch_pro"
-	ControllerTypeSteamDeck    ControllerType = "controller_neptune"
-	ControllerTypeGeneric      ControllerType = "controller_generic"
+	ControllerTypeXbox360             ControllerType = "controller_xbox360"
+	ControllerTypeXboxOne             ControllerType = "controller_xboxone"
+	ControllerTypeXboxElite           ControllerType = "controller_xboxelite"
+	ControllerTypePS3                 ControllerType = "controller_ps3"
+	ControllerTypePS4                 ControllerType = "controller_ps4"
+	ControllerTypePS5                 ControllerType = "controller_ps5"
+	ControllerTypeSteamController2015 ControllerType = "controller_steamcontroller_gordon"
+	ControllerTypeSteamController     ControllerType = "controller_triton"
+	ControllerTypeSwitchPro           ControllerType = "controller_switch_pro"
+	ControllerTypeSteamDeck           ControllerType = "controller_neptune"
+	ControllerTypeGeneric             ControllerType = "controller_generic"
 	// ControllerTypeNative       ControllerType = "controller_native" --- IGNORE ---
 	ControllerTypeMobileTouch ControllerType = "controller_mobile_touch"
 	ControllerTypeAndroid     ControllerType = "controller_android"
@@ -32,16 +33,17 @@ func (c *ControllerType) NiceName() string {
 }
 
 var controllerNiceNames map[ControllerType]string = map[ControllerType]string{
-	ControllerTypeXbox360:      "Xbox 360",
-	ControllerTypeXboxOne:      "Xbox One",
-	ControllerTypeXboxElite:    "Xbox Elite",
-	ControllerTypePS3:          "DualShock 3",
-	ControllerTypePS4:          "DualShock 4",
-	ControllerTypePS5:          "DualSense",
-	ControllerTypeSteamControl: "Steam Controller (2015)",
-	ControllerTypeSwitchPro:    "Nintendo Switch Pro",
-	ControllerTypeSteamDeck:    "Steam Deck",
-	ControllerTypeGeneric:      "Generic",
+	ControllerTypeXbox360:             "Xbox 360",
+	ControllerTypeXboxOne:             "Xbox One",
+	ControllerTypeXboxElite:           "Xbox Elite",
+	ControllerTypePS3:                 "DualShock 3",
+	ControllerTypePS4:                 "DualShock 4",
+	ControllerTypePS5:                 "DualSense",
+	ControllerTypeSteamController2015: "Steam Controller (2015)",
+	ControllerTypeSteamController:     "Steam Controller",
+	ControllerTypeSwitchPro:           "Nintendo Switch Pro",
+	ControllerTypeSteamDeck:           "Steam Deck",
+	ControllerTypeGeneric:             "Generic",
 	// ControllerTypeNative:       "Native", --- IGNORE ---
 	ControllerTypeMobileTouch: "Mobile Touch",
 	ControllerTypeAndroid:     "Android",

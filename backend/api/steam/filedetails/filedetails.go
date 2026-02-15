@@ -28,7 +28,7 @@ type responseBody interface {
 }
 
 type ConfigDetailResponse struct {
-	configs.ConfigResponseItem
+	configs.ConfigItem
 	PlaytimeSeconds  *uint64 `json:"playtime_seconds" example:"4474585092" doc:"Total playtime in seconds with the specified time period"`
 	PlaytimeSessions *uint64 `json:"playtime_sessions" example:"1234" doc:"Total number of playtime sessions within the specified time period"`
 }
@@ -123,7 +123,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				return nil, huma.Error404NotFound("file not found")
 			}
 
-			resultInfo := &configs.ConfigResponseItem{
+			resultInfo := &configs.ConfigItem{
 				Title:       item.Title,
 				Description: item.FileDescription,
 				// AppID:       &appID,
@@ -196,7 +196,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				resultInfo.Votes.Down = item.VoteData.VotesDown
 			}
 			res := &ConfigDetailResponse{
-				ConfigResponseItem: *resultInfo,
+				ConfigItem: *resultInfo,
 			}
 
 			if item.PlaytimeStats != nil {

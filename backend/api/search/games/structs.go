@@ -34,11 +34,11 @@ type Request struct {
 }
 
 type AppsResponse struct {
-	Total *int32           `json:"total" example:"123" doc:"Total number of matching items"`
-	Items []AppsSearchItem `json:"items"`
+	Total *int32    `json:"total" example:"123" doc:"Total number of matching items"`
+	Items []AppItem `json:"items"`
 }
 
-type AppsSearchItem struct {
+type AppItem struct {
 	AppID        *uint32                       `json:"app_id" example:"440"`
 	Name         *string                       `json:"name" example:"Team Fortress 2"`
 	StoreURLPath *string                       `json:"store_url_path" example:"app/440/Team_Fortress_2"`

@@ -22,7 +22,7 @@ func (r *raw) searchSuggestionsResponse()            {}
 func (r *AppInfoWrapper) searchSuggestionsResponse() {}
 
 type AppInfoWrapper struct {
-	games.AppsSearchItem
+	games.AppItem
 }
 
 type Response struct {
@@ -90,7 +90,7 @@ func RegisterRoute(a huma.API) {
 
 			storeItem := resp.StoreItems[0]
 
-			responseItem := &games.AppsSearchItem{
+			responseItem := &games.AppItem{
 				AppID:        storeItem.Appid,
 				Name:         storeItem.Name,
 				StoreURLPath: storeItem.StoreUrlPath,

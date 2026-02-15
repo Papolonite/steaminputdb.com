@@ -29,6 +29,18 @@ export const load: PageServerLoad = async ({  url, fetch }) => {
         if (!rankby) {
             rankby = 'trend';
         }
+
+        const filterTags = Array.from(url.searchParams.entries())
+            .map(([k ]) => k)
+            .filter(
+                (k) => k.startsWith('feature_')
+            );
+
+        const controller_filter = url.searchParams.get('controller_type');
+        if (controller_filter) {
+            filterTags.push(controller_filter);
+        }
+
         const apiclient = clientWithSvelteFetch(fetch);
         try {
             const r = await apiclient.POST('/v1/search/configs', {
@@ -42,12 +54,11 @@ export const load: PageServerLoad = async ({  url, fetch }) => {
                         trending_period: 30
                     },
                     filter: {
-                        // TODO: fix types....
-                        controller_type: url.searchParams.get('controller-type') as 'controller_neptune' || undefined
-                        // TODO: additional filters
+                        tags: filterTags
                     },
                     include: {
-                        votes: true
+                        votes: true,
+                        tags: true
                     }
                 }
             });

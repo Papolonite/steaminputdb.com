@@ -44,11 +44,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         error(404, 'File not found');
     }
 
-    const fileInfo = infoResp.data as components['schemas']['ConfigResponseItem'];
+    const fileInfo = infoResp.data as components['schemas']['ConfigItem'];
     const resData: {
-        fileInfo: components['schemas']['ConfigResponseItem'];
+        fileInfo: components['schemas']['ConfigItem'];
         nonSteam: boolean;
-        appInfo?: components['schemas']['AppsSearchItem'];
+        appInfo?: components['schemas']['AppItem'];
         creatorInfo?: components['schemas']['PlayerInfo'];
     } = {
         fileInfo,

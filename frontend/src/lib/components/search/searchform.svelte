@@ -3,6 +3,7 @@ import { enhance } from '$app/forms';
 import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import Searchbar from '$lib/components/search/searchbar.svelte';
 import Icon from '@iconify/svelte';
+import { tick } from 'svelte';
 import { cubicInOut } from 'svelte/easing';
 import type { HTMLFormAttributes } from 'svelte/elements';
 import { slide } from 'svelte/transition';
@@ -75,84 +76,112 @@ const changeSubmitHandler = () => {
 		<fieldset
 			id="controller-type"
 			transition:slide={{ duration: 196, easing: cubicInOut }}
+			onclickcapture={(e) => {
+				const target = e.target;
+				if (!(target instanceof HTMLInputElement)) {
+					return;
+				}
+				if (target.type !== 'radio') {
+					return;
+				}
+				if (target.name !== 'controller_type') {
+					return;
+				}
+
+				if (values['controller_type'] == target.value) {
+					values['controller_type'] = undefined;
+					tick().then(() => {
+						changeSubmitHandler();
+					});
+				}
+			}}
 			disabled={disabled}>
 			<legend>Controller Type</legend>
+
 			<label for="controller_neptune">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_neptune"
-					name="controller_neptune"
-					bind:checked={values['controller_neptune'] as boolean}
+					name="controller_type"
+					value="controller_neptune"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<Icon icon="simple-icons:steamdeck" width="1.2em" />
 				<span> Steam Deck </span>
 			</label>
 			<label for="controller_triton">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_triton"
-					name="controller_triton"
-					bind:checked={values['controller_triton'] as boolean}
+					name="controller_type"
+					value="controller_triton"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<SC2 width="1.2em" />
 				<span> Steam Controller </span>
 			</label>
 			<label for="controller_steamcontroller_gordon">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_steamcontroller_gordon"
-					name="controller_steamcontroller_gordon"
-					bind:checked={values['controller_steamcontroller_gordon'] as boolean}
+					name="controller_type"
+					value="controller_steamcontroller_gordon"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<SC2 width="1.2em" />
 				<span> Steam Controller (2015) </span>
 			</label>
 			<label for="controller_ps5">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_ps5"
-					name="controller_ps5"
-					bind:checked={values['controller_ps5'] as boolean}
+					name="controller_type"
+					value="controller_ps5"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<Icon icon="simple-icons:playstation5" width="1.2em" />
 				<span> DualSense </span>
 			</label>
 			<label for="controller_ps4">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_ps4"
-					name="controller_ps4"
-					bind:checked={values['controller_ps4'] as boolean}
+					name="controller_type"
+					value="controller_ps4"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
 				<span> DualShock 4 </span>
 			</label>
 			<label for="controller_xbox360">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_xbox360"
-					name="controller_xbox360"
-					bind:checked={values['controller_xbox360'] as boolean}
+					name="controller_type"
+					value="controller_xbox360"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
 				<span> Xbox 360 </span>
 			</label>
 			<label for="controller_xboxone">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_xboxone"
-					name="controller_xboxone"
-					bind:checked={values['controller_xboxone'] as boolean}
+					name="controller_type"
+					value="controller_xboxone"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
 				<span> Xbox One </span>
 			</label>
 			<label for="controller_switch_pro">
 				<input
-					type="checkbox"
+					type="radio"
 					id="controller_switch_pro"
-					name="controller_switch_pro"
-					bind:checked={values['controller_switch_pro'] as boolean}
+					name="controller_type"
+					value="controller_switch_pro"
+					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:controller" width="1.2em" />
 				<span> Switch Pro </span>
@@ -160,8 +189,8 @@ const changeSubmitHandler = () => {
 		</fieldset>
 	{/if}
 	{#if showFeatureFilter}
-		<fieldset id="features" transition:slide={{ duration: 196, easing: cubicInOut }} disabled>
-			<legend>Must have (currently disabled)</legend>
+		<fieldset id="features" transition:slide={{ duration: 196, easing: cubicInOut }} disabled={disabled}>
+			<legend>Must have</legend>
 			<label for="feature_gamepad">
 				<input
 					type="checkbox"
