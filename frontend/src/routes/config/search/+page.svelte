@@ -34,7 +34,6 @@ $effect(() => {
 
 let loadingMore = $state(false);
 const loadMore = async () => {
-	return;
 	log.debug('Load more triggered');
 	if (!results?.items) {
 		log.error('No results to load more for');
