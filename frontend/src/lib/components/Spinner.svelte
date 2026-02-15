@@ -16,16 +16,16 @@ const {
 <style lang="postcss">
 div {
 	aspect-ratio: 1 / 1;
-	height: var(--height, 2em);
+	height: var(--height, 100%);
+	width: var(--height, 100%);
 	border-radius: 50%;
+	overflow: hidden;
 	display: inline-block;
 	position: relative;
 	border: var(--thickness) solid;
 	border-color: var(--text-color) var(--text-color) transparent transparent;
 	box-sizing: border-box;
 	animation: rotation 1s linear infinite;
-	max-width: min(100dvw, var(--height, 2em));
-	max-height: min(100dvw, var(--height, 2em));
 }
 div::after,
 div::before {

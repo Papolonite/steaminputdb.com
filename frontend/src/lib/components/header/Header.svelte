@@ -182,16 +182,21 @@ a {
 
 button {
 	display: grid;
-	grid-template-columns: 2em min-content;
+	grid-template-columns: 2em auto;
 	gap: 1em;
 	place-items: center;
 	padding: 0;
 	border: none;
 	box-shadow: none;
 	max-height: 2em;
+	overflow: hidden;
 	& > span {
 		font-size: 1.4em;
 		font-weight: bold;
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 
