@@ -1,5 +1,29 @@
 <script lang="ts" module>
 export { configRating };
+const calculateScoreColor = (score: number, up: number, down: number) => {
+	if (up === down && up === 0) {
+		return 'currentColor';
+	}
+	if (!score) {
+		return 'currentColor';
+	}
+	if (down > up) {
+		return 'hsl(0deg 100% 60%)';
+	}
+	if (score > 0.8) {
+		return 'hsl(125deg 100% 50%)';
+	}
+	if (score > 0.7) {
+		return 'hsl(80deg 100% 50%)';
+	}
+	if (score >= 0.51) {
+		return 'hsl(60deg 100% 50%)';
+	}
+	if (score > 0.4) {
+		return 'hsl(30deg 100% 50%)';
+	}
+	return 'hsl(0deg 100% 60%)';
+};
 </script>
 
 <script lang="ts">
@@ -10,21 +34,11 @@ import Icon from '@iconify/svelte';
 
 {#snippet configRating({ item }: { item: components['schemas']['ConfigItem' | 'ConfigDetailResponse'] })}
 	{#if item.votes}
-		{@const scoreColor =
-			item.votes.up == item.votes.up && item.votes.up === 0
-				? 'currentColor'
-				: item.votes?.score &&
-					`hsl(${
-						(item.votes.score || 0) > 0.8
-							? 125
-							: (item.votes.score || 0) > 0.7
-								? 80
-								: (item.votes.score || 0) > 0.6
-									? 60
-									: (item.votes.score || 0) > 0.5
-										? 30
-										: 0
-					}deg 100% 50%)`}
+		{@const scoreColor = calculateScoreColor(
+			item.votes.score ?? 0,
+			item.votes.up ?? 0,
+			item.votes.down ?? 0
+		)}
 		<div
 			class="rating"
 			style="--rating-color: {scoreColor};"
@@ -37,16 +51,16 @@ import Icon from '@iconify/svelte';
 			})}>
 			<div>
 				<span>
-					{#if (item.votes?.score || 0) > 0.8}
+					{#if (item.votes?.down || 0) > (item.votes?.up || 0)}
+						😣
+					{:else if (item.votes?.score || 0) > 0.8}
 						😍
 					{:else if (item.votes?.score || 0) > 0.7}
 						🤩
-					{:else if (item.votes?.score || 0) > 0.6}
+					{:else if (item.votes?.score || 0) >= 0.51}
 						😎
-					{:else if (item.votes?.score || 0) > 0.5}
+					{:else if (item.votes?.score || 0) > 0.4}
 						🙁
-					{:else if (item.votes?.down || 0) > (item.votes?.up || 0)}
-						😣
 					{:else}
 						🤔
 					{/if}
@@ -84,10 +98,8 @@ import Icon from '@iconify/svelte';
 
 {#snippet tooltipContent()}
 	<div style="display: grid; place-items: center;">
-		<p style="white-space: nowrap; text-align: center;">The ranking system is provided by Steam</p>
-		<p style="white-space: nowrap; text-align: center;">
-			I do not know and can only guess on how it rates
-		</p>
+		<p style="text-align: center;">The ranking system is provided by Steam</p>
+		<p style="text-align: center;">I do not know and can only guess on how it rates</p>
 	</div>
 {/snippet}
 
