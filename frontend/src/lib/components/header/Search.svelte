@@ -43,6 +43,9 @@ let shouldShowWhat = $derived.by(() => {
 });
 
 $effect(() => {
+	if (debounced.value == undefined) {
+		return;
+	}
 	fetchLivePreview(debounced.value);
 });
 
@@ -87,14 +90,16 @@ const fetchLivePreview = (search_term = '') => {
 			clearTimeout(timeout);
 		});
 };
-(() => {
-	if ((previewResults?.games?.length || 0) === 0 || (previewResults?.configs?.length || 0) === 0) {
-		void fetchLivePreview();
-	}
-})();
 </script>
 
-<search onfocusin={() => (focusState.input = true)} onfocusout={() => (focusState.input = false)}>
+<search
+	onfocusin={() => {
+		if (debounced.value == undefined) {
+			fetchLivePreview();
+		}
+		focusState.input = true;
+	}}
+	onfocusout={() => (focusState.input = false)}>
 	<!-- TODO: change endpoint -->
 	<form bind:this={form} method="POST" action="/?/search">
 		<Searchbar
