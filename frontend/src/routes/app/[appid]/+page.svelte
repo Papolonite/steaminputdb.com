@@ -60,13 +60,6 @@ main {
 			var(--bg, transparent) top/cover no-repeat;
 		z-index: -2;
 	}
-	&::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		z-index: -1;
-		backdrop-filter: blur(12px);
-	}
 }
 div {
 	display: grid;
