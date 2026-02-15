@@ -7,6 +7,8 @@ import { resolve } from '$app/paths';
 import type { components } from '$lib/api/openapi';
 import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import { selectAllHandler } from '$lib/attachments/selectAllHandler.svelte';
+import { configRating } from '$lib/snippets/configRating.svelte';
+import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
 import Icon from '@iconify/svelte';
 import { format, formatDistance, formatDistanceToNow, formatDuration, intervalToDuration } from 'date-fns';
 </script>
@@ -154,73 +156,15 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			</dd>
 			{#if fileInfo.tags}
 				<dt>Features</dt>
-				<dd></dd>
+				<dd class="featurelist">
+					{@render configurationFeatureList({ fileInfo })}
+				</dd>
 			{/if}
 		</dl>
 		<aside>
 			<section>
 				{#if fileInfo.votes}
-					{@const scoreColor =
-						fileInfo.votes.up == fileInfo.votes.up && fileInfo.votes.up === 0
-							? 'currentColor'
-							: fileInfo.votes?.score &&
-								`hsl(${
-									(fileInfo.votes.score || 0) > 0.8
-										? 125
-										: (fileInfo.votes.score || 0) > 0.7
-											? 80
-											: (fileInfo.votes.score || 0) > 0.6
-												? 60
-												: (fileInfo.votes.score || 0) > 0.5
-													? 30
-													: 0
-								}deg 100% 50%)`}
-					<div class="rating" style="--rating-color: {scoreColor};">
-						<div>
-							<span>
-								{#if (fileInfo.votes?.score || 0) > 0.8}
-									😍
-								{:else if (fileInfo.votes?.score || 0) > 0.7}
-									🤩
-								{:else if (fileInfo.votes?.score || 0) > 0.6}
-									😎
-								{:else if (fileInfo.votes?.score || 0) > 0.5}
-									🙁
-								{:else if (fileInfo.votes?.down || 0) > (fileInfo.votes?.up || 0)}
-									😣
-								{:else}
-									🤔
-								{/if}
-							</span>
-							<span>
-								{fileInfo.votes.up == fileInfo.votes.down && fileInfo.votes.up === 0
-									? '???'
-									: (fileInfo.votes?.score ?? 0).toLocaleString(undefined, {
-											style: 'percent',
-											minimumFractionDigits: 0,
-											maximumFractionDigits: 1
-										})}
-							</span>
-						</div>
-						<div>
-							<span
-								>{fileInfo.votes.up?.toLocaleString(undefined, {
-									notation: 'compact',
-									minimumFractionDigits: 0,
-									maximumFractionDigits: 1
-								})}
-								<Icon icon="mdi:thumb-up" />
-							</span><span>/</span><span>
-								{fileInfo.votes.down?.toLocaleString(undefined, {
-									notation: 'compact',
-									minimumFractionDigits: 0,
-									maximumFractionDigits: 1
-								})}
-								<Icon icon="mdi:thumb-down" /></span>
-						</div>
-						<i>(Rating from Steam)</i>
-						<!-- TODO TOOLTIP!-->
-					</div>
+					{@render configRating({ item: fileInfo })}
 				{/if}
 				{#if fileInfo.playtime_seconds || fileInfo.lifetime_playtime_seconds}
 					<div class="playtime">
@@ -298,7 +242,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			gap: 1em;
 			width: 100%;
 			grid-template-columns: repeat(auto-fit, minmax(calc(var(--width) -1em), auto));
-			& > div {
+			& > :global(div) {
 				width: 100%;
 				padding: 1em;
 				position: relative;
@@ -410,46 +354,6 @@ aside {
 
 	& > section {
 		& > .rating {
-			display: grid;
-			place-items: center;
-
-			& span {
-				filter: drop-shadow(1px 1px 1px black);
-				color: var(--rating-color);
-				font-size: 1.1em;
-				font-weight: 500;
-			}
-			& i {
-				color: var(--text-color-dark);
-				opacity: 0.8;
-				font-size: 0.8em;
-				filter: drop-shadow(1px 1px 1px black) drop-shadow(0px 0px 2px black);
-			}
-			& > :first-child {
-				& > :first-child {
-					font-size: 1.8em;
-					filter: drop-shadow(1px 2px 3px black);
-					transform: translate(0, 0.5em);
-				}
-				& > :last-child {
-					font-size: 1.7em;
-					filter: drop-shadow(1px 1px 1px black) drop-shadow(1px 1px 2px var(--shadow-color));
-				}
-			}
-			& > :nth-child(2) {
-				display: flex;
-				gap: 0.5ch;
-				& > :first-child {
-					color: hsl(108, 100%, 50%);
-				}
-				& > :nth-child(2) {
-					font-size: 1.1em;
-					color: var(--text-color-dark);
-				}
-				& > :last-child {
-					color: hsl(0, 100%, 60%);
-				}
-			}
 			height: 100%;
 		}
 		& > .playtime {
@@ -488,5 +392,13 @@ aside {
 			}
 		}
 	}
+}
+
+.featurelist {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5ch;
+	overflow: clip;
+	overflow-clip-margin: 1em;
 }
 </style>

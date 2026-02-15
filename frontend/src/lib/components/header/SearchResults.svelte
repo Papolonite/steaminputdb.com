@@ -4,13 +4,14 @@ import { client, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import { log } from '$lib/log';
+import { controllertype } from '$lib/snippets/controllertype.svelte';
 import { assetUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, slide } from 'svelte/transition';
 
-type Config = components['schemas']['ConfigResponseItem'];
-type Game = components['schemas']['AppsSearchItem'];
+type Config = components['schemas']['ConfigItem'];
+type Game = components['schemas']['AppItem'];
 
 let {
 	results
@@ -32,7 +33,7 @@ let resultAppIdMap = $derived.by(() => {
 	return map;
 });
 
-let infoAppIdMap = $state<Record<number, components['schemas']['AppsSearchItem']>>({});
+let infoAppIdMap = $state<Record<number, components['schemas']['AppItem']>>({});
 
 $effect(() => {
 	results?.configs?.forEach((cfg) => {
@@ -60,7 +61,7 @@ $effect(() => {
 					log.error('No data in response when fetching store info', 'appid', idCopy);
 					return;
 				}
-				infoAppIdMap[idCopy] = resp.data as components['schemas']['AppsSearchItem'];
+				infoAppIdMap[idCopy] = resp.data as components['schemas']['AppItem'];
 			})
 			.catch((err) => {
 				log.error('Error fetching store info', 'appid', idCopy, 'error', err);
@@ -163,33 +164,7 @@ $effect(() => {
 						app_id_string}
 				</i>
 				<span>
-					{#if (e as Config).controller_type === 'controller_neptune'}
-						<Icon icon="simple-icons:steamdeck" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_triton'}
-						<SC2 width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_steamcontroller_gordon'}
-						<SC2 width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_ps5'}
-						<Icon icon="simple-icons:playstation5" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_ps4'}
-						<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_xbox360'}
-						<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_xboxone'}
-						<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_switch_pro'}
-						<Icon icon="mdi:controller" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_mobile_touch'}
-						<Icon icon="mdi:cellphone" width="1.2em" />
-					{:else if (e as Config).controller_type === 'controller_android'}
-						<Icon icon="mdi:android" width="1.2em" />
-					{:else}
-						<Icon icon="mdi:gamepad" height="1.2em" />
-					{/if}
-
-					{(e as Config).controller_type_nice ||
-						(e as Config).controller_type ||
-						'Generic Controller'}
+					{@render controllertype({ item: e as Config })}
 				</span>
 			{/if}
 		</div>

@@ -4,14 +4,17 @@ import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import { client } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
-import SC2Icon from '$lib/assets/SC2_Alt.svg?component';
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
+import { configRating } from '$lib/snippets/configRating.svelte';
+import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
+import { controllertype } from '$lib/snippets/controllertype.svelte';
 import { statusCodeNames } from '$lib/statuscodes';
 import { assetUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
+import { formatDistance } from 'date-fns';
 import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, slide } from 'svelte/transition';
@@ -39,7 +42,7 @@ let eyes = $state<{
 	right: undefined!
 })!;
 
-let infoAppIdMap = $state<Record<number, components['schemas']['AppsSearchItem']>>({});
+let infoAppIdMap = $state<Record<number, components['schemas']['AppItem']>>({});
 
 $effect(() => {
 	results?.items?.forEach((cfg) => {
@@ -64,7 +67,7 @@ $effect(() => {
 					log.error('No data in response when fetching store info', 'appid', idCopy);
 					return;
 				}
-				infoAppIdMap[idCopy] = resp.data as components['schemas']['AppsSearchItem'];
+				infoAppIdMap[idCopy] = resp.data as components['schemas']['AppItem'];
 			})
 			.catch((err) => {
 				log.error('Error fetching store info', 'appid', idCopy, 'error', err);
@@ -206,36 +209,28 @@ afterNavigate(() => {
 								</i>
 							</div>
 							<div class="info">
-								<strong class="title">{item.title}</strong>
-								<span>
-									{#if item.controller_type === 'controller_neptune'}
-										<Icon icon="simple-icons:steamdeck" width="1.2em" />
-									{:else if item.controller_type === 'controller_triton'}
-										<SC2Icon width="1.2em" />
-									{:else if item.controller_type === 'controller_steamcontroller_gordon'}
-										<SC2Icon width="1.2em" />
-									{:else if item.controller_type === 'controller_ps5'}
-										<Icon icon="simple-icons:playstation5" width="1.2em" />
-									{:else if item.controller_type === 'controller_ps4'}
-										<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
-									{:else if item.controller_type === 'controller_xbox360'}
-										<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
-									{:else if item.controller_type === 'controller_xboxone'}
-										<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
-									{:else if item.controller_type === 'controller_switch_pro'}
-										<Icon icon="mdi:controller" width="1.2em" />
-									{:else if item.controller_type === 'controller_mobile_touch'}
-										<Icon icon="mdi:cellphone" width="1.2em" />
-									{:else if item.controller_type === 'controller_android'}
-										<Icon icon="mdi:android" width="1.2em" />
-									{:else}
-										<Icon icon="mdi:gamepad" height="1.2em" />
-									{/if}
-
-									{item.controller_type_nice ||
-										item.controller_type ||
-										'Generic Controller'}
-								</span>
+								<div>
+									<strong class="title">{item.title}</strong>
+									<span>
+										<span>{@render controllertype({ item })}</span>
+										{#if item.lifetime_playtime_seconds}
+											<span
+												>{formatDistance(
+													new Date((item.lifetime_playtime_seconds ?? 0) * 1000),
+													new Date(0)
+												)}
+												combined playtime
+											</span>
+										{/if}
+									</span>
+									<span>{item.description}</span>
+									<div>
+										{@render configurationFeatureList({ fileInfo: item })}
+									</div>
+								</div>
+								<div>
+									{@render configRating({ item })}
+								</div>
 							</div>
 						</a>
 					{/each}
@@ -350,6 +345,50 @@ search {
 	width: 100%;
 	display: grid;
 	position: relative;
+
+	anchor-name: --hovered-link;
+	a:hover,
+	a:focus-visible {
+		anchor-name: --hovered-link;
+	}
+
+	overflow: clip;
+	border-radius: 0 0 1em 1em;
+
+	--transition-delay: var(--transition-duration);
+
+	&::after {
+		content: '';
+		position: absolute;
+
+		top: anchor(top);
+		left: anchor(left);
+		right: anchor(right);
+		bottom: anchor(bottom);
+
+		opacity: 0;
+
+		transition:
+			top calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903)
+				var(--transition-delay),
+			bottom calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903)
+				var(--transition-delay),
+			opacity var(--transition-duration) var(--default-ease);
+
+		position-anchor: --hovered-link;
+
+		background: var(--color-primary);
+		z-index: -2;
+	}
+	&:has(a:hover)::after,
+	&:has(a:focus-visible)::after {
+		top: anchor(top);
+		left: anchor(left);
+		right: anchor(right);
+		bottom: anchor(bottom);
+		opacity: 0.3;
+		--transition-delay: 0ms;
+	}
 }
 
 a {
@@ -358,7 +397,8 @@ a {
 	padding: calc(0.5 * var(--gap)) calc(0.5 * var(--gap));
 	column-gap: 1em;
 	row-gap: 0;
-	grid-template-columns: 33% 66%;
+	grid-template-columns: minmax(3em, 24em) auto;
+	width: 100%;
 	color: var(--text-color);
 	position: relative;
 	isolation: isolate;
@@ -383,16 +423,20 @@ a {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	font-size: 1.4em;
+	font-size: 1.2em;
 }
 
 .thumb {
-	aspect-ratio: 21 / 8;
-	width: 100%;
+	width: auto;
 	height: 100%;
+
+	border-radius: 0.5em;
+	box-shadow: var(--card-shadow);
 
 	color: var(--text-color-dark);
 	isolation: isolate;
+
+	align-self: center;
 
 	& picture,
 	& img {
@@ -412,7 +456,7 @@ a {
 			position: absolute;
 			inset: 0px;
 			mask: linear-gradient(
-				135deg,
+				170deg,
 				rgb(255 255 255 / 0.9) 0%,
 				rgb(255 255 255 / 0.7) 25%,
 				transparent 50%
@@ -431,7 +475,7 @@ a {
 	}
 
 	& i {
-		font-size: 1.1em;
+		font-size: 1em;
 		padding: 0.5em;
 		filter: drop-shadow(1px 1px 1px black) drop-shadow(0px 0px 4px rgb(0 0 0 / 0.25))
 			drop-shadow(0px 0px 2px black);
@@ -446,23 +490,61 @@ a {
 }
 
 .info {
-	display: grid;
-	grid-template-rows: min-content min-content auto;
-	& span {
-		display: grid;
-		align-items: center;
-		grid-auto-flow: column;
-		width: fit-content;
-		gap: 0.5em;
-		font-size: 1.2em;
-	}
-	strong {
-		padding-bottom: 0.5em;
-	}
+	display: flex;
+	flex-flow: row wrap;
+	gap: 0.5em;
 
-	& span {
-		color: var(--highlight-color);
-		font-weight: bold;
+	& > :first-child {
+		display: grid;
+		gap: 0.5em;
+		flex: 1;
+		flex-shrink: 1;
+
+		& > strong {
+			padding-bottom: 0.5em;
+		}
+
+		overflow: clip;
+		overflow-clip-margin: 1em;
+
+		& > div {
+			display: flex;
+			flex-flow: row wrap;
+			gap: 0.5em;
+			overflow: clip;
+			overflow-clip-margin: 1em;
+		}
+
+		& > :nth-child(2) {
+			display: flex;
+			flex-flow: row wrap;
+			align-items: center;
+			width: fit-content;
+			gap: 1em;
+			& > :first-child {
+				display: flex;
+				flex-flow: row wrap;
+				align-items: center;
+				color: var(--highlight-color);
+				gap: 0.25em;
+				font-weight: bold;
+				font-size: 1.1em;
+			}
+			& > :nth-child(2) {
+				opacity: 0.8;
+			}
+		}
+		& > :nth-child(3) {
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			max-width: 100%;
+		}
+
+		& > :last-child {
+			margin: auto 0;
+			height: fit-content;
+		}
 	}
 }
 

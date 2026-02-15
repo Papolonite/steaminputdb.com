@@ -65,9 +65,18 @@ const changeSubmitHandler = () => {
 				disabled={disabled}
 				bind:value={values['sort-by']}
 				onchange={changeSubmitHandler}>
-				<option value="vote">Votes</option>
-				<option value="trend">Trend</option>
-				<option value="playtime">Playtime</option>
+				<option value="vote">Rank</option>
+				<option value="publication">Date</option>
+				<option value="trend">Trend (30 days)</option>
+				<option value="votes_asc">Votes (ascending)</option>
+				<option value="votes_up">Votes (upvotes)</option>
+				<option value="text_search">Relevance</option>
+				<option value="playtime_trend">Playtime trend (30 days)</option>
+				<option value="total_playtime">Total playtime</option>
+				<option value="avg_playtime_trend">Average playtime trend</option>
+				<option value="lifetime_avg_playtime">Average playtime since upload</option>
+				<option value="playtime_sessions_trend">Sessions trend (30 days)</option>
+				<option value="lifetime_playtime_sessions">Lifetime sessions</option>
 			</select>
 			<Icon icon="mdi:chevron-down" />
 		</label>
@@ -272,6 +281,9 @@ form {
 	flex-flow: row wrap;
 	width: 100%;
 	gap: 1em;
+
+	max-width: 100dvw;
+
 	& > :first-child {
 		width: 100%;
 		flex-grow: 1;
@@ -358,6 +370,7 @@ select {
 	appearance: none;
 	padding-right: 2em;
 	position: relative;
+	width: 100%;
 
 	& option {
 		color: var(--text-color);

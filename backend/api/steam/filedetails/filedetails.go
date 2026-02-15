@@ -153,16 +153,21 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				resultInfo.TimeUpdated = time.Unix(int64(*item.TimeUpdated), 0)
 			}
 			if item.Tags != nil {
+				tags := make([]string, 0, len(item.Tags))
 				for _, tag := range item.Tags {
 					if tag == nil || tag.Tag == nil {
 						continue
 					}
+					tags = append(tags, *tag.Tag)
+
 					if *tag.Tag == "controller_native" {
 						resultInfo.ControllerNative = true
 					} else if strings.HasPrefix(*tag.Tag, "controller_") {
 						resultInfo.ControllerType = (*configs.ControllerType)(tag.Tag)
 					}
 				}
+				resultInfo.Tags = &tags
+
 			}
 			if resultInfo.ControllerType != nil && *resultInfo.ControllerType != "" {
 				resultInfo.ControllerTypeNice = resultInfo.ControllerType.NiceName()
@@ -207,17 +212,6 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				if item.PlaytimeStats.NumSessions != nil {
 					res.PlaytimeSessions = item.PlaytimeStats.NumSessions
 				}
-			}
-
-			if item.Tags != nil {
-				var tags []string
-				for _, tag := range item.Tags {
-					if tag == nil || tag.Tag == nil {
-						continue
-					}
-					tags = append(tags, *tag.Tag)
-				}
-				resultInfo.Tags = &tags
 			}
 
 			return &Response{
