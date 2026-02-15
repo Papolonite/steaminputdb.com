@@ -49,6 +49,9 @@ $effect(() => {
 		if (!cfg.app_id) {
 			return;
 		}
+		if (infoAppIdMap[cfg.app_id]) {
+			return;
+		}
 		const idCopy = cfg.app_id;
 		client
 			.GET('/v1/steam/appinfo', {
