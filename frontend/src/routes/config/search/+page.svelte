@@ -19,8 +19,8 @@ import { formatDistance } from 'date-fns';
 import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, slide } from 'svelte/transition';
+import { fetchConfigs, PAGE_SIZE } from '../../../lib/api/searchConfigs';
 import type { PageProps } from './$types';
-import { fetchConfigs, PAGE_SIZE } from './fetchConfigs';
 
 let { data }: PageProps = $props();
 
@@ -28,18 +28,22 @@ let { data }: PageProps = $props();
 let results = $state(data?.results);
 $effect(() => {
 	if (data?.hasSearched) {
-		console.log('Updating results with new data', 'data', data);
 		results = data?.results;
 	}
 });
 
+let loadingMore = $state(false);
 const loadMore = async () => {
 	log.debug('Load more triggered');
 	if (!results?.items) {
 		log.error('No results to load more for');
 		return;
 	}
+	if (loadingMore) {
+		return;
+	}
 
+	loadingMore = true;
 	const searchParams = page.url.searchParams;
 	searchParams.set('page', `${Math.floor(results.items.length / PAGE_SIZE) + 1}`);
 	try {
@@ -48,20 +52,13 @@ const loadMore = async () => {
 	} catch (e) {
 		log.error('Error loading more results', 'error', e);
 	}
+	loadingMore = false;
 };
 
 let form = $state<HTMLFormElement>()!;
 let loading = $state(false);
 let hasSearched = $derived(data.hasSearched);
 let searchError = $derived(data.searchError);
-
-let eyes = $state<{
-	left: HTMLElement;
-	right: HTMLElement;
-}>({
-	left: undefined!,
-	right: undefined!
-})!;
 
 let infoAppIdMap = $state<Record<number, components['schemas']['AppItem']>>({});
 
@@ -105,6 +102,13 @@ let formValues = $state(
 	}, {})
 );
 
+let eyes = $state<{
+	left: HTMLElement;
+	right: HTMLElement;
+}>({
+	left: undefined!,
+	right: undefined!
+})!;
 const findEyes = () => {
 	const group = document.querySelector('#sc2>*>svg>g>:last-child');
 	if (!group) {
@@ -118,7 +122,6 @@ onMount(() => {
 });
 
 beforeNavigate((event) => {
-	console.log(event);
 	if (event.type == 'form') {
 		loading = true;
 	}
@@ -378,50 +381,6 @@ search {
 	width: 100%;
 	display: grid;
 	position: relative;
-
-	/* anchor-name: --hovered-link;
-	a:hover,
-	a:focus-visible {
-		anchor-name: --hovered-link;
-	}
-
-	overflow: clip;
-	border-radius: 0 0 1em 1em;
-
-	--transition-delay: var(--transition-duration);
-
-	&::after {
-		content: '';
-		position: absolute;
-
-		top: anchor(top);
-		left: anchor(left);
-		right: anchor(right);
-		bottom: anchor(bottom);
-
-		opacity: 0;
-
-		transition:
-			top calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903)
-				var(--transition-delay),
-			bottom calc(var(--transition-duration) * 1) cubic-bezier(0.086, 1.037, 0.621, 0.903)
-				var(--transition-delay),
-			opacity var(--transition-duration) var(--default-ease);
-
-		position-anchor: --hovered-link;
-
-		background: var(--color-primary);
-		z-index: -2;
-	}
-	&:has(a:hover)::after,
-	&:has(a:focus-visible)::after {
-		top: anchor(top);
-		left: anchor(left);
-		right: anchor(right);
-		bottom: anchor(bottom);
-		opacity: 0.3;
-		--transition-delay: 0ms;
-	} */
 
 	& #load-more-trigger {
 		justify-self: center;

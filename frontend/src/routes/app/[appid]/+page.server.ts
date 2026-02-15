@@ -1,11 +1,12 @@
 import { clientWithSvelteFetch, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
+import { fetchConfigs } from '$lib/api/searchConfigs';
 import { log } from '$lib/log';
-import { error } from '@sveltejs/kit';
+import { error, isHttpError } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
+export const load: PageServerLoad = async ({ params, fetch, url }) => {
 
     const appid = params.appid;
 
@@ -14,8 +15,11 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         error(400, 'Invalid app ID');
     }
 
+    // TODO: send both requests in parallel
     const client = clientWithSvelteFetch(fetch);
-    let infoResp: Awaited<ResponseType<'GET', '/v1/steam/appinfo'>>;
+    let infoResp: Awaited<ResponseType<'GET', '/v1/steam/appinfo'>> & {
+        data?: components['schemas']['AppItem'];
+    };
     try {
         infoResp = await client.GET('/v1/steam/appinfo', {
             params: {
@@ -24,7 +28,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
                     raw: false
                 }
             }
-        });
+        }) as typeof infoResp;
     } catch (err) {
         log.error('Failed to fetch app details', 'app_id', app_id, 'error', err);
         error(500, {
@@ -43,8 +47,38 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         error(404, 'App not found');
     }
 
-    return {
-        appInfo: infoResp.data as components['schemas']['AppItem']
+    const loadRes: {
+        appInfo: components['schemas']['AppItem'];
+        configs?: components['schemas']['ConfigsResponse'];
+        searchError?: {
+            status?: number;
+            message?: string;
+        } & Record<string, unknown>;
+    } = {
+        appInfo: infoResp.data
     };
+
+    try {
+        const searchParams = url.searchParams;
+        searchParams.set('appid', appid);
+        loadRes.configs = await fetchConfigs(fetch, searchParams);
+    } catch (e) {
+        log.error('Error fetching search results', 'error', e);
+        if (isHttpError(e)) {
+            loadRes.searchError = {
+                status: e.status || 502,
+                message: e.body?.message || 'Error contacting search endpoint',
+                error: `${e.body}`
+            };
+        } else {
+            loadRes.searchError = {
+                status: 502,
+                message: 'Error contacting search endpoint',
+                error: `${e}`
+            };
+        }
+    }
+
+    return loadRes;
 
 };

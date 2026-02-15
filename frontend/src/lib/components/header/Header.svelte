@@ -28,6 +28,9 @@ let modal = $state<Modal>()!;
 		}}
 		aria-label="Menu">
 		<Icon icon="mdi:menu" width="100%" height="100%" />
+		{#if page.url.pathname.endsWith('/search')}
+			<span>SteamInputDB</span>
+		{/if}
 	</button>
 	{#if !page.url.pathname.endsWith('/search')}
 		<Search />
@@ -64,6 +67,10 @@ let modal = $state<Modal>()!;
 			</a>
 			<Themetoggle />
 		</div>
+		<a href={resolve('/config/search')} onclick={() => modal.close()} class="nav">
+			<Icon icon="mdi:magnify" width="1.4em" />
+			<span>Advanced Search</span>
+		</a>
 	</aside>
 </Modal>
 
@@ -146,6 +153,18 @@ header {
 	}
 }
 
+.nav {
+	display: grid;
+	grid-template-columns: min-content min-content;
+	align-items: center;
+	gap: 0.5em;
+	align-items: center;
+	padding: 0;
+	height: fit-content;
+	padding: 1em;
+	font-size: 1.2em;
+}
+
 a {
 	font-size: 1.4em;
 	white-space: nowrap;
@@ -163,12 +182,17 @@ a {
 
 button {
 	display: grid;
+	grid-template-columns: 2em min-content;
+	gap: 1em;
 	place-items: center;
 	padding: 0;
 	border: none;
 	box-shadow: none;
-	aspect-ratio: 1 / 1;
-	max-width: 2em;
+	max-height: 2em;
+	& > span {
+		font-size: 1.4em;
+		font-weight: bold;
+	}
 }
 
 aside {

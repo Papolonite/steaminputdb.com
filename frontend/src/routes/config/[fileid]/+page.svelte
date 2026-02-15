@@ -63,14 +63,13 @@ main {
 	&::before {
 		content: '';
 		position: absolute;
-		inset: 0;
-		background:
-			linear-gradient(
-				0deg,
-				var(--background-color) 25%,
-				color-mix(in srgb, var(--background-color), transparent 100%) 80%
-			),
-			var(--bg, transparent) top/cover no-repeat;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: min(100%, 100dvh);
+		background: var(--bg, transparent) top/cover no-repeat;
+		mask: linear-gradient(0deg, transparent, white 100%);
+		mask-type: alpha;
 		z-index: -2;
 	}
 }

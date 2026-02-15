@@ -28,7 +28,7 @@ export const fetchConfigs = async (
         const r = await apiclient.POST('/v1/search/configs', {
             body: {
                 limit: PAGE_SIZE,
-                query_text: params.get('searchtext') as string,
+                query_text: (params.get('searchtext') ?? '') as string,
                 raw: false,
                 page: pageNum,
                 rank: {
@@ -36,7 +36,8 @@ export const fetchConfigs = async (
                     trending_period: 30
                 },
                 filter: {
-                    tags: filterTags
+                    tags: filterTags,
+                    app_id: params.get('appid')?.toString() ?? undefined
                 },
                 include: {
                     votes: true,
