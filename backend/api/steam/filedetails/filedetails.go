@@ -3,6 +3,7 @@ package filedetails
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"reflect"
@@ -132,7 +133,7 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				FileName:  item.Filename,
 				FileURL:   item.FileUrl,
 				FileSize:  item.FileSize,
-				CreatorID: item.Creator,
+				CreatorID: fmt.Sprintf("%v", *item.Creator),
 				// ControllerType: tags
 				// ControllerTypeNice: tags
 				// ControllerNative: tags
@@ -206,6 +207,17 @@ If a non-controller config file ID is provided, this will respond with a 404`,
 				if item.PlaytimeStats.NumSessions != nil {
 					res.PlaytimeSessions = item.PlaytimeStats.NumSessions
 				}
+			}
+
+			if item.Tags != nil {
+				var tags []string
+				for _, tag := range item.Tags {
+					if tag == nil || tag.Tag == nil {
+						continue
+					}
+					tags = append(tags, *tag.Tag)
+				}
+				resultInfo.Tags = &tags
 			}
 
 			return &Response{

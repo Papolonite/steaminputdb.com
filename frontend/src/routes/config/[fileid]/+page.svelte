@@ -8,7 +8,7 @@ import { sectionInfo } from './sectionInfo.svelte';
 
 const fileInfo: components['schemas']['ConfigDetailResponse'] = $derived(page.data.fileInfo);
 const appInfo: components['schemas']['AppItem'] = $derived(page.data.appInfo);
-const creatorInfo: components['schemas']['PlayerInfo'] | null = $derived(page.data.creatorInfo);
+const creatorInfo: components['schemas']['PlayerInfo'] | undefined = $derived(page.data.creatorInfo);
 
 const pageBGURL = $derived.by(() => {
 	if (!appInfo?.assets) {

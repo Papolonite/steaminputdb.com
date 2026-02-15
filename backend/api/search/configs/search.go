@@ -3,6 +3,7 @@ package configs
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"reflect"
@@ -146,7 +147,7 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 			FileName:    item.Filename,
 			FileURL:     item.FileUrl,
 			FileSize:    item.FileSize,
-			CreatorID:   item.Creator,
+			CreatorID:   fmt.Sprintf("%v", item.Creator),
 			// ControllerType: tags
 			// ControllerTypeNice: tags
 			// ControllerNative: tags

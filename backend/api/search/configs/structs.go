@@ -48,7 +48,7 @@ type ConfigItem struct {
 	FileName                 *string         `json:"file_name" example:"controllerconfig.vdf"`
 	FileURL                  *string         `json:"file_url" example:"https://cdn.steamusercontent.com/ugc/UGCID/HASH"`
 	FileSize                 *uint64         `json:"file_size" example:"2048" doc:"File size in bytes"`
-	CreatorID                *uint64         `json:"creator_id" example:"76561198000000000" doc:"Steam User ID of the configuration creator"`
+	CreatorID                string          `json:"creator_id" example:"76561198000000000" doc:"Steam User ID of the configuration creator"`
 	ControllerType           *ControllerType `json:"controller_type,omitempty,omitzero" example:"controller_steamcontroller_gordon" doc:"Type of controller this configuration is designed for"`
 	ControllerTypeNice       string          `json:"controller_type_nice,omitempty,omitzero" example:"Steam Controller (2015)" doc:"Human-friendly name of the controller type"`
 	ControllerNative         bool            `json:"controller_native,omitempty,omitzero" example:"true" doc:"Unsure"`

@@ -295,12 +295,8 @@ components:
         creator_id:
           description: Steam User ID of the configuration creator
           examples:
-            - 76561198000000000
-          format: int64
-          minimum: 0
-          type:
-            - integer
-            - "null"
+            - "76561198000000000"
+          type: string
         description:
           examples:
             - An awesome configuration for an awesome game
@@ -515,12 +511,8 @@ components:
         creator_id:
           description: Steam User ID of the configuration creator
           examples:
-            - 76561198000000000
-          format: int64
-          minimum: 0
-          type:
-            - integer
-            - "null"
+            - "76561198000000000"
+          type: string
         description:
           examples:
             - An awesome configuration for an awesome game

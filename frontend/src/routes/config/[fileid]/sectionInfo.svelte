@@ -16,7 +16,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 	appInfo,
 	creatorInfo
 }: {
-	fileInfo: components['schemas']['ConfigResponseItem'];
+	fileInfo: components['schemas']['ConfigDetailResponse'];
 	appInfo?: components['schemas']['AppItem'];
 
 	creatorInfo?: components['schemas']['PlayerInfo'];
@@ -152,6 +152,10 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 					{fileInfo.app_id_string}
 				{/if}
 			</dd>
+			{#if fileInfo.tags}
+				<dt>Features</dt>
+				<dd></dd>
+			{/if}
 		</dl>
 		<aside>
 			<section>
