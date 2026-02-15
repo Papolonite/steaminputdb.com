@@ -5,6 +5,7 @@ import { page } from '$app/state';
 import { client } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
+import { intersectionObserver } from '$lib/attachments/intersectionObserver.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
@@ -19,15 +20,35 @@ import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
 import { fade, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
+import { fetchConfigs, PAGE_SIZE } from './fetchConfigs';
 
 let { data }: PageProps = $props();
 
-let results = $derived.by(() => {
+// svelte-ignore state_referenced_locally
+let results = $state(data?.results);
+$effect(() => {
 	if (data?.hasSearched) {
-		return data.results;
+		console.log('Updating results with new data', 'data', data);
+		results = data?.results;
 	}
-	return undefined;
 });
+
+const loadMore = async () => {
+	log.debug('Load more triggered');
+	if (!results?.items) {
+		log.error('No results to load more for');
+		return;
+	}
+
+	const searchParams = page.url.searchParams;
+	searchParams.set('page', `${Math.floor(results.items.length / PAGE_SIZE) + 1}`);
+	try {
+		const res = await fetchConfigs(fetch, searchParams);
+		results.items = results.items.concat(res?.items ?? []);
+	} catch (e) {
+		log.error('Error loading more results', 'error', e);
+	}
+};
 
 let form = $state<HTMLFormElement>()!;
 let loading = $state(false);
@@ -237,6 +258,15 @@ afterNavigate(() => {
 							</div>
 						</a>
 					{/each}
+					{#if (results?.items?.length ?? 0) < (results?.total ?? 0)}
+						<div
+							id="load-more-trigger"
+							{@attach intersectionObserver(() => {
+								loadMore();
+							})}>
+							<Spinner size="16em" />
+						</div>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -349,7 +379,7 @@ search {
 	display: grid;
 	position: relative;
 
-	anchor-name: --hovered-link;
+	/* anchor-name: --hovered-link;
 	a:hover,
 	a:focus-visible {
 		anchor-name: --hovered-link;
@@ -391,6 +421,11 @@ search {
 		bottom: anchor(bottom);
 		opacity: 0.3;
 		--transition-delay: 0ms;
+	} */
+
+	& #load-more-trigger {
+		justify-self: center;
+		padding: 2em 1em;
 	}
 }
 
@@ -413,6 +448,22 @@ a {
 		left: 0;
 		position: absolute;
 		background: color-mix(in srgb, currentColor, transparent 80%);
+	}
+
+	&:hover,
+	&:focus-visible {
+		&::after {
+			opacity: 0.3;
+		}
+	}
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0px;
+		background: var(--color-primary);
+		opacity: 0;
+		z-index: -1;
+		transition: opacity var(--transition-duration) var(--default-ease);
 	}
 
 	& > div {

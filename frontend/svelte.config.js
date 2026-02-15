@@ -14,7 +14,7 @@ const config = {
             // pages: '../backend/frontend/dist',
             // assets: '../backend/frontend/dist',
             // fallback: 'index.html'
-        }),
+        })
     },
 };
 

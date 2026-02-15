@@ -11,12 +11,12 @@ const {
 }>();
 </script>
 
-<div style={`${style}; --thickness: ${thickness}; ${size ? `height: ${size}` : ''}`}></div>
+<div style={`${style}; --thickness: ${thickness}; ${size ? `--height: ${size}` : ''}`}></div>
 
 <style lang="postcss">
 div {
-	aspect-ratio: 1;
-	height: 100%;
+	aspect-ratio: 1 / 1;
+	height: var(--height, 2em);
 	border-radius: 50%;
 	display: inline-block;
 	position: relative;
@@ -24,6 +24,8 @@ div {
 	border-color: var(--text-color) var(--text-color) transparent transparent;
 	box-sizing: border-box;
 	animation: rotation 1s linear infinite;
+	max-width: min(100dvw, var(--height, 2em));
+	max-height: min(100dvw, var(--height, 2em));
 }
 div::after,
 div::before {

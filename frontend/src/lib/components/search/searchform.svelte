@@ -39,11 +39,11 @@ const changeSubmitHandler = () => {
 </script>
 
 {#if method === 'POST' || method === 'post'}
-	<form bind:this={form} class="card glass" {...rest} use:enhance={enhanceParams}>
+	<form bind:this={form} class="card glass" data-sveltekit-noscroll {...rest} use:enhance={enhanceParams}>
 		{@render formcontents()}
 	</form>
 {:else}
-	<form bind:this={form} class="card glass" {...rest}>
+	<form bind:this={form} class="card glass" data-sveltekit-noscroll {...rest}>
 		{@render formcontents()}
 	</form>
 {/if}
