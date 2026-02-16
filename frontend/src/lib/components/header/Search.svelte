@@ -122,7 +122,7 @@ const fetchLivePreview = (search_term = '') => {
 			out:fly|global={{ y: '-100%', x: 0, delay: 0, duration: 196, easing: cubicIn, opacity: 0 }}>
 			{#if shouldShowWhat === 'loading'}
 				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
-					<Spinner size="min(100dvw, 15em)" thickness="0.3em" />
+					<Spinner size="min(100dvw, 12em)" thickness="0.3em" />
 				</div>
 			{:else if shouldShowWhat === 'no_results'}
 				<div class="ctr" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
