@@ -15,45 +15,51 @@ import Icon from '@iconify/svelte';
 		<a href="https://github.com/Alia5/steaminputdb.com" target="_blank" rel="external"
 			><Icon icon="simple-icons:github" height="2.4em" /></a>
 	</div>
-	<span class="c"
-		>Copyright © 2026 <a href="https://github.com/Alia5" target="_blank" rel="external">Peter Repukat</a
-		></span>
+	<div>
+		<span class="c"
+			>Copyright © 2026 <a href="https://github.com/Alia5" target="_blank" rel="external"
+				>Peter Repukat</a
+			></span>
 
-	<div class="legal links">
-		<a href={resolve('/privacy')}>Privacy</a>
-		<a href={resolve('/imprint')}>Imprint</a>
+		<div class="legal links">
+			<a href={resolve('/privacy')}>Privacy</a>
+			<a href={resolve('/imprint')}>Imprint</a>
+		</div>
 	</div>
 </footer>
 
 <style lang="postcss">
 footer {
 	padding: 1em;
+	padding-bottom: 0.5em;
 	background: var(--card-background-noise);
 	box-shadow: 0 0px 4px var(--shadow-color);
 	display: grid;
 	width: 100%;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr;
 	grid-template-rows: auto auto;
 
 	& > :first-child {
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-row: 1 / span all;
+		grid-row: 1 / span 1;
 	}
 	& > :last-child {
-		grid-column: 3 / span 1;
-		grid-row: 3 / span 1;
+		grid-column: 1 / span all;
+		grid-row: 2 / span 1;
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		place-items: center;
 	}
 }
 
 #links {
-	grid-row: 1 / span 2;
-	grid-column: 2 / span 2;
 	display: flex;
 	flex-flow: row wrap-reverse;
 	gap: 2em;
 	justify-content: flex-end;
 	padding: 0.25em;
+	margin-right: 1em;
 
 	& a {
 		color: var(--text-color);
@@ -68,13 +74,12 @@ footer {
 }
 
 .c {
-	grid-column: 2;
-	grid-row: 3;
 	color: var(--text-muted);
 	opacity: 0.9;
 	font-size: 0.9em;
 	align-self: end;
 	justify-self: center;
+	grid-column: 2 / span 1;
 	& a {
 		color: inherit;
 		opacity: 0.9;
@@ -88,6 +93,7 @@ footer {
 	align-items: center;
 	height: fit-content;
 	align-self: center;
+	margin-left: 1em;
 }
 
 .legal {
