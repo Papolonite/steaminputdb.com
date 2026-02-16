@@ -104,7 +104,7 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 	queryResp, err := steamapi.DefaultClient.QueryFiles(ctx, query)
 	if err != nil {
 		if errors.Is(err, steamapi.ErrRequest) {
-			return nil, huma.Error502BadGateway("failed to get steam user info: %v", err)
+			return nil, huma.Error502BadGateway("failed to get steam publishedFile info", err)
 		}
 		return nil, err
 	}
