@@ -1,0 +1,23 @@
+---
+
+---
+<!-- markdownlint-disable first-line-heading -->
+
+### Logging into **SteamInputDB** _currently_ does not provide any additional features  
+
+It currently only exists as a half-implemented feature!
+
+We will only fetch publicly available information about your Steam-account (profile-id, display name, avatar).  
+We **currently** do not store _any_ information about you or your Steam account and there is no separate SteamInputDB account created.  
+
+Eventually, we plan to add community features that will require storing your Steam profile-id and display name,
+but we will never store, any sensitive information about you or your Steam account.
+
+This website is not affiliated with Valve Corporation or Steam.  
+We use cookies to keep your session active.  
+
+**How can I verify this is legitimate?**  
+When you click the sign in button, you will be redirected to <https://steamcommunity.com>  
+    _(Please verify the URL before entering your credentials)_  
+If you are already signed into Steam, you can simply click `Sign In` without entering your password.  
+SteamInputDB never receives your username or password.  

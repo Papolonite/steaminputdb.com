@@ -394,6 +394,10 @@ aside {
 	}
 }
 
+code {
+	display: block;
+}
+
 .featurelist {
 	display: flex;
 	flex-wrap: wrap;

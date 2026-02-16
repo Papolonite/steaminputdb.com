@@ -1,0 +1,31 @@
+# Imprint
+
+(_required by german law_)
+
+## Contact
+
+Peter Repukat  
+Georg-Herbst-Str. 8  
+93049 Regensburg  
+Email: `peter@1-3-3-7.dev`
+
+## Disclaimer
+
+The information contained on SteamInputDB is for general information purposes only.
+
+SteamInputDB assumes no responsibility for errors or omissions in the contents of SteamInputDB.
+
+In no event shall SteamInputDB be liable for any special, direct, indirect, consequential, or incidental damages or any damages whatsoever,  
+whether in an action of contract, negligence or other tort, arising out of or in connection with the use of SteamInputDB or the contents of SteamInputDB.  
+SteamInputDB reserves the right to make additions, deletions, or modifications to the contents on SteamInputDB at any time without prior notice.  
+SteamInputDB does not warrant that SteamInputDB is free of viruses or other harmful components.  
+
+### External Links
+
+The Website does contain links to external websites that are not provided or maintained by or in any way affiliated with SteamInputDB.
+
+Please note that SteamInputDB does not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.
+
+### Privacy Policy
+
+Please refer to our [Privacy Policy](/privacy) for information on how we handle your data.

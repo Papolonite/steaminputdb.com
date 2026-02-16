@@ -1,0 +1,65 @@
+# Privacy Policy
+
+## Introduction and Overview
+
+This Privacy Policy explains how data is handled on SteamInputDB in accordance with the General Data Protection Regulation (EU) 2016/679 and applicable European laws. The terms are gender-neutral.
+
+We want to describe clearly what happens with any personal data that may be involved when using our website.  
+Most of the time, we do not store personal data ourselves, except for user-generated content like comments.  
+
+## Scope of Application
+
+Users can create accounts only via third-party login through Steam.  
+We do not operate our own registration system and do not maintain a database of personal user profiles beyond the information needed to associate user interactions with a Steam account.  
+All other personal data, such as login credentials, remains with Steam and is subject to their privacy policy.
+
+Third-party content, such as texts or images, may appear on the site, and we have no control over it.
+
+## Legal Basis
+
+The personal data we store (user comments, ratings, votes, and similar interactions) is processed under the legal basis of **legitimate interest (Article 6(1)(f) GDPR)**.  
+This allows users to interact on the site, display contributions publicly, and maintain continuity of user interactions.
+
+All other personal data, such as login credentials, remains with Steam and is subject to their privacy policy.  
+
+## Contact
+
+For questions regarding data protection, please see our [Imprint](/imprint).
+
+## Data Storage
+
+When you interact with SteamInputDB (by posting comments, giving ratings, votes, or similar actions) we store the content of your interaction and the Steam user ID associated with it.  
+This allows the website to display your contributions and track interactions tied to your account.  
+
+If we have stored any data you can completely delete it by visiting your profile page and deleting your account.
+
+We do not store passwords, email addresses, or any other personal information from Steam. All other personal data is processed and stored only by the third-party services.
+
+## Security
+
+SteamInputDB is hosted in Europe. The website uses HTTPS to ensure secure communication.  
+We take reasonable steps to protect the server and the website, but we do not track or store additional personal data ourselves.
+
+## Cookies
+
+Cookies may be set only for basic website functionality or by third-party services.  
+We do not use cookies for tracking or profiling.  
+You can manage or delete cookies through your browser settings at any time.
+
+## Third-Party Content
+
+The website may display content from third parties, such as images or text.  
+We do not control these materials and cannot be responsible for any data collection or processing by the third parties.
+
+## User Rights
+
+If personal data is processed (for example, comments associated with a Steam ID), you have rights under the GDPR.  
+You may request access, correction, or deletion of your stored comments.  
+To exercise these rights, please contact us.  
+
+Data processed by third parties, such as your Steam account information, is governed by the privacy policies of those services.
+
+## Final Notes
+
+We are committed to transparency and explaining how data is handled on SteamInputDB.  
+If you have questions about this Privacy Policy or about data processed via third-party services, please contact us.

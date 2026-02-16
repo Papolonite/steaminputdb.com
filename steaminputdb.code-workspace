@@ -12,7 +12,15 @@
         }
     ],
     "settings": {
-        "files.eol": "\n"
+        "files.eol": "\n",
+        "markdownlint.lintWorkspaceGlobs": [
+            "**/*.{md,mkd,mdwn,mdown,markdown,markdn,mdtxt,mdtext,workbook,svx}",
+            "!**/*.code-search",
+            "!**/bower_components",
+            "!**/node_modules",
+            "!**/.git",
+            "!**/vendor"
+        ],
     },
     "extensions": {
         "recommendations": [

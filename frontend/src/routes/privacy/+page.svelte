@@ -22,10 +22,11 @@ main {
 div {
 	display: grid;
 	text-align: justify;
+	gap: 0.5em;
 	height: fit-content;
 	:global(h1, h2, h3, h4, h5, h6) {
-		margin-top: 1em;
-		margin-bottom: 0.5em;
+		margin-top: 0.5em;
+		margin-bottom: 0.2em;
 	}
 }
 </style>

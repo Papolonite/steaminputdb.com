@@ -1,5 +1,4 @@
 code {
-	display: block;
 	border: 1px solid color-mix(in srgb, var(--text-color), transparent 75%);
 	border-radius: 0.5em;
 	padding: 0.33em;
@@ -12,5 +11,14 @@ code {
 	scrollbar-width: none;
 	&::-webkit-scrollbar {
 		display: none;
+	}
+}
+
+pre {
+	width: 100%;
+	& > code {
+		display: block;
+		padding: 1em;
+		white-space: pre-wrap;
 	}
 }
