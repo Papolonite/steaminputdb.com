@@ -17,9 +17,9 @@ import Icon from '@iconify/svelte';
 	</div>
 	<div>
 		<span class="c"
-			>Copyright © 2026 <a href="https://github.com/Alia5" target="_blank" rel="external"
-				>Peter Repukat</a
-			></span>
+			>Copyright © {new Date().getFullYear() > 2026 ? `2026-${new Date().getFullYear()}` : 2026} SteamInputDB.
+			Developed by
+			<a href="https://github.com/Alia5" target="_blank" rel="external">Peter Repukat</a></span>
 
 		<div class="legal links">
 			<a href={resolve('/privacy')}>Privacy</a>
