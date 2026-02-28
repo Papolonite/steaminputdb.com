@@ -28,21 +28,22 @@ const toggleTheme = () => {
 		}
 		themeSelection.darkMode = !themeSelection.darkMode;
 	};
+	wrap();
 
-	if (!document.startViewTransition) {
-		wrap();
-		return;
-	}
-	try {
-		// for firefox it'd be better to not use a view-transition here, but oh well...
-		// document.startViewTransition({
-		// 	types: ['theme'],
-		// 	update: wrap
-		// });
-		document.startViewTransition(wrap);
-	} catch {
-		wrap();
-	}
+	// if (!document.startViewTransition) {
+	// 	wrap();
+	// 	return;
+	// }
+	// try {
+	// 	// for firefox it'd be better to not use a view-transition here, but oh well...
+	// 	// document.startViewTransition({
+	// 	// 	types: ['theme'],
+	// 	// 	update: wrap
+	// 	// });
+	// 	document.startViewTransition(wrap);
+	// } catch {
+	// 	wrap();
+	// }
 };
 
 onMount(() => {
