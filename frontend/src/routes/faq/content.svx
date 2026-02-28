@@ -1,0 +1,59 @@
+# FAQ
+
+## 🚧 Work in progress 🚧
+
+## What is this?
+
+This is a website that lets you query and directly link to Steam Input configurations for games.  
+It uses the Steam Web API to fetch/search and display _**every**_ configuration that has been uploaded to Steam.
+
+I created this project because I think that Steams built-in sharing system does severely lack discoverability and usability.  
+At the current state, I'd call this project the absolute bare minimum viable product, but I hope more features will be added in the future.  
+
+This project is open source and available on [GitHub](https://github.com/Alia5/steaminputdb.com).  
+Feel free to contribute or open an issue if you have any suggestions or find any bugs.
+
+## How to use the configs (for a steam game)
+
+### Semi-Automatic
+
+If you own the game on Steam, simple plugin your controller, and click the "Apply Config" button on the config page (on this website).  
+Steam should open a preview-window for the config, where you can click "Apply" again to use it.  
+
+**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ before it works.
+
+### Manually
+
+1. Open Big Picture mode and either view a community config for the game or create a custom one and save it.
+2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam) (depends on the operating system you're using) go to `<steam foler>/userdata/`.  
+    Then you have to choose the directory that corresponds to your user id. If there's only one, open it. Then go to  `<steam folder>/userdata/<your user number>/241100/remote/controller_config`.
+3. Search for the file which name matches the config you created earlier.  
+   It should be in a folder like `<steam folder>/userdata/<your user number>/241100/remote/controller_config/<steam app id>/<name of config>`
+4. Paste the downloaded config or replace the contents of the one that's already there.
+5. Start Steam (in Big Picture Mode).
+
+## How to use the configs (for a non-steam game)
+
+### Semi-Automatic
+
+[Add your game to Steam](https://support.steampowered.com/kb_article.php?ref=2219-YDJV-5557) and rename it **to the exact same name as the _"Shortcut"_ name displayed on this website**.  
+Then click the "Apply Config" button on the config page (on this website).  
+Steam should open a preview-window for the config, where you can click "Apply" again to use it.  
+
+**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ before it works.
+
+### Manually
+
+1. [Add your game to Steam](https://support.steampowered.com/kb_article.php?ref=2219-YDJV-5557) and create a custom config.  
+  Save it.  
+  Choose a good name, so you can find it later.
+2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam)
+(depends on the operating system you're using) go to `<steam foler>/userdata/`.  
+    Then you have to choose the directory that corresponds to your user id. If there's only one, open it.  
+    Then go to `<steam folder>/userdata/<your user number>/241100/remote/controller_config`.
+3. Search for the file which name matches the config you created earlier. It should be in a folder like  
+    `<steam folder>/userdata/<your user number>/241100/remote/controller_config/<lots of letters and numbers>/<name of config>`
+4. Paste the downloaded config or replace the contents of the one that's already there.
+5. Start Steam.
+
+If you want to use a profile as a new template, just copy it to `<steam folder>/controller_base/template`.

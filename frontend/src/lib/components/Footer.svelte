@@ -10,6 +10,7 @@ import Icon from '@iconify/svelte';
 		<span> All other trademarks are property of their respective owners.</span>
 	</div>
 	<div id="links">
+		<a href={resolve('/faq')}>FAQ</a>
 		<a href="https://discord.gg/hs34MtcHJY" target="_blank" rel="external"
 			><Icon icon="simple-icons:discord" height="2.4em" /></a>
 		<a href="https://github.com/Alia5/steaminputdb.com" target="_blank" rel="external"
@@ -17,8 +18,8 @@ import Icon from '@iconify/svelte';
 	</div>
 	<div>
 		<span class="c"
-			>Copyright © {new Date().getFullYear() > 2026 ? `2026-${new Date().getFullYear()}` : 2026} SteamInputDB.
-			Developed by
+			>Copyright © {new Date().getFullYear() > 2026 ? `2026-${new Date().getFullYear()}` : 2026} SteamInputDB
+			-
 			<a href="https://github.com/Alia5" target="_blank" rel="external">Peter Repukat</a></span>
 
 		<div class="legal links">
@@ -60,10 +61,12 @@ footer {
 	justify-content: flex-end;
 	padding: 0.25em;
 	margin-right: 1em;
+	align-items: center;
 
 	& a {
+		font-weight: bold;
 		color: var(--text-color);
-		&::after {
+		&:has(:global(svg))::after {
 			display: none;
 		}
 		&:hover,

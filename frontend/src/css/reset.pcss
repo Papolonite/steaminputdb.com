@@ -101,8 +101,17 @@ fieldset {
 	border: 1px solid transparent;
 }
 
-ul {
+ul,
+ol {
 	margin-left: 1.5em;
+}
+
+blockquote {
+	border-left: 0.25em solid var(--text-color);
+	padding: 0.5em;
+	opacity: 0.75;
+	background: var(--card-background-noise);
+	border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
