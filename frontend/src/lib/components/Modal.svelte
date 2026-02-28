@@ -5,6 +5,7 @@ import type { Snippet } from 'svelte';
 import { fade } from 'svelte/transition';
 let {
 	open = $bindable(false),
+	// eslint-disable-next-line no-useless-assignment
 	slide_touch = $bindable(true),
 	children,
 	...props
@@ -18,6 +19,7 @@ let {
 	'--background-opacity-multi'?: `${number}`;
 } = $props();
 
+// svelte-ignore state_referenced_locally
 let scrim_opa_multi = $state(Number(props['--background-opacity-multi'] ?? 1));
 
 export function show() {

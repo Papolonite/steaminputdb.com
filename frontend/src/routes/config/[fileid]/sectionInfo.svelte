@@ -199,7 +199,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 {/snippet}
 
 <style lang="postcss">
-#info {
+:global(#info) {
 	display: flex;
 	flex-flow: row wrap-reverse;
 
@@ -285,124 +285,124 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			flex-basis: 100%;
 		}
 	}
-}
 
-dl {
-	display: grid;
-	place-items: center;
-	grid-template-columns: min-content auto;
-	grid-column-gap: 1em;
-	grid-row-gap: 0.5em;
+	dl {
+		display: grid;
+		place-items: center;
+		grid-template-columns: min-content auto;
+		grid-column-gap: 1em;
+		grid-row-gap: 0.5em;
 
-	& > :nth-child(2) {
-		font-weight: bold;
-		:global(svg) {
-			translate: 0 0.2em;
+		& > :nth-child(2) {
+			font-weight: bold;
+			:global(svg) {
+				translate: 0 0.2em;
+			}
+		}
+		& > :nth-child(2n-1) {
+			justify-self: end;
+			white-space: nowrap;
+		}
+		& > :nth-child(2n) {
+			justify-self: start;
+			white-space: no-wrap;
 		}
 	}
-	& > :nth-child(2n-1) {
-		justify-self: end;
-		white-space: nowrap;
-	}
-	& > :nth-child(2n) {
-		justify-self: start;
-		white-space: no-wrap;
-	}
-}
 
-dd {
-	max-width: 100%;
-	overflow: auto;
-	overflow-x: hidden;
-	& a {
-		font-weight: bold;
-	}
-}
-
-dt {
-	font-weight: bold;
-}
-
-dd > dl {
-	grid-column-gap: 0.5em;
-	& > dt {
-		color: var(--text-muted);
-	}
-}
-
-dl {
-	& i {
-		color: var(--text-muted);
-		white-space: nowrap;
-	}
-}
-
-aside {
-	& > p {
+	dd {
+		max-width: 100%;
 		overflow: auto;
 		overflow-x: hidden;
-		contain: inline-size;
-
-		padding: 1em;
-		& > span {
+		& a {
 			font-weight: bold;
-			display: block;
-			margin-bottom: 0.5em;
-			font-size: 1.2em;
 		}
 	}
 
-	& > section {
-		& > .rating {
-			height: 100%;
-		}
-		& > .playtime {
-			display: grid;
-			place-items: center;
-			height: 100%;
+	dt {
+		font-weight: bold;
+	}
 
-			& span {
+	dd > dl {
+		grid-column-gap: 0.5em;
+		& > dt {
+			color: var(--text-muted);
+		}
+	}
+
+	dl {
+		& i {
+			color: var(--text-muted);
+			white-space: nowrap;
+		}
+	}
+
+	aside {
+		& > p {
+			overflow: auto;
+			overflow-x: hidden;
+			contain: inline-size;
+
+			padding: 1em;
+			& > span {
+				font-weight: bold;
+				display: block;
+				margin-bottom: 0.5em;
 				font-size: 1.2em;
-				font-weight: 500;
-				color: var(--text-color-dark);
-				filter: drop-shadow(1px 1px 1px black);
 			}
+		}
 
-			& > :nth-child(2n) {
-				font-size: 1em;
-				font-weight: normal;
-				text-align: center;
+		& > section {
+			& :global(> .rating) {
+				height: 100%;
 			}
+			& > .playtime {
+				display: grid;
+				place-items: center;
+				height: 100%;
 
-			& i {
-				color: var(--text-color-dark);
-				opacity: 0.8;
-				font-size: 0.8em;
-				filter: drop-shadow(1px 1px 1px black) drop-shadow(0px 0px 2px black);
-			}
-			& > div {
-				& > :first-child {
-					font-size: 1.8em;
-					filter: drop-shadow(1px 2px 3px black);
-					transform: translate(0, 0.5em);
+				& span {
+					font-size: 1.2em;
+					font-weight: 500;
+					color: var(--text-color-dark);
+					filter: drop-shadow(1px 1px 1px black);
 				}
-				& > :last-child {
-					font-size: 1.6em;
+
+				& > :nth-child(2n) {
+					font-size: 1em;
+					font-weight: normal;
+					text-align: center;
+				}
+
+				& i {
+					color: var(--text-color-dark);
+					opacity: 0.8;
+					font-size: 0.8em;
+					filter: drop-shadow(1px 1px 1px black) drop-shadow(0px 0px 2px black);
+				}
+				& :global(> div) {
+					& > :first-child {
+						font-size: 1.8em;
+						filter: drop-shadow(1px 2px 3px black);
+						transform: translate(0, 0.5em);
+					}
+					& > :last-child {
+						font-size: 1.6em;
+					}
 				}
 			}
 		}
 	}
-}
 
-code {
-	display: block;
-}
+	code {
+		display: block;
+	}
 
-.featurelist {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5ch;
-	overflow: clip;
-	overflow-clip-margin: 1em;
+	.featurelist {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5ch;
+		overflow: clip;
+		overflow-clip-margin: 1em;
+	}
 }
 </style>

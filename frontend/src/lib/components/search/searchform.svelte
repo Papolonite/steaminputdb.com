@@ -12,6 +12,7 @@ let {
 	showControllerFilter = true,
 	showFeatureFilter = true,
 	form = $bindable(),
+	// eslint-disable-next-line no-useless-assignment
 	searchtext = $bindable(),
 	disabled = false,
 	method = 'GET',
@@ -327,7 +328,7 @@ form {
 		border-radius: 0.5em;
 		transition: all var(--transition-duration) var(--default-ease);
 
-		&[disabled] {
+		& :global([disabled]) {
 			opacity: 0.5;
 		}
 

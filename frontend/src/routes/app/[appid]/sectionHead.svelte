@@ -17,7 +17,7 @@ import { fade } from 'svelte/transition';
 	appInfo?: components['schemas']['AppItem'];
 	fallbackName?: string;
 })}
-	<section>
+	<section class="app-header">
 		<div>
 			{#if appInfo?.assets?.community_icon}
 				<picture transition:fade={{ duration: 196, easing: cubicOut }}>
@@ -57,7 +57,7 @@ import { fade } from 'svelte/transition';
 {/snippet}
 
 <style lang="postcss">
-section {
+:global(section.app-header) {
 	display: grid;
 	max-width: 100%;
 	gap: 1em;

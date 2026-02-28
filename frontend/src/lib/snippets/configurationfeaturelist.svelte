@@ -13,7 +13,7 @@ import Icon from '@iconify/svelte';
 	fileInfo: components['schemas']['ConfigItem' | 'ConfigDetailResponse'];
 })}
 	{#each fileInfo.tags?.filter((t) => t.startsWith('feature_') && !t.endsWith('_activator')) as tag (tag)}
-		<span>
+		<span class="feature">
 			{#if tag === 'feature_gamepad'}
 				<Icon icon="mdi:controller" width="1.2em" /> Gamepad Inputs
 			{:else if tag === 'feature_keyboard' || tag === 'feature_keboard'}
@@ -36,7 +36,7 @@ import Icon from '@iconify/svelte';
 {/snippet}
 
 <style lang="postcss">
-span {
+:global(.feature) {
 	display: flex;
 	align-items: center;
 	gap: 0.2ch;

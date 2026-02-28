@@ -10,7 +10,7 @@ const config = {
         runes: true,
         experimental: {
             async: true
-        }
+        },
     },
     kit: {
         adapter: adapter({
@@ -20,16 +20,18 @@ const config = {
         })
     },
     extensions: [".svelte", ".svx"],
-    preprocess: mdsvex({
-        remarkPlugins: [
-            [remarkGfm, {
+    preprocess: [
+            mdsvex({
+            remarkPlugins: [
+                [remarkGfm, {
 
-            }]
-        ],
-        rehypePlugins: [
-             [rehypeExternalLinks, {rel: ['nofollow'], target: '_blank'}]
-        ]
-    })
+                }]
+            ],
+            rehypePlugins: [
+                [rehypeExternalLinks, {rel: ['nofollow'], target: '_blank'}]
+            ]
+        })
+    ]
 };
 
 export default config;

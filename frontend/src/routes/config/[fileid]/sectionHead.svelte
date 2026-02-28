@@ -22,7 +22,7 @@ import { fade, slide } from 'svelte/transition';
 	appInfo?: components['schemas']['AppItem'];
 	isMobileBrowser?: boolean;
 })}
-	<section>
+	<section class="cfg-head">
 		<div>
 			{#if appInfo?.assets}
 				{@const assets = appInfo?.assets}
@@ -121,7 +121,7 @@ import { fade, slide } from 'svelte/transition';
 {/snippet}
 
 <style lang="postcss">
-section {
+:global(section.cfg-head) {
 	display: grid;
 	max-width: 100%;
 	gap: 1em;
@@ -147,8 +147,8 @@ section {
 			background: linear-gradient(135deg, white -70%, transparent 120%);
 			position: relative;
 
-			& picture,
-			& img {
+			& :global(picture),
+			& :global(img) {
 				aspect-ratio: 21 / 8;
 				object-fit: cover;
 				object-position: center;
@@ -194,7 +194,7 @@ section {
 		width: 100%;
 		grid-template-columns: repeat(auto-fit, minmax(19ch, auto));
 
-		& > .hov-over {
+		& > :global(.hov-over) {
 			width: 100%;
 		}
 
@@ -235,10 +235,9 @@ section {
 			}
 		}
 	}
-}
-
-code {
-	user-select: all;
-	margin-top: 0.5em;
+	code {
+		user-select: all;
+		margin-top: 0.5em;
+	}
 }
 </style>

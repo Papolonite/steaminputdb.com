@@ -104,7 +104,7 @@ import Icon from '@iconify/svelte';
 {/snippet}
 
 <style lang="postcss">
-.rating {
+:global(.rating) {
 	display: grid;
 	place-items: center;
 	& span {

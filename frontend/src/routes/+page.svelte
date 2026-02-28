@@ -95,10 +95,6 @@ h1 {
 	& span {
 		color: var(--highlight-color);
 	}
-	& em {
-		font-size: 0.8em;
-		opacity: 0.8;
-	}
 }
 p {
 	font-size: 1.2em;
