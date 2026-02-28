@@ -36,7 +36,7 @@ import Icon from '@iconify/svelte';
 {/snippet}
 
 <style lang="postcss">
-:global(.feature) {
+:global(span.feature) {
 	display: flex;
 	align-items: center;
 	gap: 0.2ch;
