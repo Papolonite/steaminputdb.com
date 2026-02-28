@@ -31,7 +31,12 @@ div {
 	display: grid;
 	text-align: justify;
 	height: fit-content;
-	:global(h1, h2, h3, h4, h5, h6) {
+	:global(h1),
+	:global(h2),
+	:global(h3),
+	:global(h4),
+	:global(h5),
+	:global(h6) {
 		margin-top: 1em;
 		margin-bottom: 0.5em;
 	}
