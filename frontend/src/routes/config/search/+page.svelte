@@ -48,7 +48,9 @@ const loadMore = async () => {
 	searchParams.set('page', `${Math.floor(results.items.length / PAGE_SIZE) + 1}`);
 	try {
 		const res = await fetchConfigs(fetch, searchParams);
-		results.items = results.items.concat(res?.items ?? []);
+		results.items = results.items
+			.concat(res?.items ?? [])
+			.filter((item, index, self) => index === self.findIndex((i) => i.file_id === item.file_id));
 	} catch (e) {
 		log.error('Error loading more results', 'error', e);
 	}
