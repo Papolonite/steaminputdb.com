@@ -85,7 +85,9 @@ import { fade, slide } from 'svelte/transition';
 								>"
 							</p>
 						{:else}
-							<p>You must own the game</p>
+							<b>You must own the game</b>
+							<em>Please note that Steam often bugs out when using this feature...</em>
+							<p>In the worst case, you must restart Steam</p>
 						{/if}
 						<code
 							>steam://controllerconfig/{encodeURI(
