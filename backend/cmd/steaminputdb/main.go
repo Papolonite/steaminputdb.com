@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -55,11 +56,17 @@ func main() {
 	)
 
 	logging.SetupDefault(cfg.LogLevel)
-	config.Parsed = cfg
 
 	if config.Parsed.JWTSecret == "" || config.Parsed.JWTSecret == "testenv" {
-		panic("JWT secret must be set")
+		randomBytes := make([]byte, 32)
+		_, err := rand.Read(randomBytes)
+		if err != nil {
+			slog.Error("Failed to generate random JWT secret", "error", err)
+			os.Exit(1)
+		}
+		cfg.JWTSecret = fmt.Sprintf("%x", randomBytes)
 	}
+	config.Parsed = cfg
 
 	err := db.Init(cfg.DB)
 	if err != nil {
