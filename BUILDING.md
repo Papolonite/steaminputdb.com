@@ -8,20 +8,19 @@
 - Node.js 25+
 - PostgreSQL 18+
 - Protocol Buffers Compiler (protoc)
-- _Optional(!):_ Docker and Docker Compose (for containerized deployment)
 
 ### Package Installation
 
 **Arch Linux:**
 
 ```bash
-sudo pacman -S go nvm postgresql docker docker-compose protobuf
+sudo pacman -S go nvm postgresql protobuf
 ```
 
 **Ubuntu:**
 
 ```bash
-sudo apt install golang nvm postgresql docker.io docker-compose protobuf-compiler
+sudo apt install golang nvm postgresql protobuf-compiler
 ```
 
 ### Go Tools
