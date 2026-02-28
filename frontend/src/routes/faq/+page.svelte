@@ -2,6 +2,16 @@
 import Content from './content.svx';
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - FAQ</title>
+	<meta property="og:title" content="SteamInputDB - FAQ" />
+	<meta name="description" content="Frequently Asked Questions about SteamInputDB" />
+	<meta property="og:description" content="Frequently Asked Questions about SteamInputDB" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - FAQ" />
+	<meta name="twitter:description" content="Frequently Asked Questions about SteamInputDB" />
+</svelte:head>
+
 <main>
 	<div>
 		<Content />

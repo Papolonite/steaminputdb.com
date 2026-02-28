@@ -5,6 +5,14 @@ import Icon from '@iconify/svelte';
 import Content from './content.svx';
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - Login</title>
+	<meta property="og:title" content="SteamInputDB - Login" />
+	<meta name="description" content="Login to SteamInputDB using your Steam account" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - Login" />
+</svelte:head>
+
 <main>
 	<div>
 		<div>

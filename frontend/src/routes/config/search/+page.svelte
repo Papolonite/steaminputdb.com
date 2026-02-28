@@ -133,6 +133,20 @@ afterNavigate(() => {
 });
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - Config Search</title>
+	<meta property="og:title" content="SteamInputDB - Config Search" />
+	<meta name="description" content="Search for Steam Input configurations for Steam and non Steam games" />
+	<meta
+		property="og:description"
+		content="Search for Steam Input configurations for Steam and non Steam games" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - Config Search" />
+	<meta
+		name="twitter:description"
+		content="Search for Steam Input configurations for Steam and non Steam games" />
+</svelte:head>
+
 <svelte:window
 	onmousemove={(e) => {
 		if (!eyes || !eyes.left || !eyes.right) {

@@ -2,6 +2,14 @@
 import Content from './content.svx';
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - Imprint</title>
+	<meta property="og:title" content="SteamInputDB - Imprint" />
+	<meta name="description" content="Imprint of SteamInputDB" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - Imprint" />
+</svelte:head>
+
 <main>
 	<div>
 		<Content />

@@ -2,6 +2,15 @@
 import Content from './content.svx';
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - Privacy Policy</title>
+	<meta property="og:title" content="SteamInputDB - Privacy Policy" />
+	<meta name="description" content="Privacy Policy of SteamInputDB" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - Privacy Policy" />
+	<meta name="twitter:description" content="Frequently Asked Questions about SteamInputDB" />
+</svelte:head>
+
 <main>
 	<div>
 		<Content />

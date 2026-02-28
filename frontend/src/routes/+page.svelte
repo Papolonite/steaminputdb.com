@@ -16,6 +16,14 @@ onMount(() => {
 });
 </script>
 
+<svelte:head>
+	<title>SteamInputDB</title>
+	<meta property="og:title" content="SteamInputDB" />
+	<meta name="description" content="Community driven database of SteamInput configurations" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB" />
+</svelte:head>
+
 <svelte:window
 	onmousemove={(e) => {
 		if (!eyes || !eyes.left || !eyes.right) {

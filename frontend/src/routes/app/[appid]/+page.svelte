@@ -121,6 +121,35 @@ onMount(() => {
 });
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - {appInfo?.name ?? page.params.appid}</title>
+	<meta property="og:title" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
+	<meta
+		name="description"
+		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
+	<meta
+		property="og:description"
+		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
+	<meta
+		name="twitter:description"
+		content="Search for Steam Input configurations for {appInfo?.name ?? page.params.appid}" />
+	{#if appInfo?.assets}
+		{@const assets = appInfo?.assets}
+		{@const assetChosen =
+			assets.main_capsule ?? assets.header ?? assets.hero_capsule ?? assets.library_hero ?? 'none.svg'}
+		{#if assetChosen}
+			<meta
+				property="og:image"
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+			<meta
+				name="twitter:image"
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+		{/if}
+	{/if}
+</svelte:head>
+
 <svelte:window
 	onmousemove={(e) => {
 		if (!eyes || !eyes.left || !eyes.right) {

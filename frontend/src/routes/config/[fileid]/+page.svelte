@@ -41,6 +41,29 @@ if (browser) {
 }
 </script>
 
+<svelte:head>
+	<title>SteamInputDB - {fileInfo?.title}</title>
+	<meta property="og:title" content="SteamInputDB - {fileInfo?.title}" />
+	<meta name="description" content="Steam Input configuration {fileInfo?.title}" />
+	<meta property="og:description" content="Steam Input configuration {fileInfo?.title}" />
+	{#if appInfo?.assets}
+		{@const assets = appInfo?.assets}
+		{@const assetChosen =
+			assets.main_capsule ?? assets.header ?? assets.hero_capsule ?? assets.library_hero ?? 'none.svg'}
+		{#if assetChosen}
+			<meta
+				property="og:image"
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+			<meta
+				name="twitter:image"
+				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+		{/if}
+	{/if}
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="SteamInputDB - {fileInfo?.title}" />
+	<meta name="twitter:description" content="Steam Input configuration {fileInfo?.title}" />
+</svelte:head>
+
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
 	<div>
 		{@render sectionHead({ fileInfo, appInfo, isMobileBrowser })}
