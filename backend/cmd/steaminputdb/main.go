@@ -173,8 +173,14 @@ func main() {
 	})
 	o := hAPI.OpenAPI()
 	flow := o.Components.SecuritySchemes["Steam OpenID"].Flows.Implicit
-	flow.AuthorizationURL = steam.OpenIDAuthorizationURL("http://localhost:8889/v1/steam/login")
-	flow.TokenURL = "http://localhost:8889/v1/steam/login"
+
+	authAddr := cfg.API.PublicAddress
+	if authAddr == "" {
+		authAddr = "http://localhost:8889"
+	}
+
+	flow.AuthorizationURL = steam.OpenIDAuthorizationURL(fmt.Sprintf("%s/v1/steam/login", authAddr))
+	flow.TokenURL = fmt.Sprintf("%s/v1/steam/login", authAddr)
 
 	apiSrv := http.Server{
 		Addr: cfg.API.ListenAddress,
