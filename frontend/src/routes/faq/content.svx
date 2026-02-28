@@ -17,10 +17,10 @@ Feel free to contribute or open an issue if you have any suggestions or find any
 
 ### Semi-Automatic
 
-If you own the game on Steam, simple plugin your controller, and click the "Apply Config" button on the config page (on this website).  
+If you own the game on Steam, simply plugin your controller, and click the "Apply Config" button on the config page (on this website).  
 Steam should open a preview-window for the config, where you can click "Apply" again to use it.  
 
-**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ before it works.
+**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ **and** have a controller plugged-in, before it works.
 
 ### Manually
 
@@ -40,7 +40,7 @@ Steam should open a preview-window for the config, where you can click "Apply" a
 Then click the "Apply Config" button on the config page (on this website).  
 Steam should open a preview-window for the config, where you can click "Apply" again to use it.  
 
-**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ before it works.
+**Please note** that Steam often bugs out using this feature, and you _might_ have to _restart Steam_ **and** have a controller plugged-in, before it works.
 
 ### Manually
 
