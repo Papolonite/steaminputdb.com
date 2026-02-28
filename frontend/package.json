@@ -20,6 +20,7 @@
     },
     "devDependencies": {
         "@eslint/compat": "^2.0.2",
+        "@eslint/eslintrc": "^3.3.4",
         "@eslint/js": "^10.0.1",
         "@iconify-json/ph": "^1.2.2",
         "@iconify/json": "^2.2.444",
