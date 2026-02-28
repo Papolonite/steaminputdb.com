@@ -1,5 +1,11 @@
 # Privacy Policy
 
+Everything is hosted on Servers in Europe (Germany)  
+We **don't collect** any personal data. (Later we will probably add community features, comments, ratings, etc. which _does count_ as personal data, so... here we are.)  
+We **do** collect logs for debugging and security purposes, but these logs do not contain personally identifiable information.  
+
+---
+
 ## Introduction and Overview
 
 This Privacy Policy explains how data is handled on SteamInputDB in accordance with the General Data Protection Regulation (EU) 2016/679 and applicable European laws. The terms are gender-neutral.
