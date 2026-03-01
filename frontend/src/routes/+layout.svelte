@@ -4,8 +4,9 @@ import favicon from '$lib/assets/favicon.svg?url';
 import Footer from '$lib/components/Footer.svelte';
 import Header from '$lib/components/header/Header.svelte';
 
+import 'unfonts.css';
+import { links } from 'unplugin-fonts/head';
 import '../css/main.pcss';
-
 const { children } = $props();
 
 onNavigate((navigation) => {
@@ -30,6 +31,17 @@ onNavigate((navigation) => {
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	{#each links as link (link?.attrs?.href)}
+		{#if link?.attrs?.onload}
+			<link
+				{...link?.attrs || {}}
+				onload={function () {
+					this.rel = 'stylesheet';
+				}} />
+		{:else}
+			<link {...link?.attrs || {}} />
+		{/if}
+	{/each}
 </svelte:head>
 
 <Header />

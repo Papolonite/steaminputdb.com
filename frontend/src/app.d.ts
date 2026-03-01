@@ -1,5 +1,6 @@
 import type { paths } from '$lib/api/openapi';
 import '@poppanator/sveltekit-svg/dist/svg.d.ts';
+import 'unplugin-fonts/client';
 import 'unplugin-icons/types/svelte';
 
 
