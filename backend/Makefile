@@ -9,7 +9,7 @@ VERSION ?= $(shell git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always 
 COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 BUILD_TIME := $(shell date -u +"%Y-%m-%d_%H:%M:%S")
 
-LDFLAGS := -s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT) -X main.Date=$(BUILD_TIME)
+LDFLAGS := -s -w -X main.Version=$(VERSION) -X main.Commit=$(COMMIT) -X main.Date=$(BUILD_TIME) -X github.com/Alia5/steaminputdb.com/version.Version=$(VERSION) -X github.com/Alia5/steaminputdb.com/version.Commit=$(COMMIT) -X github.com/Alia5/steaminputdb.com/version.Date=$(BUILD_TIME)
 BUILD_FLAGS := -trimpath -ldflags "$(LDFLAGS)"
 
 .PHONY: all
