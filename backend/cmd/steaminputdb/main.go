@@ -109,7 +109,7 @@ func main() {
 	}
 
 	apiClickable := formatClickableAddr(cfg.API.ListenAddress)
-	if strings.Contains(apiClickable, "localhost") {
+	if strings.Contains(apiClickable, "localhost") && os.Getenv("DEV") == "1" {
 		docAPISrvs = append([]*huma.Server{{
 			URL:         apiClickable,
 			Description: "Local API",
@@ -188,7 +188,7 @@ func main() {
 			apiMux,
 			logging.Middleware,
 			cors.New(cors.Options{
-				AllowedOrigins:   []string{cfg.API.CorsOrigins},
+				AllowedOrigins:   strings.Split(cfg.API.CorsOrigins, ","),
 				AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 				AllowedHeaders:   []string{"*"},
 				AllowCredentials: true,
