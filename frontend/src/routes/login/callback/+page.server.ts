@@ -1,3 +1,4 @@
+import { PUBLIC_API_BASE_URL_LOCAL } from '$env/static/public';
 import { clientWithSvelteFetch } from '$lib/api/client';
 import { log } from '$lib/log';
 import { error, fail, type Actions } from '@sveltejs/kit';
@@ -40,7 +41,7 @@ export const actions = {
         }
 
         try {
-            const r = await clientWithSvelteFetch(fetch).POST('/v1/steam/login', {
+            const r = await clientWithSvelteFetch(fetch, PUBLIC_API_BASE_URL_LOCAL).POST('/v1/steam/login', {
                 body: await request.json()
             });
 

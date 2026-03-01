@@ -1,3 +1,4 @@
+import { PUBLIC_API_BASE_URL_LOCAL } from '$env/static/public';
 import { clientWithSvelteFetch, type ResponseType } from '$lib/api/client';
 import type { components } from '$lib/api/openapi';
 import { fetchConfigs } from '$lib/api/searchConfigs';
@@ -27,7 +28,7 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
     // TODO: send both requests in parallel
     if (app_id_valid) {
 
-        const client = clientWithSvelteFetch(fetch);
+        const client = clientWithSvelteFetch(fetch, PUBLIC_API_BASE_URL_LOCAL);
         let infoResp: Awaited<ResponseType<'GET', '/v1/steam/appinfo'>> & {
             data?: components['schemas']['AppItem'];
         };

@@ -16,8 +16,8 @@ export const client = createClient<paths>({
 });
 
 
-export const clientWithSvelteFetch = (fetch: typeof window.fetch) => createClient<paths>({
-    baseUrl: apiURL,
+export const clientWithSvelteFetch = (fetch: typeof window.fetch, url?: string) => createClient<paths>({
+    baseUrl: url || apiURL,
     fetch
 });
 
