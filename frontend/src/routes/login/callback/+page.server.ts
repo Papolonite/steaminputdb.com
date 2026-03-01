@@ -90,7 +90,7 @@ export const actions = {
 
                 cookies.set(name, value, {
                     path: typeof options.path === 'string' ? options.path : '/',
-                    domain: typeof options.domain === 'string' ? options.domain : undefined,
+                    domain: 'steaminputdb.com',
                     httpOnly: options.httponly === true,
                     secure: options.secure === true,
                     sameSite: sameSite === 'lax' || sameSite === 'strict' || sameSite === 'none'
