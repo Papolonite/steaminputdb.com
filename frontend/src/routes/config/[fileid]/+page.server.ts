@@ -65,7 +65,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
                             raw: false
                         }
                     },
-                    signal: AbortSignal.timeout(1000)
+                    signal: AbortSignal.timeout(10000)
                 });
                 if (appInfoResp.error) {
                     log.error(
@@ -94,7 +94,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
                             user_id: `${fileInfo.creator_id}`
                         }
                     },
-                    signal: AbortSignal.timeout(1000)
+                    signal: AbortSignal.timeout(10000)
 
                 });
                 if (creatorInfoResp.error) {

@@ -65,7 +65,7 @@ const fetchLivePreview = (search_term = '') => {
 				limit_configs: 5,
 				limit: 10
 			},
-			signal: AbortSignal.timeout(2500)
+			signal: AbortSignal.timeout(12000)
 		})
 		.then((res) => {
 			forceShowLoading = false;
