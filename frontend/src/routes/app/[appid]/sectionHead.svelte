@@ -52,6 +52,9 @@ import { fade } from 'svelte/transition';
 						content: 'View Steam store page',
 						outDelay: 200,
 						arrow: true,
+						placement: 'bottom',
+						autoPlacement: false,
+
 						arrowFollowCursor: true
 					})}>
 					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
@@ -66,6 +69,8 @@ import { fade } from 'svelte/transition';
 						content: 'View on SteamDB',
 						outDelay: 200,
 						arrow: true,
+						placement: 'bottom',
+						autoPlacement: false,
 						arrowFollowCursor: true
 					})}>
 					<Icon icon="simple-icons:steamdb" width="1.4em" height="1.4em" />
@@ -79,6 +84,9 @@ import { fade } from 'svelte/transition';
 						content: 'View on ProtonDB',
 						outDelay: 200,
 						arrow: true,
+						placement: 'bottom',
+						autoPlacement: false,
+
 						arrowFollowCursor: true
 					})}>
 					<Icon icon="simple-icons:protondb" width="1.4em" height="1.4em" />
