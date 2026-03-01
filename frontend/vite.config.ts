@@ -3,6 +3,7 @@ import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { playwright } from '@vitest/browser-playwright';
 import { existsSync } from 'fs';
+import Unfonts from 'unplugin-fonts/vite';
 import Icons from 'unplugin-icons/vite';
 import devtoolsJson from 'vite-plugin-devtools-json';
 import { defineConfig } from 'vitest/config';
@@ -17,6 +18,7 @@ export default defineConfig({
     },
     plugins: [
         devtoolsJson(),
+
         enhancedImages(),
         sveltekit(),
         svg({
@@ -25,6 +27,23 @@ export default defineConfig({
         Icons({
             compiler: 'svelte',
             autoInstall: true
+        }),
+        Unfonts({
+            google: {
+                families: [
+                    {
+                        name: 'Noto Sans',
+                        styles: 'wght@400;500;700',
+                        defer: true
+                    },
+                    'Noto Color Emoji',
+                    {
+                        name: 'Roboto',
+                        styles: 'ital,wght@0,400;1,200',
+                        defer: true
+                    }
+                ]
+            }
         })
     ],
     test: {
