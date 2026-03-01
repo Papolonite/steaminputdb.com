@@ -1,6 +1,16 @@
 # SteamInputDB.com
 
+[![License: GPL-3.0](https://img.shields.io/github/license/alia5/steaminputdb.com)](https://github.com/alia5/steaminputdb.com/blob/main/LICENSE.txt)
+[![Issues](https://img.shields.io/github/issues/alia5/steaminputdb.com)](https://github.com/alia5/steaminputdb.com/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/alia5/steaminputdb.com/pulls)
+[![Discord](https://img.shields.io/discord/368823110817808384?logo=discord&logoColor=white&label=Discord&color=%23535fe5
+)](https://discord.gg/hs34MtcHJY)
+
 **Steam API backed** community Driven Database of SteamInput configurations
+
+SteamInputDB uses the same APIs as Steam itself  
+hat means **every** configuration on Steam is also available here!  
+And yes, we have data for **non-Steam** games, too! 😎
 
 > [!WARNING]
     Work in progress.
