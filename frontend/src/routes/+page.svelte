@@ -1,6 +1,7 @@
 <script lang="ts">
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import { onMount } from 'svelte';
+
 let eyes = $state<{
 	left: HTMLElement;
 	right: HTMLElement;
@@ -19,9 +20,21 @@ onMount(() => {
 <svelte:head>
 	<title>SteamInputDB</title>
 	<meta property="og:title" content="SteamInputDB" />
-	<meta name="description" content="Community driven database of SteamInput configurations" />
+	<meta
+		name="description"
+		content="Community driven database of SteamInput configurations utilizing Steam API" />
+	<meta
+		property="og:description"
+		content="Community driven database of SteamInput configurations utilizing Steam API" />
+
+	<meta property="og:image" content="/ogimage.png" />
+	<meta name="twitter:image" content="/ogimage.png" />
+
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="SteamInputDB" />
+	<meta
+		name="twitter:description"
+		content="Community driven database of SteamInput configurations utilizing Steam API" />
 </svelte:head>
 
 <svelte:window
