@@ -30,6 +30,7 @@ export default defineConfig({
         }),
         Unfonts({
             google: {
+                display: 'block',
                 families: [
                     {
                         name: 'Noto Sans',
