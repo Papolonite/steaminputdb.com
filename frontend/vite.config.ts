@@ -33,15 +33,20 @@ export default defineConfig({
                 display: 'block',
                 families: [
                     {
+                        defer: false,
                         name: 'Noto Sans',
-                        styles: 'wght@400;500;700',
-                        defer: true
+                        styles: 'ital,wdth,wght@0,62.5..100,100..900;1,62.5..100,100..900'
                     },
-                    'Noto Color Emoji',
+                    {
+                        name: 'Noto Color Emoji',
+                        defer: false,
+                        styles: 'wght@400'
+                    },
                     {
                         name: 'Roboto',
-                        styles: 'ital,wght@0,400;1,200',
-                        defer: true
+                        defer: false,
+
+                        styles: 'ital,wght@0,400;1,200'
                     }
                 ]
             }
