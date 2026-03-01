@@ -46,5 +46,11 @@ div {
 	:global(li) {
 		margin-bottom: 0.33em;
 	}
+	:global(ol),
+	:global(ul) {
+		overflow: hidden;
+		padding-left: 1.5em;
+		margin-left: 0;
+	}
 }
 </style>
