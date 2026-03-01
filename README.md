@@ -18,7 +18,7 @@ And yes, we have data for **non-Steam** games, too! 😎
 > [!NOTE]
   Actively looking for contributors!
   It's very hard to fully maintain and continue to develop this website all by myself.  
-  To get started take a look at the [Building Instructions](./BUILDING.md) (suspect to be improved)  
+  To get started take a look at the [Building Instructions](./BUILDING.md) (subject to be improved)  
   and the Issues tagged ["good first issue"](https://github.com/Alia5/steaminputdb.com/issues?q=state%3Aopen%20label%3A%22good%20first%20issue%22)
   Also feel free to join on my [Discord](https://discord.gg/hs34MtcHJY)  
   Messaging on the server is preferred over DMs, I get way to much spam already
