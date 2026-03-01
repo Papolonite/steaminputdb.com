@@ -4,6 +4,7 @@ export { sectionHead };
 
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
+import { tooltip } from '$lib/attachments/tooltip.svelte';
 import { communityUrlBase, steamStoreUrlBase } from '$lib/steamapi/const';
 import Icon from '@iconify/svelte';
 import { cubicOut } from 'svelte/easing';
@@ -46,10 +47,41 @@ import { fade } from 'svelte/transition';
 					href={steamStoreUrlBase + appInfo?.store_url_path}
 					class="button"
 					target="_blank"
-					rel="external">
-					<!-- <Icon icon="mdi:steam" width="1.4em" height="1.4em" /> -->
-					<Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" />
-					<span>Storepage</span>
+					rel="external"
+					{@attach tooltip({
+						content: 'View Steam store page',
+						outDelay: 200,
+						arrow: true,
+						arrowFollowCursor: true
+					})}>
+					<Icon icon="mdi:steam" width="1.4em" height="1.4em" />
+					<!-- <Icon icon="mdi:local-grocery-store" width="1.4em" height="1.4em" /> -->
+				</a>
+				<a
+					href={`https://steamdb.info/app/${appInfo.app_id}/`}
+					class="button"
+					target="_blank"
+					rel="external"
+					{@attach tooltip({
+						content: 'View on SteamDB',
+						outDelay: 200,
+						arrow: true,
+						arrowFollowCursor: true
+					})}>
+					<Icon icon="simple-icons:steamdb" width="1.4em" height="1.4em" />
+				</a>
+				<a
+					href={`https://www.protondb.com/app/${appInfo.app_id}`}
+					class="button"
+					target="_blank"
+					rel="external"
+					{@attach tooltip({
+						content: 'View on ProtonDB',
+						outDelay: 200,
+						arrow: true,
+						arrowFollowCursor: true
+					})}>
+					<Icon icon="simple-icons:protondb" width="1.4em" height="1.4em" />
 				</a>
 			{/if}
 		</div>
@@ -97,15 +129,15 @@ import { fade } from 'svelte/transition';
 		}
 	}
 	& > :last-child {
-		display: grid;
-		place-items: center;
+		display: flex;
+		flex-flow: row wrap;
+		align-items: center;
+		justify-content: end;
+		width: 100%;
 		margin: auto;
 		gap: 1em;
-		width: 100%;
-		grid-template-columns: repeat(auto-fit, minmax(19ch, auto));
 
 		& > a {
-			width: 100%;
 			white-space: nowrap;
 			display: grid;
 			align-items: center;
