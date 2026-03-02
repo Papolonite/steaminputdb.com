@@ -9,7 +9,7 @@
 **Steam API backed** community Driven Database of SteamInput configurations
 
 SteamInputDB uses the same APIs as Steam itself  
-hat means **every** configuration on Steam is also available here!  
+That means **every** configuration on Steam is also available here!  
 And yes, we have data for **non-Steam** games, too! 😎
 
 > [!WARNING]
