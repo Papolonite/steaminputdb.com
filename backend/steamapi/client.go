@@ -11,31 +11,51 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"time"
 
 	"google.golang.org/protobuf/proto"
 )
 
-var DefaultClient = &Client{}
+var sharedHTTPClient = func() *http.Client {
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.MaxIdleConns = 100
+	transport.MaxIdleConnsPerHost = 20
+	transport.MaxConnsPerHost = 50
+	transport.IdleConnTimeout = 90 * time.Second
+	transport.TLSHandshakeTimeout = 5 * time.Second
+	transport.ResponseHeaderTimeout = 10 * time.Second
+	transport.ExpectContinueTimeout = time.Second
+
+	return &http.Client{
+		Transport: transport,
+		Timeout:   15 * time.Second,
+	}
+}()
+
+var DefaultClient = &Client{httpClient: sharedHTTPClient}
 
 // Client is a Steam Web API client
 type Client struct {
-	apiKey  string
-	baseURL string
+	apiKey     string
+	baseURL    string
+	httpClient *http.Client
 }
 
 // NewClient creates a new Steam Web API client
 func NewClient(apiKey string) *Client {
 	return &Client{
-		apiKey:  apiKey,
-		baseURL: "https://api.steampowered.com",
+		apiKey:     apiKey,
+		baseURL:    "https://api.steampowered.com",
+		httpClient: sharedHTTPClient,
 	}
 }
 
 // NewClientWithBaseURL creates a new Steam Web API client with a custom base URL (for testing)
 func NewClientWithBaseURL(apiKey string, baseURL string) *Client {
 	return &Client{
-		apiKey:  apiKey,
-		baseURL: baseURL,
+		apiKey:     apiKey,
+		baseURL:    baseURL,
+		httpClient: sharedHTTPClient,
 	}
 }
 
@@ -120,7 +140,12 @@ func GetWithResp[Req proto.Message, Resp proto.Message](ctx context.Context, end
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
-	httpResp, err := http.DefaultClient.Do(httpReq)
+	httpClient := sharedHTTPClient
+	if DefaultClient != nil && DefaultClient.httpClient != nil {
+		httpClient = DefaultClient.httpClient
+	}
+
+	httpResp, err := httpClient.Do(httpReq)
 	if err != nil {
 		return fmt.Errorf("%w: failed to make request: %w", ErrRequest, err)
 	}
@@ -169,7 +194,12 @@ func (c *Client) GetJSON(ctx context.Context, endpoint Endpoint, req any, params
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
-	httpResp, err := http.DefaultClient.Do(httpReq)
+	httpClient := c.httpClient
+	if httpClient == nil {
+		httpClient = sharedHTTPClient
+	}
+
+	httpResp, err := httpClient.Do(httpReq)
 	if err != nil {
 		return fmt.Errorf("%w: %w", ErrRequest, err)
 	}
