@@ -8,6 +8,8 @@ import Searchbar from '../search/searchbar.svelte';
 import Spinner from '../Spinner.svelte';
 import SearchResults from './SearchResults.svelte';
 
+let { ondisplayresultschange }: { ondisplayresultschange?: (showsResults: boolean) => void } = $props();
+
 let form = $state<HTMLFormElement>()!;
 let debounced = new Debounced<string>(223).eager();
 let focusState = new Debounced(96, false).eager();
@@ -47,6 +49,10 @@ $effect(() => {
 		return;
 	}
 	fetchLivePreview(debounced.value);
+});
+
+$effect(() => {
+	ondisplayresultschange?.(shouldShowWhat === 'results');
 });
 
 const fetchLivePreview = (search_term = '') => {

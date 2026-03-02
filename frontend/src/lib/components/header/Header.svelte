@@ -2,6 +2,7 @@
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import SC2 from '$lib/assets/SC2_Alt.svg?component';
+import { intersectionObserver } from '$lib/attachments/intersectionObserver.svelte';
 import { setStylePropertyCallback } from '$lib/attachments/setStylePropertyCallback.svelte';
 import Themetoggle from '$lib/components/theme/toggle.svelte';
 import Icon from '@iconify/svelte';
@@ -13,9 +14,82 @@ import Search from './Search.svelte';
 import User from './User.svelte';
 
 let modal = $state<Modal>()!;
+let headerVisible = $state(false);
+let header = $state<HTMLElement>()!;
+let lastScrollY = $state(0);
+let upScrollDistance = $state(0);
+let downScrollDistance = $state(0);
+
+const SHOW_THRESHOLD_PX = 56;
+const HIDE_THRESHOLD_PX = 56;
+
+let searchShowsResults = $state(false);
 </script>
 
-<header>
+<svelte:window
+	onscroll={() => {
+		if (searchShowsResults) {
+			return;
+		}
+		const y = window.scrollY;
+		const delta = y - lastScrollY;
+		const direction = delta > 0 ? -1 : delta < 0 ? 1 : 0;
+		lastScrollY = y;
+		if (direction === 0) {
+			return;
+		}
+
+		if (direction === 1) {
+			upScrollDistance += Math.abs(delta);
+			downScrollDistance = 0;
+		} else {
+			downScrollDistance += Math.abs(delta);
+			upScrollDistance = 0;
+		}
+
+		if (direction === 1 && !headerVisible && upScrollDistance >= SHOW_THRESHOLD_PX) {
+			header.animate(
+				[
+					{ transform: 'translateY(-100%)', position: 'sticky' },
+					{ transform: 'translateY(0)', position: 'sticky' }
+				],
+				{
+					duration: 200,
+					easing: 'ease-out',
+					fill: 'forwards'
+				}
+			);
+			headerVisible = true;
+			upScrollDistance = 0;
+			return;
+		}
+		if (direction === -1 && headerVisible && downScrollDistance >= HIDE_THRESHOLD_PX) {
+			header.animate(
+				[
+					{ transform: 'translateY(0)', position: 'sticky' },
+					{ transform: 'translateY(-100%)', position: 'relative' }
+				],
+				{
+					duration: 200,
+					easing: 'ease-in',
+					fill: 'forwards'
+				}
+			);
+			headerVisible = false;
+			downScrollDistance = 0;
+			return;
+		}
+	}} />
+
+<header
+	bind:this={header}
+	{@attach intersectionObserver(
+		(isInterSecting) => {
+			headerVisible = isInterSecting;
+		},
+		0.5,
+		true
+	)}>
 	<a class="home" href={resolve('/')}>
 		<SC2 height="1.6em" />
 		<span>SteamInputDB</span>
@@ -33,7 +107,7 @@ let modal = $state<Modal>()!;
 		{/if}
 	</button>
 	{#if !page.url.pathname.endsWith('/search')}
-		<Search />
+		<Search ondisplayresultschange={(s) => (searchShowsResults = s)} />
 	{:else}
 		<div></div>
 	{/if}
@@ -77,7 +151,8 @@ let modal = $state<Modal>()!;
 <style lang="postcss">
 header {
 	padding: 1em;
-	position: relative;
+	position: sticky;
+	top: 0;
 	isolation: isolate;
 
 	min-height: 6em;
