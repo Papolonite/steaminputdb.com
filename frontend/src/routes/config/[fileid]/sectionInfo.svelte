@@ -5,11 +5,10 @@ export { sectionInfo };
 <script lang="ts">
 import { resolve } from '$app/paths';
 import type { components } from '$lib/api/openapi';
-import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import { selectAllHandler } from '$lib/attachments/selectAllHandler.svelte';
 import { configRating } from '$lib/snippets/configRating.svelte';
 import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
-import Icon from '@iconify/svelte';
+import { controllertype } from '$lib/snippets/controllertype.svelte';
 import { format, formatDistance, formatDistanceToNow, formatDuration, intervalToDuration } from 'date-fns';
 </script>
 
@@ -27,31 +26,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 		<dl class="card glass">
 			<dt>Controller</dt>
 			<dd>
-				{#if fileInfo.controller_type === 'controller_neptune'}
-					<Icon icon="simple-icons:steamdeck" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_triton'}
-					<SC2 width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_steamcontroller_gordon'}
-					<SC2 width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_ps5'}
-					<Icon icon="simple-icons:playstation5" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_ps4'}
-					<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_xbox360'}
-					<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_xboxone'}
-					<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_switch_pro'}
-					<Icon icon="mdi:controller" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_mobile_touch'}
-					<Icon icon="mdi:cellphone" width="1.2em" />
-				{:else if fileInfo.controller_type === 'controller_android'}
-					<Icon icon="mdi:android" width="1.2em" />
-				{:else}
-					<Icon icon="mdi:gamepad" height="1.2em" />
-				{/if}
-
-				{fileInfo.controller_type_nice ?? fileInfo.controller_type ?? 'Generic Controller'}
+				{@render controllertype({ item: fileInfo })}
 			</dd>
 			{#if creatorInfo}
 				<dt>Author</dt>

@@ -15,10 +15,12 @@ const (
 	ControllerTypePS3                 ControllerType = "controller_ps3"
 	ControllerTypePS4                 ControllerType = "controller_ps4"
 	ControllerTypePS5                 ControllerType = "controller_ps5"
+	ControllerTypePS5Edge             ControllerType = "controller_ps5_edge"
 	ControllerTypeSteamController2015 ControllerType = "controller_steamcontroller_gordon"
 	ControllerTypeSteamController     ControllerType = "controller_triton"
 	ControllerTypeSwitchPro           ControllerType = "controller_switch_pro"
 	ControllerTypeSteamDeck           ControllerType = "controller_neptune"
+	ControllerType8BitDo              ControllerType = "controller_8bitdo"
 	ControllerTypeGeneric             ControllerType = "controller_generic"
 	// ControllerTypeNative       ControllerType = "controller_native" --- IGNORE ---
 	ControllerTypeMobileTouch ControllerType = "controller_mobile_touch"
@@ -39,10 +41,12 @@ var controllerNiceNames map[ControllerType]string = map[ControllerType]string{
 	ControllerTypePS3:                 "DualShock 3",
 	ControllerTypePS4:                 "DualShock 4",
 	ControllerTypePS5:                 "DualSense",
+	ControllerTypePS5Edge:             "DualSense Edge",
 	ControllerTypeSteamController2015: "Steam Controller (2015)",
 	ControllerTypeSteamController:     "Steam Controller",
 	ControllerTypeSwitchPro:           "Nintendo Switch Pro",
 	ControllerTypeSteamDeck:           "Steam Deck",
+	ControllerType8BitDo:              "8BitDo",
 	ControllerTypeGeneric:             "Generic",
 	// ControllerTypeNative:       "Native", --- IGNORE ---
 	ControllerTypeMobileTouch: "Mobile Touch",

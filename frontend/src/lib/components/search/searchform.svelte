@@ -152,6 +152,17 @@ const changeSubmitHandler = () => {
 				<Icon icon="simple-icons:playstation5" width="1.2em" />
 				<span> DualSense </span>
 			</label>
+			<label for="controller_ps5_edge">
+				<input
+					type="radio"
+					id="controller_ps5_edge"
+					name="controller_type"
+					value="controller_ps5_edge"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="simple-icons:playstation5" width="1.2em" />
+				<span> DualSense Edge </span>
+			</label>
 			<label for="controller_ps4">
 				<input
 					type="radio"
@@ -195,6 +206,17 @@ const changeSubmitHandler = () => {
 					onchange={changeSubmitHandler} />
 				<Icon icon="mdi:controller" width="1.2em" />
 				<span> Switch Pro </span>
+			</label>
+			<label for="controller_8bitdo">
+				<input
+					type="radio"
+					id="controller_8bitdo"
+					name="controller_type"
+					value="controller_8bitdo"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="mdi:controller" width="1.2em" />
+				<span> 8BitDo </span>
 			</label>
 		</fieldset>
 	{/if}

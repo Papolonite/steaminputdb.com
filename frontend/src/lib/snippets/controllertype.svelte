@@ -17,6 +17,8 @@ import Icon from '@iconify/svelte';
 		<SC2Icon width="1.2em" />
 	{:else if item.controller_type === 'controller_ps5'}
 		<Icon icon="simple-icons:playstation5" width="1.2em" />
+	{:else if item.controller_type === 'controller_ps5_edge'}
+		<Icon icon="simple-icons:playstation5" width="1.2em" />
 	{:else if item.controller_type === 'controller_ps4'}
 		<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
 	{:else if item.controller_type === 'controller_xbox360'}
@@ -24,6 +26,8 @@ import Icon from '@iconify/svelte';
 	{:else if item.controller_type === 'controller_xboxone'}
 		<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
 	{:else if item.controller_type === 'controller_switch_pro'}
+		<Icon icon="mdi:controller" width="1.2em" />
+	{:else if item.controller_type === 'controller_8bitdo'}
 		<Icon icon="mdi:controller" width="1.2em" />
 	{:else if item.controller_type === 'controller_mobile_touch'}
 		<Icon icon="mdi:cellphone" width="1.2em" />
