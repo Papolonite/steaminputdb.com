@@ -1,12 +1,16 @@
 import type { Handle } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
 
+import { building } from '$app/environment';
 import { ANSI, log } from '$lib/log';
 import { getStatusText, httpActiveConnections, httpRequestDuration, httpRequestsTotal } from '$lib/metrics';
 import { sequence } from '@sveltejs/kit/hooks';
 
 
 const logHook: Handle = async ({ event, resolve }) => {
+    if (building) {
+        return resolve(event);
+    }
     const start = Date.now();
     const requestId = randomUUID();
     let statusCode = 500;
