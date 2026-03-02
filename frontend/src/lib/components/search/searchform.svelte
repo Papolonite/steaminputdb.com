@@ -294,6 +294,26 @@ const changeSubmitHandler = () => {
 				<Icon icon="material-symbols:layers-rounded" width="1.2em" />
 				<span>Mode Shifts</span>
 			</label>
+			<label for="feature_mouseregion">
+				<input
+					type="checkbox"
+					id="feature_mouseregion"
+					name="feature_mouseregion"
+					bind:checked={values['feature_mouseregion'] as boolean}
+					onchange={changeSubmitHandler} />
+				<Icon icon="fluent:cursor-hover-16-filled" width="1.2em" />
+				<span>Mouse Regions</span>
+			</label>
+			<label for="feature_actionset">
+				<input
+					type="checkbox"
+					id="feature_actionset"
+					name="feature_actionset"
+					bind:checked={values['feature_actionset'] as boolean}
+					onchange={changeSubmitHandler} />
+				<Icon icon="mdi:set-right" width="1.2em" />
+				<span>Action Sets</span>
+			</label>
 		</fieldset>
 	{/if}
 {/snippet}

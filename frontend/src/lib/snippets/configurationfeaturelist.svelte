@@ -28,6 +28,10 @@ import Icon from '@iconify/svelte';
 				<Icon icon="material-symbols:joystick" width="1.2em" /> Radial Menus
 			{:else if tag === 'feature_modeshift'}
 				<Icon icon="material-symbols:layers-rounded" width="1.2em" /> Mode Shifts
+			{:else if tag === 'feature_mouseregion'}
+				<Icon icon="fluent:cursor-hover-16-filled" width="1.2em" /> Mouse Regions
+			{:else if tag === 'feature_actionset'}
+				<Icon icon="mdi:set-right" width="1.2em" /> Action Sets
 			{:else}
 				{tag}
 			{/if}
