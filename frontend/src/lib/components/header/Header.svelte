@@ -151,7 +151,7 @@ let searchShowsResults = $state(false);
 <style lang="postcss">
 header {
 	padding: 1em;
-	position: sticky;
+	position: relative;
 	top: 0;
 	isolation: isolate;
 
