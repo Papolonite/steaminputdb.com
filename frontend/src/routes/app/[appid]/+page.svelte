@@ -6,6 +6,7 @@ import type { components } from '$lib/api/openapi';
 import { fetchConfigs, PAGE_SIZE } from '$lib/api/searchConfigs';
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
 import { intersectionObserver } from '$lib/attachments/intersectionObserver.svelte';
+import { tooltip } from '$lib/attachments/tooltip.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
@@ -14,10 +15,11 @@ import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist
 import { controllertype } from '$lib/snippets/controllertype.svelte';
 import { statusCodeNames } from '$lib/statuscodes';
 import { assetUrlBase, storePageBackgroundBase } from '$lib/steamapi/const';
+import Icon from '@iconify/svelte';
 import { formatDistance } from 'date-fns';
 import { onMount } from 'svelte';
 import { cubicIn, cubicInOut, cubicOut } from 'svelte/easing';
-import { fade, slide } from 'svelte/transition';
+import { fade, fly, slide } from 'svelte/transition';
 import type { PageProps } from './$types';
 import { sectionHead } from './sectionHead.svelte';
 
@@ -78,6 +80,7 @@ $effect(() => {
 	results = data?.configs;
 });
 
+let showBackToTop = $state(false);
 let loadingMore = $state(false);
 const loadMore = async () => {
 	log.debug('Load more triggered');
@@ -167,6 +170,9 @@ onMount(() => {
 			const translateY = Math.sin(angle) * distance * (searchError ? (idx === 0 ? -1 : 1) : 1);
 			eye.style.transform = `translate(${translateX}px, ${translateY}px)`;
 		});
+	}}
+	onscroll={() => {
+		showBackToTop = window.scrollY > window.innerHeight;
 	}} />
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
@@ -267,6 +273,16 @@ onMount(() => {
 					</div>
 				{/if}
 			</div>
+			{#if showBackToTop}
+				<button
+					out:fade={{ duration: 196, easing: cubicIn }}
+					in:fly={{ y: '2dvh', duration: 196, easing: cubicOut }}
+					id="back-to-top"
+					{@attach tooltip({ content: 'Back to top' })}
+					onclick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+					<Icon icon="mdi:arrow-up" width="1.5em" />
+				</button>
+			{/if}
 		</search>
 	</div>
 </main>
@@ -547,5 +563,20 @@ search {
 .loading {
 	align-self: baseline;
 	z-index: 1;
+}
+
+#back-to-top {
+	position: fixed;
+	bottom: 2dvh;
+	right: 2dvw;
+	border-radius: 100dvh;
+	background:
+		linear-gradient(
+			215deg,
+			color-mix(in srgb, var(--card-color), transparent 75%) 0%,
+			color-mix(in srgb, var(--card-color), transparent 90%) 70%
+		),
+		var(--bg-noise-transparent);
+	background-color: color-mix(in srgb, var(--color-primary), transparent 20%);
 }
 </style>
