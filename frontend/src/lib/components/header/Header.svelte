@@ -48,34 +48,12 @@ let searchShowsResults = $state(false);
 		}
 
 		if (direction === 1 && !headerVisible && upScrollDistance >= SHOW_THRESHOLD_PX) {
-			header.animate(
-				[
-					{ transform: 'translateY(-100%)', position: 'sticky' },
-					{ transform: 'translateY(0)', position: 'sticky' }
-				],
-				{
-					duration: 200,
-					easing: 'ease-out',
-					fill: 'forwards'
-				}
-			);
-			headerVisible = true;
+			header.style.removeProperty('transform');
 			upScrollDistance = 0;
 			return;
 		}
 		if (direction === -1 && headerVisible && downScrollDistance >= HIDE_THRESHOLD_PX) {
-			header.animate(
-				[
-					{ transform: 'translateY(0)', position: 'sticky' },
-					{ transform: 'translateY(-100%)', position: 'relative' }
-				],
-				{
-					duration: 200,
-					easing: 'ease-in',
-					fill: 'forwards'
-				}
-			);
-			headerVisible = false;
+			header.style.transform = 'translateY(-100%)';
 			downScrollDistance = 0;
 			return;
 		}
@@ -151,7 +129,7 @@ let searchShowsResults = $state(false);
 <style lang="postcss">
 header {
 	padding: 1em;
-	position: relative;
+	position: sticky;
 	top: 0;
 	isolation: isolate;
 
