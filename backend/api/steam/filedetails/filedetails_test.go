@@ -217,6 +217,7 @@ func redirectSteamAPITo(t testing.TB, targetBaseURL string) {
 	t.Helper()
 
 	orig := http.DefaultClient
+	origSteam := steamapi.DefaultClient
 
 	u, err := url.Parse(targetBaseURL)
 	if err != nil {
@@ -232,9 +233,11 @@ func redirectSteamAPITo(t testing.TB, targetBaseURL string) {
 			return http.DefaultTransport.RoundTrip(req)
 		}),
 	}
+	steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", targetBaseURL)
 
 	t.Cleanup(func() {
 		http.DefaultClient = orig
+		steamapi.DefaultClient = origSteam
 	})
 }
 

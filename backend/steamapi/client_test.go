@@ -1,6 +1,8 @@
 package steamapi_test
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 
@@ -65,6 +67,27 @@ func Test_GET(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Helper()
+
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != "/"+tc.endpoint.Interface+"/"+tc.endpoint.Method+"/v1/" {
+					http.Error(w, "wrong path", http.StatusNotFound)
+					return
+				}
+				body, err := proto.Marshal(tc.expectedResp)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				w.Header().Set("Content-Type", "application/octet-stream")
+				_, _ = w.Write(body)
+			}))
+			defer srv.Close()
+
+			orig := steamapi.DefaultClient
+			steamapi.DefaultClient = steamapi.NewClientWithBaseURL("", srv.URL)
+			t.Cleanup(func() {
+				steamapi.DefaultClient = orig
+			})
 
 			resp := reflect.New(reflect.TypeOf(tc.expectedResp).Elem()).Interface().(proto.Message)
 			err := steamapi.GetWithResp(

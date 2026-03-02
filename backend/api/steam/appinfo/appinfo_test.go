@@ -21,6 +21,7 @@ func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { r
 func setupMockSteamAPI(t *testing.T, baseURL string) {
 	t.Helper()
 	orig := http.DefaultClient
+	origSteam := steamapi.DefaultClient
 	u, err := url.Parse(baseURL)
 	require.NoError(t, err)
 
@@ -37,6 +38,7 @@ func setupMockSteamAPI(t *testing.T, baseURL string) {
 	steamapi.DefaultClient = steamapi.NewClientWithBaseURL("test-key", baseURL)
 	t.Cleanup(func() {
 		http.DefaultClient = orig
+		steamapi.DefaultClient = origSteam
 	})
 }
 
@@ -110,6 +112,7 @@ func TestSteamAppInfo(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			steamapi.DefaultClient = steamapi.NewClient("")
 			if tc.setupMock != nil {
 				srv := tc.setupMock(t)
 				setupMockSteamAPI(t, srv.URL)

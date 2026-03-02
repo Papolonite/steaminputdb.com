@@ -19,7 +19,7 @@ func GetStoreInfo(ctx context.Context, appID uint32) (*AppInfo, error) {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	httpClient := sharedHTTPClient
+	httpClient := http.DefaultClient
 	if DefaultClient != nil && DefaultClient.httpClient != nil {
 		httpClient = DefaultClient.httpClient
 	}

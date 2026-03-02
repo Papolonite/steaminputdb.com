@@ -215,6 +215,12 @@ func TestSteamLogin(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			origSteam := steamapi.DefaultClient
+			steamapi.DefaultClient = steamapi.NewClient("")
+			t.Cleanup(func() {
+				steamapi.DefaultClient = origSteam
+			})
+
 			config.Parsed = config.Config{
 				API: config.API{
 					PublicAddress: "localhost:8889",

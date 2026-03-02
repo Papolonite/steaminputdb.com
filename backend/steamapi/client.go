@@ -1,3 +1,4 @@
+// Package steamapi provides Steam Web API client helpers.
 package steamapi
 
 import (
@@ -16,23 +17,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var sharedHTTPClient = func() *http.Client {
-	transport := http.DefaultTransport.(*http.Transport).Clone()
-	transport.MaxIdleConns = 100
-	transport.MaxIdleConnsPerHost = 20
-	transport.MaxConnsPerHost = 50
-	transport.IdleConnTimeout = 90 * time.Second
-	transport.TLSHandshakeTimeout = 5 * time.Second
-	transport.ResponseHeaderTimeout = 10 * time.Second
-	transport.ExpectContinueTimeout = time.Second
-
-	return &http.Client{
-		Transport: transport,
-		Timeout:   15 * time.Second,
-	}
-}()
-
-var DefaultClient = &Client{httpClient: sharedHTTPClient}
+var DefaultClient = NewClient("")
 
 // Client is a Steam Web API client
 type Client struct {
@@ -43,19 +28,37 @@ type Client struct {
 
 // NewClient creates a new Steam Web API client
 func NewClient(apiKey string) *Client {
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.MaxIdleConns = 100
+	transport.MaxIdleConnsPerHost = 20
+	transport.MaxConnsPerHost = 50
+	transport.IdleConnTimeout = 90 * time.Second
+	transport.TLSHandshakeTimeout = 5 * time.Second
+	transport.ResponseHeaderTimeout = 10 * time.Second
+	transport.ExpectContinueTimeout = time.Second
+
 	return &Client{
 		apiKey:     apiKey,
 		baseURL:    "https://api.steampowered.com",
-		httpClient: sharedHTTPClient,
+		httpClient: &http.Client{Transport: transport, Timeout: 15 * time.Second},
 	}
 }
 
 // NewClientWithBaseURL creates a new Steam Web API client with a custom base URL (for testing)
 func NewClientWithBaseURL(apiKey string, baseURL string) *Client {
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.MaxIdleConns = 100
+	transport.MaxIdleConnsPerHost = 20
+	transport.MaxConnsPerHost = 50
+	transport.IdleConnTimeout = 90 * time.Second
+	transport.TLSHandshakeTimeout = 5 * time.Second
+	transport.ResponseHeaderTimeout = 10 * time.Second
+	transport.ExpectContinueTimeout = time.Second
+
 	return &Client{
 		apiKey:     apiKey,
 		baseURL:    baseURL,
-		httpClient: sharedHTTPClient,
+		httpClient: &http.Client{Transport: transport, Timeout: 15 * time.Second},
 	}
 }
 
@@ -125,6 +128,9 @@ func GetWithResp[Req proto.Message, Resp proto.Message](ctx context.Context, end
 	}
 
 	baseURL := endpoint.URL()
+	if DefaultClient != nil && DefaultClient.baseURL != "" {
+		baseURL = endpoint.URLWithBase(DefaultClient.baseURL)
+	}
 	params := url.Values{
 		"input_protobuf_encoded": {base64.StdEncoding.EncodeToString(requestProto)},
 	}
@@ -140,7 +146,7 @@ func GetWithResp[Req proto.Message, Resp proto.Message](ctx context.Context, end
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
-	httpClient := sharedHTTPClient
+	httpClient := http.DefaultClient
 	if DefaultClient != nil && DefaultClient.httpClient != nil {
 		httpClient = DefaultClient.httpClient
 	}
@@ -173,6 +179,7 @@ func GetWithResp[Req proto.Message, Resp proto.Message](ctx context.Context, end
 	return nil
 }
 
+// GetJSON makes a JSON request to the Steam Web API.
 func (c *Client) GetJSON(ctx context.Context, endpoint Endpoint, req any, params *url.Values, resp any, auth *Auth) error {
 	baseURL := endpoint.URLWithBase(c.baseURL)
 	if len(*params) == 0 {
@@ -196,7 +203,7 @@ func (c *Client) GetJSON(ctx context.Context, endpoint Endpoint, req any, params
 
 	httpClient := c.httpClient
 	if httpClient == nil {
-		httpClient = sharedHTTPClient
+		httpClient = http.DefaultClient
 	}
 
 	httpResp, err := httpClient.Do(httpReq)
