@@ -81,6 +81,10 @@ func Handler(ctx context.Context, req *Request) (*Response, error) {
 				ConfigPagination: configs.ConfigPagination{
 					Limit: req.Body.LimitConfigs,
 				},
+				Rank: configs.ConfigRank{
+					TrendingPeriod: 30,
+					By:             configs.RankedByTrend,
+				},
 			},
 		})
 		if err != nil {
