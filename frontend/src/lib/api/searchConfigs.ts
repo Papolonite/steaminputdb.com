@@ -18,6 +18,12 @@ export const fetchConfigs = async (
             .filter(
                 (k) => k.startsWith('feature_')
             );
+        const excludedFilterTags = Array.from(params.entries())
+            .map(([k ]) => k)
+            .filter(
+                (k) => k.startsWith('exclude_feature_')
+            )
+            .map((v) => v.replace('exclude_', ''));
 
         const controller_filter = params.get('controller_type');
         if (controller_filter) {
@@ -37,6 +43,7 @@ export const fetchConfigs = async (
                 },
                 filter: {
                     tags: filterTags,
+                    excluded_tags: excludedFilterTags,
                     app_id: params.get('appid')?.toString() ?? undefined
                 },
                 include: {

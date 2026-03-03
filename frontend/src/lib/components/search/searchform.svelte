@@ -11,6 +11,7 @@ import { slide } from 'svelte/transition';
 let {
 	showControllerFilter = true,
 	showFeatureFilter = true,
+	showExcludedFeatureFilter = true,
 	form = $bindable(),
 	// eslint-disable-next-line no-useless-assignment
 	searchtext = $bindable(),
@@ -23,6 +24,7 @@ let {
 }: {
 	showControllerFilter?: boolean;
 	showFeatureFilter?: boolean;
+	showExcludedFeatureFilter?: boolean;
 	form?: HTMLFormElement;
 	searchtext?: string;
 	disabled?: boolean;
@@ -89,6 +91,7 @@ const changeSubmitHandler = () => {
 		onclick={() => {
 			showControllerFilter = !showControllerFilter;
 			showFeatureFilter = !showFeatureFilter;
+			showExcludedFeatureFilter = !showExcludedFeatureFilter;
 		}}
 		>Advanced Filters {#if showControllerFilter}
 			<Icon icon="mdi:chevron-up" height="1.8em" />
@@ -291,99 +294,112 @@ const changeSubmitHandler = () => {
 	{#if showFeatureFilter}
 		<fieldset id="features" transition:slide={{ duration: 196, easing: cubicInOut }} disabled={disabled}>
 			<legend>Must have</legend>
-			<label for="feature_gamepad">
-				<input
-					type="checkbox"
-					id="feature_gamepad"
-					name="feature_gamepad"
-					bind:checked={values['feature_gamepad'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:controller" width="1.2em" />
-				<span>Gamepad Inputs</span>
-			</label>
-			<label for="feature_keyboard">
-				<!-- actually typo in valves data: feature_keboard -->
-				<input
-					type="checkbox"
-					id="feature_keyboard"
-					name="feature_keboard"
-					bind:checked={values['feature_keboard'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:keyboard" width="1.2em" />
-				<span>Keyboard Inputs</span>
-			</label>
-			<label for="feature_mouse">
-				<input
-					type="checkbox"
-					id="feature_mouse"
-					name="feature_mouse"
-					bind:checked={values['feature_mouse'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:mouse" width="1.2em" />
-				<span>Mouse Inputs</span>
-			</label>
-			<label for="feature_gyro">
-				<input
-					type="checkbox"
-					id="feature_gyro"
-					name="feature_gyro"
-					bind:checked={values['feature_gyro'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="game-icons:gyroscope" width="1.2em" />
-				<span>Gyro Inputs</span>
-			</label>
-			<label for="feature_touchmenu">
-				<input
-					type="checkbox"
-					id="feature_touchmenu"
-					name="feature_touchmenu"
-					bind:checked={values['feature_touchmenu'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:gesture-touch" width="1.2em" />
-				<span>Touch Menus</span>
-			</label>
-			<label for="feature_radialmenu">
-				<input
-					type="checkbox"
-					id="feature_radialmenu"
-					name="feature_radialmenu"
-					bind:checked={values['feature_radialmenu'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="material-symbols:joystick" width="1.2em" />
-				<span>Radial Menus</span>
-			</label>
-			<label for="feature_modeshift">
-				<input
-					type="checkbox"
-					id="feature_modeshift"
-					name="feature_modeshift"
-					bind:checked={values['feature_modeshift'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="material-symbols:layers-rounded" width="1.2em" />
-				<span>Mode Shifts</span>
-			</label>
-			<label for="feature_mouseregion">
-				<input
-					type="checkbox"
-					id="feature_mouseregion"
-					name="feature_mouseregion"
-					bind:checked={values['feature_mouseregion'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="fluent:cursor-hover-16-filled" width="1.2em" />
-				<span>Mouse Regions</span>
-			</label>
-			<label for="feature_actionset">
-				<input
-					type="checkbox"
-					id="feature_actionset"
-					name="feature_actionset"
-					bind:checked={values['feature_actionset'] as boolean}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:set-right" width="1.2em" />
-				<span>Action Sets</span>
-			</label>
+			{@render featurefilters(values)}
 		</fieldset>
 	{/if}
+	{#if showExcludedFeatureFilter}
+		<fieldset
+			id="excluded-features"
+			transition:slide={{ duration: 196, easing: cubicInOut }}
+			disabled={disabled}>
+			<legend>Must not have</legend>
+			{@render featurefilters(values, 'exclude_')}
+		</fieldset>
+	{/if}
+{/snippet}
+
+{#snippet featurefilters(bindMap: Record<string, unknown>, prefix = '')}
+	<label for={`${prefix}feature_gamepad`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_gamepad`}
+			name={`${prefix}feature_gamepad`}
+			bind:checked={bindMap[`${prefix}feature_gamepad`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="mdi:controller" width="1.2em" />
+		<span>Gamepad Inputs</span>
+	</label>
+	<label for={`${prefix}feature_keyboard`}>
+		<!-- actually typo in valves data: feature_keboard -->
+		<input
+			type="checkbox"
+			id={`${prefix}feature_keyboard`}
+			name={`${prefix}feature_keboard`}
+			bind:checked={bindMap[`${prefix}feature_keboard`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="mdi:keyboard" width="1.2em" />
+		<span>Keyboard Inputs</span>
+	</label>
+	<label for={`${prefix}feature_mouse`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_mouse`}
+			name={`${prefix}feature_mouse`}
+			bind:checked={bindMap[`${prefix}feature_mouse`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="mdi:mouse" width="1.2em" />
+		<span>Mouse Inputs</span>
+	</label>
+	<label for={`${prefix}feature_gyro`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_gyro`}
+			name={`${prefix}feature_gyro`}
+			bind:checked={bindMap[`${prefix}feature_gyro`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="game-icons:gyroscope" width="1.2em" />
+		<span>Gyro Inputs</span>
+	</label>
+	<label for={`${prefix}feature_touchmenu`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_touchmenu`}
+			name={`${prefix}feature_touchmenu`}
+			bind:checked={bindMap[`${prefix}feature_touchmenu`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="mdi:gesture-touch" width="1.2em" />
+		<span>Touch Menus</span>
+	</label>
+	<label for={`${prefix}feature_radialmenu`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_radialmenu`}
+			name={`${prefix}feature_radialmenu`}
+			bind:checked={bindMap[`${prefix}feature_radialmenu`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="material-symbols:joystick" width="1.2em" />
+		<span>Radial Menus</span>
+	</label>
+	<label for={`${prefix}feature_modeshift`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_modeshift`}
+			name={`${prefix}feature_modeshift`}
+			bind:checked={bindMap[`${prefix}feature_modeshift`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="material-symbols:layers-rounded" width="1.2em" />
+		<span>Mode Shifts</span>
+	</label>
+	<label for={`${prefix}feature_mouseregion`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_mouseregion`}
+			name={`${prefix}feature_mouseregion`}
+			bind:checked={bindMap[`${prefix}feature_mouseregion`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="fluent:cursor-hover-16-filled" width="1.2em" />
+		<span>Mouse Regions</span>
+	</label>
+	<label for={`${prefix}feature_actionset`}>
+		<input
+			type="checkbox"
+			id={`${prefix}feature_actionset`}
+			name={`${prefix}feature_actionset`}
+			bind:checked={bindMap[`${prefix}feature_actionset`] as boolean}
+			onchange={changeSubmitHandler} />
+		<Icon icon="mdi:set-right" width="1.2em" />
+		<span>Action Sets</span>
+	</label>
 {/snippet}
 
 <style lang="postcss">
@@ -540,7 +556,8 @@ fieldset {
 		gap: 0.5em;
 	}
 }
-#features {
+#features,
+#excluded-features {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(22ch, 1fr));
 	gap: 1em;

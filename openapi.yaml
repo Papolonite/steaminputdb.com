@@ -457,6 +457,13 @@ components:
           description: Only search configurations for this specific Steam App ID (Non-Steam Games use their name as AppID)
           maxLength: 100
           type: string
+        excluded_tags:
+          description: Filter results to only include configurations that do not have any of the specified tags
+          items:
+            type: string
+          type:
+            - array
+            - "null"
         tags:
           description: Filter results to only include configurations with all of the specified tags
           items:
