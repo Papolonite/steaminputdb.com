@@ -46,7 +46,7 @@ How many of them utilize the Gyro?
 
 Well, now we can easily find out all of that in the [Advanced Search](/config/search?searchtext=&sort-by=vote) here on SteamInputDB!
 
-At the time of writing there have been 810925 community layouts uploaded to Steam, with unsurprisingly the last majority of which are for the **SteamDeck**  - 168767 to be precise
+At the time of writing there have been 810925 community layouts uploaded to Steam, with unsurprisingly the vast majority of which are for the **SteamDeck**  - 168767 to be precise
 The humble SteamDeck is only closely follwed by the **Xbox One**-Controller with a total of 154994 uploaded configs.  
 Place 3 goes to the DualShock 4 controller with 146403 layouts.
 
@@ -81,7 +81,7 @@ Moving on from controller types, we can also check what kind features and bindin
 **Gyro** is only used in 90595 layouts, _about 11%_ of all community layouts, indicating that it's still a niche feature, but one that is definitely being utilized by a significant portion of the community.
 
 Below you can find another table with stats I found interesting.
-You can choose your own conclusions from this.
+You can draw     your own conclusions from this.
 
 | Feature / Bindings                     | Layouts |
 | :------------------------------------- | ------: |
@@ -101,7 +101,7 @@ Maybe someone else is also interested in creating a general statistics page for 
 
 ## Changelog to SteamInputDB
 
-Last but not least, here is what I changed today, just mere two days after the initial lauch
+Last but not least, here is what I changed today, just mere two days after the initial launch
 
 - Publicly expose **[News](/news)** section
 - Add many more controller types to the filter options  
