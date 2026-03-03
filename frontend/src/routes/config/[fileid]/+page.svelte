@@ -48,8 +48,12 @@ if (browser) {
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
 	<meta property="og:title" content="SteamInputDB - {fileInfo?.title}" />
-	<meta name="description" content="Steam Input configuration {fileInfo?.title}" />
-	<meta property="og:description" content="Steam Input configuration {fileInfo?.title}" />
+	<meta
+		name="description"
+		content={fileInfo?.description ?? `Steam Input configuration ${fileInfo?.title}`} />
+	<meta
+		property="og:description"
+		content={fileInfo?.description ?? `Steam Input configuration ${fileInfo?.title}`} />
 	{#if appInfo?.assets}
 		{@const assets = appInfo?.assets}
 		{@const assetChosen =
@@ -65,7 +69,9 @@ if (browser) {
 	{/if}
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="SteamInputDB - {fileInfo?.title}" />
-	<meta name="twitter:description" content="Steam Input configuration {fileInfo?.title}" />
+	<meta
+		name="twitter:description"
+		content={fileInfo?.description ?? `Steam Input configuration ${fileInfo?.title}`} />
 </svelte:head>
 
 <main style={pageBGURL ? `--bg: url('${pageBGURL}')` : ''}>
