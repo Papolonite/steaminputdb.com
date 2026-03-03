@@ -6,7 +6,7 @@ import Icon from '@iconify/svelte';
 import { tick } from 'svelte';
 import { cubicInOut } from 'svelte/easing';
 import type { HTMLFormAttributes } from 'svelte/elements';
-import { slide } from 'svelte/transition';
+import { fade, slide } from 'svelte/transition';
 
 let {
 	showControllerFilter = true,
@@ -19,6 +19,7 @@ let {
 	method = 'GET',
 	values = $bindable({}),
 	submitOnChange = false,
+	showTotalCount = false,
 	enhanceParams,
 	...rest
 }: {
@@ -31,6 +32,7 @@ let {
 	method?: string;
 	values?: Record<string, unknown>;
 	submitOnChange?: boolean;
+	showTotalCount?: boolean | number;
 	enhanceParams?: Parameters<typeof enhance>[1];
 } & HTMLFormAttributes = $props();
 
@@ -85,6 +87,12 @@ const changeSubmitHandler = () => {
 			<Icon icon="mdi:chevron-down" />
 		</label>
 	</div>
+	{#if typeof showTotalCount === 'number'}
+		<dl transition:fade={{ duration: 196, easing: cubicInOut }}>
+			<dt>Total</dt>
+			<dd>{showTotalCount ?? 0}</dd>
+		</dl>
+	{/if}
 	<button
 		type="button"
 		class="filter"
@@ -604,6 +612,20 @@ button {
 		justify-content: center;
 		align-items: center;
 		margin-left: auto;
+	}
+}
+
+dl {
+	display: flex;
+	gap: 0.5em;
+	align-items: center;
+	font-size: 1.2em;
+	color: var(--text-color);
+	& dt {
+		font-weight: bold;
+	}
+	& dd {
+		opacity: 0.8;
 	}
 }
 </style>

@@ -220,7 +220,8 @@ onMount(() => {
 				disabled={loading}
 				method="GET"
 				bind:values={formValues}
-				submitOnChange={true} />
+				submitOnChange={true}
+				showTotalCount={results?.total} />
 			<div class="results">
 				{#if loading}
 					<div
