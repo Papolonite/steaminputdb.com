@@ -20,8 +20,8 @@ let lastScrollY = $state(0);
 let upScrollDistance = $state(0);
 let downScrollDistance = $state(0);
 
-const SHOW_THRESHOLD_PX = 56;
-const HIDE_THRESHOLD_PX = 56;
+const SHOW_THRESHOLD_PX = 72;
+const HIDE_THRESHOLD_PX = 72;
 
 let searchShowsResults = $state(false);
 </script>
@@ -87,7 +87,9 @@ let searchShowsResults = $state(false);
 	{#if !page.url.pathname.endsWith('/search')}
 		<Search ondisplayresultschange={(s) => (searchShowsResults = s)} />
 	{:else}
-		<div></div>
+		<nav>
+			{@render navcontent()}
+		</nav>
 	{/if}
 	<div>
 		<User />
@@ -95,6 +97,13 @@ let searchShowsResults = $state(false);
 			<Themetoggle />
 		</div>
 	</div>
+	{#if !page.url.pathname.endsWith('/search')}
+		<nav>
+			{@render navcontent()}
+		</nav>
+	{:else}
+		<div style="height: 0;"></div>
+	{/if}
 </header>
 <Modal bind:this={modal} --backdrop-filter="blur(2px)">
 	<aside
@@ -119,12 +128,22 @@ let searchShowsResults = $state(false);
 			</a>
 			<Themetoggle />
 		</div>
-		<a href={resolve('/config/search')} onclick={() => modal.close()} class="nav">
-			<Icon icon="mdi:magnify" width="1.4em" />
-			<span>Advanced Search</span>
-		</a>
+		<nav>
+			{@render navcontent()}
+		</nav>
 	</aside>
 </Modal>
+
+{#snippet navcontent()}
+	<a href={resolve('/news')} onclick={() => modal.close()}>
+		<Icon icon="material-symbols:news-rounded" width="1.4em" />
+		<span>News</span>
+	</a>
+	<a href={resolve('/config/search')} onclick={() => modal.close()}>
+		<Icon icon="mdi:magnify" width="1.4em" />
+		<span>Advanced Search</span>
+	</a>
+{/snippet}
 
 <style lang="postcss">
 header {
@@ -150,24 +169,32 @@ header {
 
 	display: grid;
 	grid-template-columns: minmax(3.2em, 1fr) auto minmax(2em, 1fr);
+	grid-template-rows: auto auto;
 	@media (orientation: portrait) {
 		grid-template-columns: minmax(2em, 1fr) auto minmax(2em, 1fr);
+		grid-template-rows: auto;
 	}
 	align-items: center;
 	box-shadow: 0 0px 4px var(--shadow-color);
-	gap: 1em;
+	column-gap: 1em;
+	row-gap: 0;
 	transition-property: all;
 
 	& > :first-child {
 		margin-right: auto;
 		padding: 0.25em;
+		grid-row: 1 / -1;
 	}
 
 	& > :nth-child(2) {
 		display: none;
+		grid-row: 1 / -1;
+	}
+	& :global(> :nth-child(3)) {
+		z-index: 2;
 	}
 
-	& > :last-child {
+	& > :nth-last-child(2) {
 		display: grid;
 		grid-auto-flow: column;
 		gap: 1em;
@@ -177,6 +204,34 @@ header {
 		max-width: 100%;
 		padding: 0.25em;
 		overflow-clip-margin: 2em;
+		grid-row: 1 / -1;
+		grid-column: 3;
+	}
+	& > nav {
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 2em;
+		margin-top: 1em;
+		z-index: 0;
+
+		@media (orientation: portrait) {
+			display: none;
+		}
+
+		> a {
+			font-size: 1.16em;
+			font-weight: bold;
+			padding: 0;
+			display: grid;
+			grid-auto-flow: column;
+			place-items: center;
+			width: fit-content;
+			& :global(> :first-child) {
+				display: none;
+			}
+		}
 	}
 }
 .home {
@@ -206,30 +261,30 @@ header {
 	}
 }
 
-.nav {
-	display: grid;
-	grid-template-columns: min-content min-content;
-	align-items: center;
-	gap: 0.5em;
-	align-items: center;
-	padding: 0;
-	height: fit-content;
-	padding: 1em;
-	font-size: 1.2em;
-}
-
 a {
 	font-size: 1.4em;
 	white-space: nowrap;
 	display: grid;
 	place-items: center;
 	grid-auto-flow: column;
+	width: fit-content;
 	gap: 0.5em;
 	color: var(--text-color);
 	&:hover,
 	&:focus,
 	&:focus-within {
 		color: var(--color-primary);
+	}
+}
+
+aside {
+	nav {
+		display: grid;
+		justify-items: auto;
+		align-items: start;
+		padding: 2em;
+		height: fit-content;
+		gap: 1em;
 	}
 }
 
