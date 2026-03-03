@@ -29,6 +29,12 @@ import Icon from '@iconify/svelte';
 		<Icon icon="mdi:controller" width="1.2em" />
 	{:else if item.controller_type === 'controller_8bitdo'}
 		<Icon icon="mdi:controller" width="1.2em" />
+	{:else if item.controller_type === 'controller_legion_go_s'}
+		<Icon icon="game-icons:spartan-helmet" width="1.2em" />
+	{:else if item.controller_type === 'controller_hori_steam'}
+		<Icon icon="mdi:controller" width="1.2em" />
+	{:else if item.controller_type === 'controller_rog_ally'}
+		<Icon icon="simple-icons:republicofgamers" width="1.2em" />
 	{:else if item.controller_type === 'controller_mobile_touch'}
 		<Icon icon="mdi:cellphone" width="1.2em" />
 	{:else if item.controller_type === 'controller_android'}

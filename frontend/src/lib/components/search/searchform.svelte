@@ -218,6 +218,61 @@ const changeSubmitHandler = () => {
 				<Icon icon="mdi:controller" width="1.2em" />
 				<span> 8BitDo </span>
 			</label>
+			<label for="controller_legion_go_s">
+				<input
+					type="radio"
+					id="controller_legion_go_s"
+					name="controller_type"
+					value="controller_legion_go_s"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="game-icons:spartan-helmet" width="1.2em" />
+				<span> Lenovo Legion Go S </span>
+			</label>
+			<label for="controller_hori_steam">
+				<input
+					type="radio"
+					id="controller_hori_steam"
+					name="controller_type"
+					value="controller_hori_steam"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="mdi:controller" width="1.2em" />
+				<span> HoriPad Steam </span>
+			</label>
+			<label for="controller_rog_ally">
+				<input
+					type="radio"
+					id="controller_rog_ally"
+					name="controller_type"
+					value="controller_rog_ally"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="simple-icons:republicofgamers" width="1.2em" />
+				<span> ASUS ROG Ally </span>
+			</label>
+			<label for="controller_mobile_touch">
+				<input
+					type="radio"
+					id="controller_mobile_touch"
+					name="controller_type"
+					value="controller_mobile_touch"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="mdi:cellphone" width="1.2em" />
+				<span> Mobile Touch </span>
+			</label>
+			<label for="controller_generic">
+				<input
+					type="radio"
+					id="controller_generic"
+					name="controller_type"
+					value="controller_generic"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="mdi:gamepad" height="1.2em" />
+				<span> Generic </span>
+			</label>
 		</fieldset>
 	{/if}
 	{#if showFeatureFilter}

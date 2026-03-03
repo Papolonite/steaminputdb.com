@@ -21,7 +21,11 @@ const (
 	ControllerTypeSwitchPro           ControllerType = "controller_switch_pro"
 	ControllerTypeSteamDeck           ControllerType = "controller_neptune"
 	ControllerType8BitDo              ControllerType = "controller_8bitdo"
-	ControllerTypeGeneric             ControllerType = "controller_generic"
+	ControllerTypeLegionGoS           ControllerType = "controller_legion_go_s"
+	ControllerHoriSteamDeck           ControllerType = "controller_hori_steam"
+	ControllerRogAlly                 ControllerType = "controller_rog_ally"
+	//
+	ControllerTypeGeneric ControllerType = "controller_generic"
 	// ControllerTypeNative       ControllerType = "controller_native" --- IGNORE ---
 	ControllerTypeMobileTouch ControllerType = "controller_mobile_touch"
 	ControllerTypeAndroid     ControllerType = "controller_android"
@@ -47,7 +51,11 @@ var controllerNiceNames map[ControllerType]string = map[ControllerType]string{
 	ControllerTypeSwitchPro:           "Nintendo Switch Pro",
 	ControllerTypeSteamDeck:           "Steam Deck",
 	ControllerType8BitDo:              "8BitDo",
-	ControllerTypeGeneric:             "Generic",
+	ControllerTypeLegionGoS:           "Lenovo Legion Go S",
+	ControllerHoriSteamDeck:           "Hori Steam Controller",
+	ControllerRogAlly:                 "ASUS ROG Ally",
+	//
+	ControllerTypeGeneric: "Generic",
 	// ControllerTypeNative:       "Native", --- IGNORE ---
 	ControllerTypeMobileTouch: "Mobile Touch",
 	ControllerTypeAndroid:     "Android",
