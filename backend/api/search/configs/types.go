@@ -52,7 +52,7 @@ var controllerNiceNames map[ControllerType]string = map[ControllerType]string{
 	ControllerTypeSteamDeck:           "Steam Deck",
 	ControllerType8BitDo:              "8BitDo",
 	ControllerTypeLegionGoS:           "Lenovo Legion Go S",
-	ControllerHoriSteamDeck:           "Hori Steam Controller",
+	ControllerHoriSteamDeck:           "Horipad Steam",
 	ControllerRogAlly:                 "ASUS ROG Ally",
 	//
 	ControllerTypeGeneric: "Generic",

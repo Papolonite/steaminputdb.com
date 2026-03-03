@@ -79,9 +79,22 @@ const changeSubmitHandler = () => {
 				<option value="playtime_sessions_trend">Sessions trend (30 days)</option>
 				<option value="lifetime_playtime_sessions">Lifetime sessions</option>
 			</select>
+
 			<Icon icon="mdi:chevron-down" />
 		</label>
 	</div>
+	<button
+		type="button"
+		class="filter"
+		onclick={() => {
+			showControllerFilter = !showControllerFilter;
+			showFeatureFilter = !showFeatureFilter;
+		}}
+		>Advanced Filters {#if showControllerFilter}
+			<Icon icon="mdi:chevron-up" height="1.8em" />
+		{:else}
+			<Icon icon="mdi:chevron-down" height="1.8em" />
+		{/if}</button>
 	{#if showControllerFilter}
 		<fieldset
 			id="controller-type"
@@ -380,7 +393,7 @@ form {
 	width: 100%;
 	gap: 1em;
 
-	max-width: 100dvw;
+	max-width: calc(100dvw -2em);
 
 	& > :first-child {
 		width: 100%;
@@ -395,13 +408,6 @@ form {
 			flex-grow: 1;
 			max-width: max(52ch, 25dvw);
 		}
-	}
-
-	& > :nth-child(2) {
-		flex: 1;
-	}
-	& > :nth-child(3) {
-		flex: 1;
 	}
 
 	label {
@@ -484,6 +490,8 @@ fieldset {
 	position: relative;
 	box-shadow: inset 0.1em 0.2em 0.5em 0 light-dark(#0f0f0f27, #0e0e0e7e);
 
+	width: 100%;
+
 	&[disabled] {
 		opacity: 0.5;
 	}
@@ -519,6 +527,7 @@ fieldset {
 	gap: 1em;
 	position: relative;
 	inset: 0;
+
 	& input {
 		min-width: 1.4em;
 		min-height: 1.4em;
@@ -537,6 +546,7 @@ fieldset {
 	gap: 1em;
 	position: relative;
 	inset: 0;
+
 	& input {
 		min-width: 1.4em;
 		min-height: 1.4em;
@@ -570,6 +580,13 @@ button {
 	&:focus-visible {
 		color: var(--text-color-dark) !important;
 		background-color: color-mix(in srgb, var(--color-primary), rgb(128 128 255 / 0.8) 50%);
+	}
+
+	&:is(.filter) {
+		width: min(100%, 25ch);
+		justify-content: center;
+		align-items: center;
+		margin-left: auto;
 	}
 }
 </style>
