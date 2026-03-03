@@ -126,6 +126,10 @@ onMount(() => {
 
 <svelte:head>
 	<title>SteamInputDB - {appInfo?.name ?? page.params.appid}</title>
+	<link rel="canonical" href={page.url.href} />
+	<meta property="og:site_name" content="SteamInputDB" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={page.url.href} />
 	<meta property="og:title" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
 	<meta
 		name="description"
@@ -146,11 +150,40 @@ onMount(() => {
 			<meta
 				property="og:image"
 				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+			<meta property="og:image:alt" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
 			<meta
 				name="twitter:image"
 				content={`${assetUrlBase}${assets.asset_url_format?.replace('${FILENAME}', assetChosen)}`} />
+			<meta name="twitter:image:alt" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
 		{/if}
 	{/if}
+	<script type="application/ld+json">
+		{`{
+			"@context": "https://schema.org",
+			"@graph": [
+				{
+					"@type": "WebSite",
+					"name": "SteamInputDB",
+					"url": "https://www.steaminputdb.com/",
+					"potentialAction": {
+						"@type": "SearchAction",
+						"target": "https://www.steaminputdb.com/app/${page.params.appid}?searchtext={searchtext}",
+						"query-input": "required name=searchtext"
+					}
+				},
+				{
+					"@type": "WebPage",
+					"name": "SteamInputDB - ${appInfo?.name ?? page.params.appid}",
+					"url": "${page.url.href}",
+					"description": "Search for Steam Input configurations for ${appInfo?.name ?? page.params.appid}",
+					"isPartOf": {
+						"@type": "WebSite",
+						"url": "https://www.steaminputdb.com/"
+					}
+				}
+			]
+		}`}
+	</script>
 </svelte:head>
 
 <svelte:window

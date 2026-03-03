@@ -19,22 +19,68 @@ onMount(() => {
 
 <svelte:head>
 	<title>SteamInputDB</title>
-	<meta property="og:title" content="SteamInputDB" />
 	<meta
 		name="description"
-		content="Community driven database of SteamInput configurations utilizing Steam API" />
+		content="Community-driven database of Steam Input configurations using the Steam API." />
+	<meta
+		name="keywords"
+		content="Steam Input DB, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets" />
+	<meta
+		name="robots"
+		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+	<link rel="canonical" href="https://www.steaminputdb.com/" />
+
+	<meta property="og:site_name" content="SteamInputDB" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="SteamInputDB" />
 	<meta
 		property="og:description"
-		content="Community driven database of SteamInput configurations utilizing Steam API" />
-
-	<meta property="og:image" content="/ogimage.png" />
-	<meta name="twitter:image" content="/ogimage.png" />
+		content="Community-driven database of Steam Input configurations using the Steam API." />
+	<meta property="og:url" content="https://www.steaminputdb.com/" />
+	<meta property="og:image" content="https://www.steaminputdb.com/ogimage.png" />
+	<meta property="og:image:alt" content="SteamInputDB preview image" />
 
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="SteamInputDB" />
 	<meta
 		name="twitter:description"
-		content="Community driven database of SteamInput configurations utilizing Steam API" />
+		content="Community-driven database of Steam Input configurations using the Steam API." />
+	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
+	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
+
+	<script type="application/ld+json">
+	{`{
+		"@context": "https://schema.org",
+		"@graph": [
+			{
+				"@type": "WebSite",
+				"name": "SteamInputDB",
+				"url": "https://www.steaminputdb.com/",
+				"description": "Community-driven database of Steam Input configurations using the Steam API.",
+				"inLanguage": "en",
+				"potentialAction": {
+					"@type": "SearchAction",
+					"target": "https://www.steaminputdb.com/config/search?searchtext={searchtext}",
+					"query-input": "required name=searchtext"
+				}
+			},
+			{
+				"@type": "WebPage",
+				"name": "SteamInputDB",
+				"url": "https://www.steaminputdb.com/",
+				"description": "Community-driven database of Steam Input configurations using the Steam API.",
+				"isPartOf": {
+					"@type": "WebSite",
+					"url": "https://www.steaminputdb.com/"
+				},
+				"primaryImageOfPage": {
+					"@type": "ImageObject",
+					"url": "https://www.steaminputdb.com/ogimage.png"
+				}
+			}
+		]
+	}`}
+	</script>
 </svelte:head>
 
 <svelte:window

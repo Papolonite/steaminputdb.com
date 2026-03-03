@@ -43,6 +43,10 @@ if (browser) {
 
 <svelte:head>
 	<title>SteamInputDB - {fileInfo?.title}</title>
+	<link rel="canonical" href={page.url.href} />
+	<meta property="og:site_name" content="SteamInputDB" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={page.url.href} />
 	<meta property="og:title" content="SteamInputDB - {fileInfo?.title}" />
 	<meta name="description" content="Steam Input configuration {fileInfo?.title}" />
 	<meta property="og:description" content="Steam Input configuration {fileInfo?.title}" />
