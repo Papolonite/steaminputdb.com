@@ -12,14 +12,19 @@ const {
 }: {
 	author?: {
 		name: string;
-		img: Picture;
+		img?: Picture;
 	};
 	date?: Date;
 } = $props();
 </script>
 
 <div>
-	<enhanced:img src={author.img} alt="A picture of {author.name}, the author of this post"></enhanced:img>
+	{#if author.img}
+		<enhanced:img src={author.img} alt="A picture of {author.name}, the author of this post"
+		></enhanced:img>
+	{:else}
+		<div></div>
+	{/if}
 	<div>
 		<span>{author.name}</span>
 		{#if date}

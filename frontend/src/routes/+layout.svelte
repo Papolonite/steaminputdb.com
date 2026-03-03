@@ -4,6 +4,7 @@ import favicon from '$lib/assets/favicon.svg?url';
 import Footer from '$lib/components/Footer.svelte';
 import Header from '$lib/components/header/Header.svelte';
 
+import { page } from '$app/state';
 import 'unfonts.css';
 import { links } from 'unplugin-fonts/head';
 import '../css/main.pcss';
@@ -42,6 +43,10 @@ onNavigate((navigation) => {
 			<link {...link?.attrs || {}} />
 		{/if}
 	{/each}
+	<link rel="canonical" href={page.url.toString()} />
+	<meta property="og:url" content={page.url.toString()} />
+	<meta property="og:site_name" content="SteamInputDB" />
+	<meta name="robots" content="index, follow" />
 </svelte:head>
 
 <Header />

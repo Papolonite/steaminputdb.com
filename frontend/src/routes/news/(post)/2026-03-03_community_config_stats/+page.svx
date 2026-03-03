@@ -1,0 +1,141 @@
+---
+title: Community Config Stats
+lead: Stats about SteamInput community layouts we can now easily see as well as another changelog to SteamInputDB
+date: 2026-03-03
+hero: /ogimage.png?enhanced&w=400
+---
+
+<script>
+
+import Author from '$lib/components/author.svelte';
+const ogimgSrc = "/ogimage.png";
+
+</script>
+
+<svelte:head>
+<title>{title}</title>
+    <meta property="og:title" content={title} />
+    <meta name="description" content={lead} />
+    <meta property="og:description" content={lead} />
+    <meta property="og:image" content={ogimgSrc} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={lead} />
+    <meta name="twitter:image" content={ogimgSrc} />
+ <meta name="twitter:image:alt" content={title} />
+</svelte:head>
+
+# {title}
+
+<p class="lead">{lead}</p>
+
+---
+
+<Author date={new Date(date)} />
+
+<div class="hero">
+    <img src="/ogimage.png" alt="Post Header Image" />
+</div>
+
+## Steam Input Community Layout Stats
+
+Ever wondered how many community layouts have been uploaded to Steam?  
+How many of them are for the SteamDeck? - What about all the other controllers Steam supports?
+How many of them utilize the Gyro?
+
+Well, now we can easily find out all of that in the [Advanced Search](/config/search?searchtext=&sort-by=vote) here on SteamInputDB!
+
+At the time of writing there have been 810925 community layouts uploaded to Steam, with unsurprisingly the last majority of which are for the **SteamDeck**  - 168767 to be precise
+The humble SteamDeck is only closely follwed by the **Xbox One**-Controller with a total of 154994 uploaded configs.  
+Place 3 goes to the DualShock 4 controller with 146403 layouts.
+
+Also not surprising: The least amount of configs are uploaded for the upcoming new **2026 Steam Controller**, which currently only, or should I say _already_, has a total of **3** community layouts uploaded to Steam!
+
+Below you can find a table with all controllers that are currently filterable on SteamInputDB  
+(Steam may very well track more I haven't encountered, yet)
+
+| Controller              | Layouts |
+| :---------------------- | ------: |
+| SteamDeck               |  168769 |
+| Xbox One                |  154992 |
+| DualShock 4             |  146402 |
+| Xbox 360                |   82447 |
+| Dual Sense              |   66848 |
+| Steam Controller (2015) |   41410 |
+| Generic                 |   25697 |
+| Switch Pro              |   31869 |
+| Dual Sense Edge         |   12335 |
+| Mobile Touch            |   10540 |
+| Lenovo Legion Go S      |     636 |
+| 8BitDo                  |     596 |
+| HoriPad Steam           |     520 |
+| ASUS ROG Ally           |     246 |
+| Steam Controller (2026) |       3 |
+
+Moving on from controller types, we can also check what kind features and bindings are used most.  
+
+495353 community layouts utilize **Keyboard** inputs, while "only" 486536 utilize **Gamepad** inputs.  
+**Mouse** inputs are used in 414270 layouts.
+
+**Gyro** is only used in 90595 layouts, _about 11%_ of all community layouts, indicating that it's still a niche feature, but one that is definitely being utilized by a significant portion of the community.
+
+Below you can find another table with stats I found interesting.
+You can choose your own conclusions from this.
+
+| Feature / Bindings                     | Layouts |
+| :------------------------------------- | ------: |
+| Keyboard                               |  495353 |
+| Gamepad                                |  486536 |
+| Mouse                                  |  414270 |
+| Keyboard **and** Mouse                 |  363164 |
+| **Without** Gamepad                    |  324392 |
+| Keyboard **and** Gamepad               |  270667 |
+| **Without** Keyboard / Mouse           |  264469 |
+| Gamepad **and** Mouse                  |  179077 |
+| Keyboard **and** Gamepad **and** Mouse |  179077 |
+| Gyro                                   |   90595 |
+
+Feel free to explore the [advanced search](/config/search?searchtext=&sort-by=vote) feature and create your own stats and tables!  
+Maybe someone else is also interested in creating a general statistics page for community layouts and is willing to contribute to SteamInputDB on [GitHub](https://github.com/Alia5/SteamInputDB.com) 😉
+
+## Changelog to SteamInputDB
+
+Last but not least, here is what I changed today, just mere two days after the initial lauch
+
+- Publicly expose **[News](/news)** section
+- Add many more controller types to the filter options  
+  - _Lenovo Legion Go_
+  - _ASUS ROG Ally_
+  - _HoriPad Steam_
+  - _Mobile Touch_
+  - _Generic configs_
+- Add the [advanced search](/config/search) link to the header for easier access<br/>
+  <sup>(you could previously access it by clicking the magnifying glass icon in the header or from the mobile layout)</sup>
+- Add filters to **exclude** features from search results  
+  (e.g. "Show me configs that **don't** have Keyboard/Mouse inputs")
+- Add a button to show and hide advanced search filters
+- Changed default sorting of the in-header search results to in an effort to display what's hot _right now_
+- Added display of total number of Steam Input Layouts matching search criteria
+- Updated Favicon
+- SEO improvements
+
+You can find the previous changelog [here](/news/2026-03-02_steaminputdb_updates)
+
+<style>
+    strong {
+        color: var(--highlight-color);
+    }
+    em {
+        color: var(--highlight-color);
+        opacity: 0.96;
+    }
+
+    .hero {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        margin-bottom: 2em;
+    }
+
+</style>

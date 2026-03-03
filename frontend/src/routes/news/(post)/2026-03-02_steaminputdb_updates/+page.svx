@@ -1,5 +1,5 @@
 ---
-title: SteamInputDB Updates - 2026-03-02
+title: SteamInputDB Updates
 lead: Changelog of updates and changes to SteamInputDB as of March 2nd, 2026.
 date: 2026-03-02
 ---
@@ -22,6 +22,7 @@ const ogimgSrc = "/ogimage.png";
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={lead} />
     <meta name="twitter:image" content={ogimgSrc} />
+	<meta name="twitter:image:alt" content={title} />
 </svelte:head>
 
 # {title}
@@ -30,9 +31,9 @@ const ogimgSrc = "/ogimage.png";
 
 ---
 
-<!-- <Author date={new Date(date)} /> -->
+<Author date={new Date(date)} />
 
-### ✨ New Features
+### Changelog
 
 - Add (preliminary) **news** section
 - Add `Back to top` button on endless scrolling lists

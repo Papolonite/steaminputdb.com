@@ -1,5 +1,6 @@
 <script lang="ts">
 import { resolve } from '$app/paths';
+import Author from '$lib/components/author.svelte';
 import type { Picture } from '@sveltejs/enhanced-img';
 
 type ArticleMeta = {
@@ -8,6 +9,10 @@ type ArticleMeta = {
 	lead?: string;
 	excerpt?: string;
 	hero?: Picture;
+	author?: {
+		name: string;
+		img?: Picture;
+	};
 };
 
 const articlePages = import.meta.glob('/src/routes/news/\\(post\\)/**/+page.svx', {
@@ -40,9 +45,9 @@ const sortedByDate = Object.entries(articlePages).sort(([, a], [, b]) => {
 					{@const excerpt = meta.excerpt ?? meta.lead}
 					<p>{excerpt?.replaceAll('\\n', '\n').replaceAll('\n\n', '\n')}</p>
 				{/if}
-				<!-- <div style="scale: 0.9;">
-					<Author date={meta.date} />
-				</div> -->
+				<div style="scale: 0.9;">
+					<Author date={meta.date} author={meta.author} />
+				</div>
 			</div></a>
 	{/each}
 </main>
@@ -87,12 +92,13 @@ main {
 		}
 
 		& > :last-child {
-			display: grid;
+			display: flex;
+			flex-direction: column;
 			gap: 1em;
 			height: 100%;
+			align-items: baseline;
 			& > :last-child {
 				margin-top: auto;
-				align-self: end;
 				width: fit-content;
 			}
 			& > span {

@@ -43,6 +43,10 @@ main {
 		opacity: 0.7;
 	}
 
+	:global(p) {
+		text-align: justify;
+	}
+
 	padding: 0 2em;
 	padding-bottom: 2em;
 
