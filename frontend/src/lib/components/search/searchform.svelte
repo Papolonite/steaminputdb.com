@@ -165,6 +165,17 @@ const changeSubmitHandler = () => {
 				<SC2 width="1.2em" />
 				<span> Steam Controller (2015) </span>
 			</label>
+			<label for="controller_steamcontroller_headcrab">
+				<input
+					type="radio"
+					id="controller_steamcontroller_headcrab"
+					name="controller_type"
+					value="controller_steamcontroller_headcrab"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<SC2 width="1.2em" />
+				<span> Steam Controller (Headcrab) </span>
+			</label>
 			<label for="controller_ps5">
 				<input
 					type="radio"
