@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ url }) => {
 // AND an immediate redirect to the frontend in case the real backend is slow...
 // 🙄
 export const actions = {
-    validateLogin: async ({ request, cookies, fetch }) => {
+    validateLogin: async ({ request, cookies, fetch, url }) => {
         if (!request.body) {
             log.error('No request body in validateLogin action');
             return fail(400, 'No body in request');
@@ -90,7 +90,7 @@ export const actions = {
 
                 cookies.set(name, value, {
                     path: typeof options.path === 'string' ? options.path : '/',
-                    domain: 'steaminputdb.com',
+                    domain: url.hostname,
                     httpOnly: options.httponly === true,
                     secure: options.secure === true,
                     sameSite: sameSite === 'lax' || sameSite === 'strict' || sameSite === 'none'
