@@ -457,6 +457,11 @@ components:
           description: Only search configurations for this specific Steam App ID (Non-Steam Games use their name as AppID)
           maxLength: 100
           type: string
+        creator:
+          description: Filter results to only include configurations created by the specified Steam User ID
+          format: int64
+          minimum: 0
+          type: integer
         excluded_tags:
           description: Filter results to only include configurations that do not have any of the specified tags
           items:

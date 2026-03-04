@@ -104,6 +104,15 @@ func Handler(ctx context.Context, req *Request) (*SearchResponse, error) {
 		query.Excludedtags = append(query.Excludedtags, req.Body.Filter.ExcludedTags...)
 	}
 
+	if req.Body.Filter.Creator != nil {
+		accountID := uint32(*req.Body.Filter.Creator & 0xFFFFFFFF)
+		query.RequiredKvTags = append(query.RequiredKvTags, &steamapi.CPublishedFile_QueryFiles_Request_KVTag{
+			Key:   new("owner"),
+			Value: new(fmt.Sprintf("%d", accountID)),
+		})
+
+	}
+
 	queryResp, err := steamapi.DefaultClient.QueryFiles(ctx, query)
 	if err != nil {
 		if errors.Is(err, steamapi.ErrRequest) {
