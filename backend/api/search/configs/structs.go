@@ -15,7 +15,7 @@ type ConfigFilter struct {
 	AppID        string   `json:"app_id,omitempty,omitzero" maxLength:"100" doc:"Only search configurations for this specific Steam App ID (Non-Steam Games use their name as AppID)"`
 	Tags         []string `json:"tags,omitempty,omitzero" doc:"Filter results to only include configurations with all of the specified tags"`
 	ExcludedTags []string `json:"excluded_tags,omitempty,omitzero" doc:"Filter results to only include configurations that do not have any of the specified tags"`
-	Creator      *uint64  `json:"creator,omitempty,omitzero" doc:"Filter results to only include configurations created by the specified Steam User ID"`
+	Creator      *string  `json:"creator,omitempty,omitzero" doc:"Filter results to only include configurations created by the specified Steam User ID"`
 }
 
 type ConfigRank struct {

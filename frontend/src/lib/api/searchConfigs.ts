@@ -44,7 +44,8 @@ export const fetchConfigs = async (
                 filter: {
                     tags: filterTags,
                     excluded_tags: excludedFilterTags,
-                    app_id: params.get('appid')?.toString() ?? undefined
+                    app_id: params.get('appid')?.toString() ?? undefined,
+                    creator: params.get('userid')?.toString() ?? undefined
                 },
                 include: {
                     votes: true,

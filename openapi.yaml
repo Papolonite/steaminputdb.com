@@ -181,6 +181,21 @@ components:
         - total
         - items
       type: object
+    AvatarFrame:
+      additionalProperties: false
+      properties:
+        large:
+          type:
+            - string
+            - "null"
+        small:
+          type:
+            - string
+            - "null"
+      required:
+        - small
+        - large
+      type: object
     CPublishedFile_GetDetails_Response:
       additionalProperties: false
       properties:
@@ -459,9 +474,7 @@ components:
           type: string
         creator:
           description: Filter results to only include configurations created by the specified Steam User ID
-          format: int64
-          minimum: 0
-          type: integer
+          type: string
         excluded_tags:
           description: Filter results to only include configurations that do not have any of the specified tags
           items:
@@ -809,6 +822,8 @@ components:
           type: string
         avatar:
           type: string
+        avatarframe:
+          $ref: "#/components/schemas/AvatarFrame"
         avatarfull:
           type: string
         avatarhash:
@@ -823,9 +838,13 @@ components:
           type: string
         loccountrycode:
           type: string
+        mini_profile_background:
+          $ref: "#/components/schemas/MiniProfileBackground"
         personaname:
           type: string
         primaryclanid:
+          type: string
+        profilebackground:
           type: string
         profileurl:
           type: string
@@ -844,6 +863,26 @@ components:
         - primaryclanid
         - timecreated
         - loccountrycode
+      type: object
+    MiniProfileBackground:
+      additionalProperties: false
+      properties:
+        image:
+          type:
+            - string
+            - "null"
+        movie_mp4:
+          type:
+            - string
+            - "null"
+        movie_webm:
+          type:
+            - string
+            - "null"
+      required:
+        - image
+        - movie_webm
+        - movie_mp4
       type: object
     OpenIDBody:
       additionalProperties: false
@@ -920,6 +959,8 @@ components:
           type: string
         avatar:
           type: string
+        avatarframe:
+          $ref: "#/components/schemas/AvatarFrame"
         avatarfull:
           type: string
         avatarhash:
@@ -934,9 +975,13 @@ components:
           type: string
         loccountrycode:
           type: string
+        mini_profile_background:
+          $ref: "#/components/schemas/MiniProfileBackground"
         personaname:
           type: string
         primaryclanid:
+          type: string
+        profilebackground:
           type: string
         profileurl:
           type: string
@@ -2638,6 +2683,24 @@ paths:
           name: user_id
           schema:
             type: string
+        - explode: false
+          in: query
+          name: include_avatar_frame
+          schema:
+            default: false
+            type: boolean
+        - explode: false
+          in: query
+          name: include_profile_background
+          schema:
+            default: false
+            type: boolean
+        - explode: false
+          in: query
+          name: include_mini_profile_background
+          schema:
+            default: false
+            type: boolean
       responses:
         "200":
           content:

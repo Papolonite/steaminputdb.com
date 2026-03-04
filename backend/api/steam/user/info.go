@@ -2,8 +2,12 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
+	"strconv"
+	"sync"
 	"time"
 
 	"github.com/Alia5/steaminputdb.com/api/ctx"
@@ -14,17 +18,31 @@ import (
 )
 
 type PlayerInfo struct {
-	CommunityVisibilityState int       `json:"communityvisibilitystate"` // TODO:enum
-	PersonaName              string    `json:"personaname"`
-	ProfileURL               string    `json:"profileurl"`
-	Avatar                   string    `json:"avatar"`
-	AvatarMedium             string    `json:"avatarmedium"`
-	AvatarFull               string    `json:"avatarfull"`
-	AvatarHash               string    `json:"avatarhash"`
-	LastLogOff               time.Time `json:"lastlogoff"`
-	PrimaryClanID            string    `json:"primaryclanid"`
-	TimeCreated              time.Time `json:"timecreated"`
-	LocCountryCode           string    `json:"loccountrycode"`
+	CommunityVisibilityState int                    `json:"communityvisibilitystate"` // TODO:enum
+	PersonaName              string                 `json:"personaname"`
+	ProfileURL               string                 `json:"profileurl"`
+	Avatar                   string                 `json:"avatar"`
+	AvatarMedium             string                 `json:"avatarmedium"`
+	AvatarFull               string                 `json:"avatarfull"`
+	AvatarHash               string                 `json:"avatarhash"`
+	LastLogOff               time.Time              `json:"lastlogoff"`
+	PrimaryClanID            string                 `json:"primaryclanid"`
+	TimeCreated              time.Time              `json:"timecreated"`
+	LocCountryCode           string                 `json:"loccountrycode"`
+	AvatarFrame              *AvatarFrame           `json:"avatarframe,omitempty"`
+	ProfileBackground        *string                `json:"profilebackground,omitempty"`
+	MiniProfileBackground    *MiniProfileBackground `json:"mini_profile_background,omitempty"`
+}
+
+type AvatarFrame struct {
+	Small *string `json:"small"`
+	Large *string `json:"large"`
+}
+
+type MiniProfileBackground struct {
+	Image     *string `json:"image"`
+	MovieWebm *string `json:"movie_webm"`
+	MovieMp4  *string `json:"movie_mp4"`
 }
 
 type Response struct {
@@ -32,7 +50,10 @@ type Response struct {
 }
 
 type UserInfoRequest struct {
-	UserID string `query:"user_id,omitempty,omitzero"` // this is the user_id query parameter, but it's named something else to avoid confusion with the steamID that can be extracted from the context. if this is 0, we'll attempt to use the steamID from the context instead.
+	UserID                string `query:"user_id,omitempty,omitzero"` // this is the user_id query parameter, but it's named something else to avoid confusion with the steamID that can be extracted from the context. if this is 0, we'll attempt to use the steamID from the context instead.
+	AvatarFrame           bool   `query:"include_avatar_frame,omitempty" default:"false"`
+	ProfileBackground     bool   `query:"include_profile_background,omitempty" default:"false"`
+	MiniProfileBackground bool   `query:"include_mini_profile_background,omitempty" default:"false"`
 }
 
 func RegisterRoutes(a huma.API, opts ...bool) {
@@ -62,6 +83,8 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 		},
 		func(c context.Context, req *UserInfoRequest) (*Response, error) {
 			var steamID string
+			queryJson, _ := json.Marshal(req)
+
 			if req.UserID == "" {
 				var ok bool
 				steamID, ok = c.Value(ctx.KeySteamID).(string)
@@ -73,7 +96,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 				if useMemCache {
 					cached, ok := memcache.Get[*Response](
 						cache,
-						steamID,
+						string(queryJson),
 					)
 					if ok {
 						return cached, nil
@@ -95,7 +118,6 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 			if len(info.Response.Players) == 0 {
 				return nil, huma.Error404NotFound("steam user not found")
 			}
-
 			player := info.Response.Players[0]
 
 			res := &Response{
@@ -113,8 +135,67 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 					LocCountryCode:           player.Loccountrycode,
 				},
 			}
-			if useMemCache && req.UserID != "" {
-				cache.Store(steamID, res)
+
+			steamID64, err := strconv.ParseUint(steamID, 10, 64)
+			if err != nil {
+				slog.Error("failed to parse steamID to uint64", "error", err, "steamID", steamID)
+				return res, nil
+			}
+
+			wg := sync.WaitGroup{}
+			if req.AvatarFrame {
+				wg.Go(func() {
+					avatarFrame, err := steamapi.DefaultClient.GetAvatarFrame(c, &steamapi.CPlayer_GetAvatarFrame_Request{
+						Steamid: &steamID64,
+					})
+					if err != nil {
+						slog.Error("failed to get avatar frame", "err", err, "steam_id", steamID)
+						return
+					}
+					if avatarFrame != nil {
+						res.Body.AvatarFrame = &AvatarFrame{
+							Small: avatarFrame.AvatarFrame.ImageSmall,
+							Large: avatarFrame.AvatarFrame.ImageLarge,
+						}
+					}
+				})
+			}
+			if req.ProfileBackground {
+				wg.Go(func() {
+					profileBackground, err := steamapi.DefaultClient.GetProfileBackground(c, &steamapi.CPlayer_GetProfileBackground_Request{
+						Steamid: &steamID64,
+					})
+					if err != nil {
+						slog.Error("failed to get profile background", "err", err, "steam_id", steamID)
+						return
+					}
+					if profileBackground != nil {
+						res.Body.ProfileBackground = profileBackground.ProfileBackground.ImageLarge
+					}
+				})
+			}
+			if req.MiniProfileBackground {
+				wg.Go(func() {
+					miniProfileBackground, err := steamapi.DefaultClient.GetMiniProfileBackground(c, &steamapi.CPlayer_GetMiniProfileBackground_Request{
+						Steamid: &steamID64,
+					})
+					if err != nil {
+						slog.Error("failed to get mini profile background", "err", err, "steam_id", steamID)
+						return
+					}
+					if miniProfileBackground != nil {
+						res.Body.MiniProfileBackground = &MiniProfileBackground{
+							Image:     miniProfileBackground.ProfileBackground.ImageLarge,
+							MovieWebm: miniProfileBackground.ProfileBackground.MovieWebm,
+							MovieMp4:  miniProfileBackground.ProfileBackground.MovieMp4,
+						}
+					}
+				})
+			}
+			wg.Wait()
+
+			if useMemCache && req.UserID != "" && len(queryJson) != 0 {
+				cache.Store(string(queryJson), res)
 			}
 			return res, nil
 		},

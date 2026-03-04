@@ -130,6 +130,17 @@ let searchShowsResults = $state(false);
 		</div>
 		<nav>
 			{@render navcontent()}
+			{#if page.data.steamId}
+				<div class="separator"></div>
+				<a href={resolve(`/user/${page.data.steamId}`)}>
+					<Icon icon="mdi:account" width="1.4em" height="1.4em" />
+					<span>My Profile</span>
+				</a>
+				<a href={resolve(`/logout`)}>
+					<Icon icon="mdi:logout" width="1.4em" height="1.4em" />
+					<span>Logout</span>
+				</a>
+			{/if}
 		</nav>
 	</aside>
 </Modal>
@@ -344,5 +355,13 @@ aside {
 			margin-right: auto;
 		}
 	}
+}
+
+.separator {
+	height: 1px;
+	width: 100%;
+	background: var(--text-color);
+	opacity: 0.5;
+	margin: 0.5em 0;
 }
 </style>

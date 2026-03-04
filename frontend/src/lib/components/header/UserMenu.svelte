@@ -2,9 +2,10 @@
 import { resolve } from '$app/paths';
 import { page } from '$app/state';
 const userInfo = $derived(page.data.userInfo);
+const steamId = $derived(page.data.steamId);
 </script>
 
-<a href={resolve('/logout')}>
+<a href={resolve(`/user/${steamId}`)}>
 	{#if userInfo?.avatar}
 		<picture>
 			<enhanced:img src={userInfo.avatar} alt="User Avatar" height="100%"></enhanced:img>

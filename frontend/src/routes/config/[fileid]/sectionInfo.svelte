@@ -31,12 +31,12 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			{#if creatorInfo}
 				<dt>Author</dt>
 				<dd>
-					{creatorInfo.personaname} <i>(SteamID: {fileInfo.creator_id})</i>
+					<a href={resolve(`/user/${fileInfo.creator_id}`)}>{creatorInfo.personaname}</a>
 				</dd>
 			{:else}
 				<dt>Author ID</dt>
 				<dd>
-					{fileInfo.creator_id}
+					<a href={resolve(`/user/${fileInfo.creator_id}`)}>{fileInfo.creator_id}</a>
 				</dd>
 			{/if}
 			<dt>Created</dt>

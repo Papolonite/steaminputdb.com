@@ -4,7 +4,7 @@ import { resolve } from '$app/paths';
 import { page } from '$app/state';
 import Icon from '@iconify/svelte';
 import UserMenu from './UserMenu.svelte';
-
+let steamId = $derived(page.data.steamId);
 let loginRoute = $state(false);
 beforeNavigate(({ from, to }) => {
 	if (from?.route.id?.includes('/login') || to?.route.id?.includes('/login')) {
@@ -15,7 +15,12 @@ beforeNavigate(({ from, to }) => {
 });
 </script>
 
-{#if !page.route.id?.startsWith('/login')}
+{#if page.url?.pathname === `/user/${steamId}`}
+	<a class={loginRoute ? 'login-view-transition' : ''} href={resolve('/logout')}>
+		<Icon icon="mdi:logout" width="1.2em" height="1.2em" />
+		<span>Logout</span>
+	</a>
+{:else if !page.route.id?.startsWith('/login')}
 	{#if !page.data.steamId}
 		<a class={loginRoute ? 'login-view-transition' : ''} href={resolve('/login')}>
 			<Icon icon="mdi:steam" width="1.2em" height="1.2em" />
