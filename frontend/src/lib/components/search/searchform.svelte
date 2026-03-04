@@ -427,6 +427,7 @@ form {
 	flex-flow: row wrap;
 	width: 100%;
 	gap: 1em;
+	backdrop-filter: blur(12px);
 
 	max-width: calc(100dvw -2em);
 
