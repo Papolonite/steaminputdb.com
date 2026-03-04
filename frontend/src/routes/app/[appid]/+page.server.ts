@@ -56,7 +56,12 @@ export const load: PageServerLoad = async ({ params, fetch, url }) => {
             });
         }
         if (!infoResp.data || !infoResp.data.name) {
-            error(404, 'App not found');
+            infoResp.data = {
+                app_id,
+                name: `App ID: ${app_id}`,
+                store_url_path: '',
+                type: 'game'
+            };
         }
 
         loadRes.appInfo = infoResp.data;
