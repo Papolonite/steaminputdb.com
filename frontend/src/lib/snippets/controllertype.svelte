@@ -4,7 +4,14 @@ export { controllertype };
 
 <script lang="ts">
 import type { components } from '$lib/api/openapi';
-import SC2Icon from '$lib/assets/SC2_Alt.svg?component';
+import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
+import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
+import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
+import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
+import Gordon from '$lib/assets/steam_controller_type_svgs/steam.svg?component';
+import SwitchPro from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
+import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component';
+import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
 import Icon from '@iconify/svelte';
 </script>
 
@@ -12,27 +19,27 @@ import Icon from '@iconify/svelte';
 	{#if item.controller_type === 'controller_neptune'}
 		<Icon icon="simple-icons:steamdeck" width="1.2em" />
 	{:else if item.controller_type === 'controller_triton'}
-		<SC2Icon width="1.2em" />
+		<Triton width="1.2em" />
 	{:else if item.controller_type === 'controller_steamcontroller_gordon'}
-		<SC2Icon width="1.2em" />
+		<Gordon width="1.2em" />
 	{:else if item.controller_type === 'controller_ps5'}
-		<Icon icon="simple-icons:playstation5" width="1.2em" />
+		<PS5 width="1.2em" />
 	{:else if item.controller_type === 'controller_ps5_edge'}
-		<Icon icon="simple-icons:playstation5" width="1.2em" />
+		<PS5 width="1.2em" />
 	{:else if item.controller_type === 'controller_ps4'}
-		<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
+		<PS4 width="1.2em" />
 	{:else if item.controller_type === 'controller_xbox360'}
-		<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
+		<XBox width="1.2em" />
 	{:else if item.controller_type === 'controller_xboxone'}
 		<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
 	{:else if item.controller_type === 'controller_switch_pro'}
-		<Icon icon="mdi:controller" width="1.2em" />
+		<SwitchPro width="1.2em" />
 	{:else if item.controller_type === 'controller_8bitdo'}
-		<Icon icon="mdi:controller" width="1.2em" />
+		<EightBitDo width="1.2em" />
 	{:else if item.controller_type === 'controller_legion_go_s'}
 		<Icon icon="game-icons:spartan-helmet" width="1.2em" />
 	{:else if item.controller_type === 'controller_hori_steam'}
-		<Icon icon="mdi:controller" width="1.2em" />
+		<Hori width="1.2em" />
 	{:else if item.controller_type === 'controller_rog_ally'}
 		<Icon icon="simple-icons:republicofgamers" width="1.2em" />
 	{:else if item.controller_type === 'controller_mobile_touch'}

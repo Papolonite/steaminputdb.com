@@ -1,12 +1,20 @@
 <script lang="ts">
 import { enhance } from '$app/forms';
-import SC2 from '$lib/assets/SC2_Alt.svg?component';
 import Searchbar from '$lib/components/search/searchbar.svelte';
 import Icon from '@iconify/svelte';
 import { tick } from 'svelte';
 import { cubicInOut } from 'svelte/easing';
 import type { HTMLFormAttributes } from 'svelte/elements';
 import { fade, slide } from 'svelte/transition';
+
+import EightBitDo from '$lib/assets/steam_controller_type_svgs/8bitdo_ultimate.svg?component';
+import Hori from '$lib/assets/steam_controller_type_svgs/hori.svg?component';
+import PS4 from '$lib/assets/steam_controller_type_svgs/ps4.svg?component';
+import PS5 from '$lib/assets/steam_controller_type_svgs/ps5.svg?component';
+import Gordon from '$lib/assets/steam_controller_type_svgs/steam.svg?component';
+import SwitchPro from '$lib/assets/steam_controller_type_svgs/switchpro.svg?component';
+import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component';
+import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
 
 let {
 	showControllerFilter = true,
@@ -151,7 +159,7 @@ const changeSubmitHandler = () => {
 					value="controller_triton"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<SC2 width="1.2em" />
+				<Triton width="1.2em" />
 				<span> Steam Controller </span>
 			</label>
 			<label for="controller_steamcontroller_gordon">
@@ -162,7 +170,7 @@ const changeSubmitHandler = () => {
 					value="controller_steamcontroller_gordon"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<SC2 width="1.2em" />
+				<Gordon width="1.2em" />
 				<span> Steam Controller (2015) </span>
 			</label>
 			<label for="controller_steamcontroller_headcrab">
@@ -173,7 +181,7 @@ const changeSubmitHandler = () => {
 					value="controller_steamcontroller_headcrab"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<SC2 width="1.2em" />
+				<Gordon width="1.2em" />
 				<span> Steam Controller (Headcrab) </span>
 			</label>
 			<label for="controller_ps5">
@@ -184,7 +192,7 @@ const changeSubmitHandler = () => {
 					value="controller_ps5"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="simple-icons:playstation5" width="1.2em" />
+				<PS5 width="1.2em" />
 				<span> DualSense </span>
 			</label>
 			<label for="controller_ps5_edge">
@@ -195,7 +203,7 @@ const changeSubmitHandler = () => {
 					value="controller_ps5_edge"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="simple-icons:playstation5" width="1.2em" />
+				<PS5 width="1.2em" />
 				<span> DualSense Edge </span>
 			</label>
 			<label for="controller_ps4">
@@ -206,7 +214,7 @@ const changeSubmitHandler = () => {
 					value="controller_ps4"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="iconoir:playstation-gamepad" width="1.2em" />
+				<PS4 width="1.2em" />
 				<span> DualShock 4 </span>
 			</label>
 			<label for="controller_xbox360">
@@ -217,7 +225,7 @@ const changeSubmitHandler = () => {
 					value="controller_xbox360"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="fluent:xbox-controller-24-regular" width="1.2em" />
+				<XBox width="1.2em" />
 				<span> Xbox 360 </span>
 			</label>
 			<label for="controller_xboxone">
@@ -239,7 +247,7 @@ const changeSubmitHandler = () => {
 					value="controller_switch_pro"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:controller" width="1.2em" />
+				<SwitchPro width="1.2em" />
 				<span> Switch Pro </span>
 			</label>
 			<label for="controller_8bitdo">
@@ -250,7 +258,7 @@ const changeSubmitHandler = () => {
 					value="controller_8bitdo"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:controller" width="1.2em" />
+				<EightBitDo width="1.2em" />
 				<span> 8BitDo </span>
 			</label>
 			<label for="controller_legion_go_s">
@@ -272,7 +280,7 @@ const changeSubmitHandler = () => {
 					value="controller_hori_steam"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:controller" width="1.2em" />
+				<Hori width="1.2em" />
 				<span> HoriPad Steam </span>
 			</label>
 			<label for="controller_rog_ally">
