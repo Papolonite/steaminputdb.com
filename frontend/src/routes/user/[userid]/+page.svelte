@@ -11,6 +11,7 @@ import { tooltip } from '$lib/attachments/tooltip.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
+import { createUserSchemaJsonLd } from '$lib/schema/user';
 import { configRating } from '$lib/snippets/configRating.svelte';
 import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
 import { controllertype } from '$lib/snippets/controllertype.svelte';
@@ -25,7 +26,7 @@ import type { PageProps } from './$types';
 
 let { data }: PageProps = $props();
 
-const playerInfo: components['schemas']['PlayerInfo'] | undefined = $derived(data.playerInfo);
+const playerInfo = $derived(data.playerInfo as unknown as components['schemas']['PlayerInfo'] | undefined);
 
 const pageBGURL = $derived.by(() => {
 	if (!playerInfo?.profilebackground) {
@@ -146,7 +147,6 @@ onMount(() => {
 
 <svelte:head>
 	<title>SteamInputDB - User: {playerInfo?.personaname ?? page.params.userid}</title>
-	<link rel="canonical" href={page.url.href} />
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
@@ -179,33 +179,13 @@ onMount(() => {
 			name="twitter:image:alt"
 			content="SteamInputDB - User: {playerInfo?.personaname ?? page.params.userid}" />
 	{/if}
-	<script type="application/ld+json">
-		{`{
-			"@context": "https://schema.org",
-			"@graph": [
-				{
-					"@type": "WebSite",
-					"name": "SteamInputDB",
-					"url": "https://www.steaminputdb.com/",
-					"potentialAction": {
-						"@type": "SearchAction",
-						"target": "https://www.steaminputdb.com/user/${page.params.userid}?searchtext={searchtext}",
-						"query-input": "required name=searchtext"
-					}
-				},
-				{
-					"@type": "WebPage",
-					"name": "SteamInputDB - User: ${playerInfo?.personaname ?? page.params.userid}",
-					"url": "${page.url.href}",
-					"description": "Search for Steam Input configurations from ${playerInfo?.personaname ?? page.params.userid}",
-					"isPartOf": {
-						"@type": "WebSite",
-						"url": "https://www.steaminputdb.com/"
-					}
-				}
-			]
-		}`}
-	</script>
+	<svelte:element this={'script'} type="application/ld+json">
+		{createUserSchemaJsonLd({
+			userId: page.params.userid ?? '',
+			personName: playerInfo?.personaname ?? page.params.userid ?? '',
+			imageUrl: playerInfo?.avatarfull
+		})}
+	</svelte:element>
 </svelte:head>
 
 <svelte:window

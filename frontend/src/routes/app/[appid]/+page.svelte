@@ -10,6 +10,7 @@ import { tooltip } from '$lib/attachments/tooltip.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
+import { createAppSchemaJsonLd } from '$lib/schema/app';
 import { configRating } from '$lib/snippets/configRating.svelte';
 import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
 import { controllertype } from '$lib/snippets/controllertype.svelte';
@@ -126,7 +127,6 @@ onMount(() => {
 
 <svelte:head>
 	<title>SteamInputDB - {appInfo?.name ?? page.params.appid}</title>
-	<link rel="canonical" href={page.url.href} />
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={page.url.href} />
@@ -157,33 +157,27 @@ onMount(() => {
 			<meta name="twitter:image:alt" content="SteamInputDB - {appInfo?.name ?? page.params.appid}" />
 		{/if}
 	{/if}
-	<script type="application/ld+json">
-		{`{
-			"@context": "https://schema.org",
-			"@graph": [
-				{
-					"@type": "WebSite",
-					"name": "SteamInputDB",
-					"url": "https://www.steaminputdb.com/",
-					"potentialAction": {
-						"@type": "SearchAction",
-						"target": "https://www.steaminputdb.com/app/${page.params.appid}?searchtext={searchtext}",
-						"query-input": "required name=searchtext"
-					}
-				},
-				{
-					"@type": "WebPage",
-					"name": "SteamInputDB - ${appInfo?.name ?? page.params.appid}",
-					"url": "${page.url.href}",
-					"description": "Search for Steam Input configurations for ${appInfo?.name ?? page.params.appid}",
-					"isPartOf": {
-						"@type": "WebSite",
-						"url": "https://www.steaminputdb.com/"
-					}
-				}
-			]
-		}`}
-	</script>
+	<svelte:element this={'script'} type="application/ld+json">
+		{createAppSchemaJsonLd({
+			appId: page.params.appid ?? '',
+			appName: appInfo?.name ?? page.params.appid ?? '',
+			imageUrl:
+				appInfo?.assets?.asset_url_format &&
+				(appInfo?.assets?.main_capsule ??
+					appInfo?.assets?.header ??
+					appInfo?.assets?.hero_capsule ??
+					appInfo?.assets?.library_hero)
+					? `${assetUrlBase}${appInfo.assets.asset_url_format.replace(
+							'${FILENAME}',
+							appInfo.assets.main_capsule ??
+								appInfo.assets.header ??
+								appInfo.assets.hero_capsule ??
+								appInfo.assets.library_hero ??
+								''
+						)}`
+					: undefined
+		})}
+	</svelte:element>
 </svelte:head>
 
 <svelte:window

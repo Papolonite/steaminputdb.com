@@ -32,6 +32,9 @@ onNavigate((navigation) => {
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 	{#each links as link (link?.attrs?.href)}
 		{#if link?.attrs?.onload}
 			<link
@@ -44,9 +47,13 @@ onNavigate((navigation) => {
 		{/if}
 	{/each}
 	<link rel="canonical" href={page.url.toString()} />
+	<link
+		rel="search"
+		type="application/opensearchdescription+xml"
+		href="/opensearch.xml"
+		title="SteamInputDB" />
 	<meta property="og:url" content={page.url.toString()} />
 	<meta property="og:site_name" content="SteamInputDB" />
-	<meta name="robots" content="index, follow" />
 </svelte:head>
 
 <Header />

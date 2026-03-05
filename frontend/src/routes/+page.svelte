@@ -1,5 +1,6 @@
 <script lang="ts">
 import SC2 from '$lib/assets/SC2_Googley.svg.svelte';
+import { createHomeSchemaJsonLd } from '$lib/schema/home';
 import { onMount } from 'svelte';
 
 let eyes = $state<{
@@ -28,7 +29,6 @@ onMount(() => {
 	<meta
 		name="robots"
 		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-	<link rel="canonical" href="https://www.steaminputdb.com/" />
 
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
@@ -48,39 +48,7 @@ onMount(() => {
 	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
 
-	<script type="application/ld+json">
-	{`{
-		"@context": "https://schema.org",
-		"@graph": [
-			{
-				"@type": "WebSite",
-				"name": "SteamInputDB",
-				"url": "https://www.steaminputdb.com/",
-				"description": "Community-driven database of Steam Input configurations using the Steam API.",
-				"inLanguage": "en",
-				"potentialAction": {
-					"@type": "SearchAction",
-					"target": "https://www.steaminputdb.com/config/search?searchtext={searchtext}",
-					"query-input": "required name=searchtext"
-				}
-			},
-			{
-				"@type": "WebPage",
-				"name": "SteamInputDB",
-				"url": "https://www.steaminputdb.com/",
-				"description": "Community-driven database of Steam Input configurations using the Steam API.",
-				"isPartOf": {
-					"@type": "WebSite",
-					"url": "https://www.steaminputdb.com/"
-				},
-				"primaryImageOfPage": {
-					"@type": "ImageObject",
-					"url": "https://www.steaminputdb.com/ogimage.png"
-				}
-			}
-		]
-	}`}
-	</script>
+	<svelte:element this={'script'} type="application/ld+json">{createHomeSchemaJsonLd()}</svelte:element>
 </svelte:head>
 
 <svelte:window

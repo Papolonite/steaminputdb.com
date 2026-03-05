@@ -10,6 +10,7 @@ import { tooltip } from '$lib/attachments/tooltip.svelte';
 import SearchForm from '$lib/components/search/searchform.svelte';
 import Spinner from '$lib/components/Spinner.svelte';
 import { log } from '$lib/log';
+import { createHomeSchemaJsonLd } from '$lib/schema/home';
 import { configRating } from '$lib/snippets/configRating.svelte';
 import { configurationFeatureList } from '$lib/snippets/configurationfeaturelist.svelte';
 import { controllertype } from '$lib/snippets/controllertype.svelte';
@@ -137,16 +138,32 @@ afterNavigate(() => {
 
 <svelte:head>
 	<title>SteamInputDB - Config Search</title>
-	<meta property="og:title" content="SteamInputDB - Config Search" />
+	<meta
+		name="keywords"
+		content="Steam Input DB, Steam DB, DB, Steam Deck, Steam Input, Steam controller configs, controller layouts, community database, Steam API, gamepad configurations, controller presets" />
+	<meta
+		name="robots"
+		content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+	<meta property="og:site_name" content="SteamInputDB" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="SteamInputDB" />
 	<meta name="description" content="Search for Steam Input configurations for Steam and non Steam games" />
 	<meta
 		property="og:description"
 		content="Search for Steam Input configurations for Steam and non Steam games" />
+	<meta property="og:url" content="https://www.steaminputdb.com/" />
+	<meta property="og:image" content="https://www.steaminputdb.com/ogimage.png" />
+	<meta property="og:image:alt" content="SteamInputDB preview image" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="SteamInputDB - Config Search" />
 	<meta
 		name="twitter:description"
 		content="Search for Steam Input configurations for Steam and non Steam games" />
+	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
+	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
+
+	<svelte:element this={'script'} type="application/ld+json">{createHomeSchemaJsonLd()}</svelte:element>
 </svelte:head>
 
 <svelte:window
