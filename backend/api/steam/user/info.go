@@ -83,7 +83,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 		},
 		func(c context.Context, req *UserInfoRequest) (*Response, error) {
 			var steamID string
-			queryJson, _ := json.Marshal(req)
+			queryJSON, _ := json.Marshal(req)
 
 			if req.UserID == "" {
 				var ok bool
@@ -96,7 +96,7 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 				if useMemCache {
 					cached, ok := memcache.Get[*Response](
 						cache,
-						string(queryJson),
+						string(queryJSON),
 					)
 					if ok {
 						return cached, nil
@@ -194,8 +194,8 @@ Returns 401 if no id provided and token is invalid and 400 if everything is miss
 			}
 			wg.Wait()
 
-			if useMemCache && req.UserID != "" && len(queryJson) != 0 {
-				cache.Store(string(queryJson), res)
+			if useMemCache && req.UserID != "" && len(queryJSON) != 0 {
+				cache.Store(string(queryJSON), res)
 			}
 			return res, nil
 		},
