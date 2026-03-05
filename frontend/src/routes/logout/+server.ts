@@ -4,9 +4,10 @@ import { redirect, type RequestHandler } from '@sveltejs/kit';
 export const GET: RequestHandler = async (event) => {
     event.cookies.delete('token', { path: '/' });
 
+    const tld = event.url.hostname.split('.').slice(-2).join('.');
     event.cookies.set('token', '', {
         path: '/',
-        domain: 'steaminputdb.com',
+        domain: `${tld}`,
         httpOnly:  true,
         secure:  true,
         sameSite: 'lax',

@@ -88,9 +88,11 @@ export const actions = {
                     ? Number.parseInt(options['max-age'], 10)
                     : undefined;
 
+                const tld = url.hostname.split('.').slice(-2).join('.');
+
                 cookies.set(name, value, {
                     path: typeof options.path === 'string' ? options.path : '/',
-                    domain: url.hostname,
+                    domain: `${tld}`,
                     httpOnly: options.httponly === true,
                     secure: options.secure === true,
                     sameSite: sameSite === 'lax' || sameSite === 'strict' || sameSite === 'none'
