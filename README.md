@@ -6,7 +6,7 @@
 [![Discord](https://img.shields.io/discord/368823110817808384?logo=discord&logoColor=white&label=Discord&color=%23535fe5
 )](https://discord.gg/hs34MtcHJY)
 
-**Steam API backed** community Driven Database of SteamInput configurations
+SteamInputDB is a **Steam API backed**, community Driven Database of SteamInput configurations
 
 SteamInputDB uses the same APIs as Steam itself  
 That means **every** configuration on Steam is also available here!  
