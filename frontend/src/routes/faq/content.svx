@@ -24,13 +24,15 @@ Steam should open a preview-window for the config, where you can click "Apply" a
 
 ### Manually
 
-1. Open Big Picture mode and either view a community config for the game or create a custom one and save it.
+1. Create a Steam Input config and save it **or** view a community config for the game
 2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam) (depends on the operating system you're using) go to `<steam foler>/userdata/`.  
-    Then you have to choose the directory that corresponds to your user id. If there's only one, open it. Then go to  `<steam folder>/userdata/<your user number>/241100/remote/controller_config`.
+    Then you have to choose the directory that corresponds to your user id.  
+    If there's only one, open it.  
+    Then go to  `<steam folder>/userdata/<your user number>/241100/remote/controller_config`  
 3. Search for the file which name matches the config you created earlier.  
    It should be in a folder like `<steam folder>/userdata/<your user number>/241100/remote/controller_config/<steam app id>/<name of config>`
 4. Paste the downloaded config or replace the contents of the one that's already there.
-5. Start Steam (in Big Picture Mode).
+5. Start Steam
 
 ## How to use the configs (for a non-steam game)
 
@@ -49,9 +51,11 @@ Steam should open a preview-window for the config, where you can click "Apply" a
   Choose a good name, so you can find it later.
 2. In the [Steam folder](http://pcgamingwiki.com/wiki/Game_data#Steam)
 (depends on the operating system you're using) go to `<steam foler>/userdata/`.  
-    Then you have to choose the directory that corresponds to your user id. If there's only one, open it.  
+    Then you have to choose the directory that corresponds to your user id.   
+    If there's only one, open it.  
     Then go to `<steam folder>/userdata/<your user number>/241100/remote/controller_config`.
-3. Search for the file which name matches the config you created earlier. It should be in a folder like  
+3. Search for the file which name matches the config you created earlier.  
+   It should be in a folder like    
     `<steam folder>/userdata/<your user number>/241100/remote/controller_config/<lots of letters and numbers>/<name of config>`
 4. Paste the downloaded config or replace the contents of the one that's already there.
 5. Start Steam.
