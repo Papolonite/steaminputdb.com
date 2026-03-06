@@ -28,6 +28,8 @@ import Icon from '@iconify/svelte';
 		<PS5 width="1.2em" />
 	{:else if item.controller_type === 'controller_ps4'}
 		<PS4 width="1.2em" />
+	{:else if item.controller_type === 'controller_ps3'}
+		<Icon icon="iconoir:gamepad" width="1.2em" />
 	{:else if item.controller_type === 'controller_xbox360'}
 		<XBox width="1.2em" />
 	{:else if item.controller_type === 'controller_xboxone'}
