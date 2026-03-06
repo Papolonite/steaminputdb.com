@@ -32,6 +32,8 @@ import Icon from '@iconify/svelte';
 		<XBox width="1.2em" />
 	{:else if item.controller_type === 'controller_xboxone'}
 		<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
+	{:else if item.controller_type === 'controller_xboxelite'}
+		<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
 	{:else if item.controller_type === 'controller_switch_pro'}
 		<SwitchPro width="1.2em" />
 	{:else if item.controller_type === 'controller_8bitdo'}

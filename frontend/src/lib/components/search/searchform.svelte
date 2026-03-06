@@ -239,6 +239,17 @@ const changeSubmitHandler = () => {
 				<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
 				<span> Xbox One </span>
 			</label>
+			<label for="controller_xboxelite">
+				<input
+					type="radio"
+					id="controller_xboxelite"
+					name="controller_type"
+					value="controller_xboxelite"
+					bind:group={values['controller_type'] as string}
+					onchange={changeSubmitHandler} />
+				<Icon icon="fluent:xbox-controller-24-filled" width="1.2em" />
+				<span> Xbox Elite </span>
+			</label>
 			<label for="controller_switch_pro">
 				<input
 					type="radio"
