@@ -17,9 +17,9 @@ import Triton from '$lib/assets/steam_controller_type_svgs/triton.svg?component'
 import XBox from '$lib/assets/steam_controller_type_svgs/xbox.svg?component';
 
 let {
-	showControllerFilter = true,
-	showFeatureFilter = true,
-	showExcludedFeatureFilter = true,
+	showAdvancedFilters = true,
+	showFeatureFilter = false,
+	showExcludedFeatureFilter = false,
 	form = $bindable(),
 	// eslint-disable-next-line no-useless-assignment
 	searchtext = $bindable(),
@@ -27,11 +27,11 @@ let {
 	method = 'GET',
 	values = $bindable({}),
 	submitOnChange = false,
-	showTotalCount = false,
+	showTotalCount = true,
 	enhanceParams,
 	...rest
 }: {
-	showControllerFilter?: boolean;
+	showAdvancedFilters?: boolean;
 	showFeatureFilter?: boolean;
 	showExcludedFeatureFilter?: boolean;
 	form?: HTMLFormElement;
@@ -49,6 +49,8 @@ const changeSubmitHandler = () => {
 		form!.requestSubmit();
 	}
 };
+
+let showMoreControllers = $state(false);
 </script>
 
 {#if method === 'POST' || method === 'post'}
@@ -105,16 +107,14 @@ const changeSubmitHandler = () => {
 		type="button"
 		class="filter"
 		onclick={() => {
-			showControllerFilter = !showControllerFilter;
-			showFeatureFilter = !showFeatureFilter;
-			showExcludedFeatureFilter = !showExcludedFeatureFilter;
+			showAdvancedFilters = !showAdvancedFilters;
 		}}
-		>Advanced Filters {#if showControllerFilter}
+		>Advanced Filters {#if showAdvancedFilters}
 			<Icon icon="mdi:chevron-up" height="1.8em" />
 		{:else}
 			<Icon icon="mdi:chevron-down" height="1.8em" />
 		{/if}</button>
-	{#if showControllerFilter}
+	{#if showAdvancedFilters}
 		<fieldset
 			id="controller-type"
 			transition:slide={{ duration: 196, easing: cubicInOut }}
@@ -138,19 +138,8 @@ const changeSubmitHandler = () => {
 				}
 			}}
 			disabled={disabled}>
-			<legend>Controller Type</legend>
+			<legend><span>Controller Type</span></legend>
 
-			<label for="controller_neptune">
-				<input
-					type="radio"
-					id="controller_neptune"
-					name="controller_type"
-					value="controller_neptune"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="simple-icons:steamdeck" width="1.2em" />
-				<span> Steam Deck </span>
-			</label>
 			<label for="controller_triton">
 				<input
 					type="radio"
@@ -173,17 +162,19 @@ const changeSubmitHandler = () => {
 				<Gordon width="1.2em" />
 				<span> Steam Controller (2015) </span>
 			</label>
-			<label for="controller_steamcontroller_headcrab">
+
+			<label for="controller_neptune">
 				<input
 					type="radio"
-					id="controller_steamcontroller_headcrab"
+					id="controller_neptune"
 					name="controller_type"
-					value="controller_steamcontroller_headcrab"
+					value="controller_neptune"
 					bind:group={values['controller_type'] as string}
 					onchange={changeSubmitHandler} />
-				<Gordon width="1.2em" />
-				<span> Steam Controller (Headcrab) </span>
+				<Icon icon="simple-icons:steamdeck" width="1.2em" />
+				<span> Steam Deck </span>
 			</label>
+
 			<label for="controller_ps5">
 				<input
 					type="radio"
@@ -195,17 +186,7 @@ const changeSubmitHandler = () => {
 				<PS5 width="1.2em" />
 				<span> DualSense </span>
 			</label>
-			<label for="controller_ps5_edge">
-				<input
-					type="radio"
-					id="controller_ps5_edge"
-					name="controller_type"
-					value="controller_ps5_edge"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<PS5 width="1.2em" />
-				<span> DualSense Edge </span>
-			</label>
+
 			<label for="controller_ps4">
 				<input
 					type="radio"
@@ -272,50 +253,7 @@ const changeSubmitHandler = () => {
 				<EightBitDo width="1.2em" />
 				<span> 8BitDo </span>
 			</label>
-			<label for="controller_legion_go_s">
-				<input
-					type="radio"
-					id="controller_legion_go_s"
-					name="controller_type"
-					value="controller_legion_go_s"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="game-icons:spartan-helmet" width="1.2em" />
-				<span> Lenovo Legion Go S </span>
-			</label>
-			<label for="controller_hori_steam">
-				<input
-					type="radio"
-					id="controller_hori_steam"
-					name="controller_type"
-					value="controller_hori_steam"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Hori width="1.2em" />
-				<span> HoriPad Steam </span>
-			</label>
-			<label for="controller_rog_ally">
-				<input
-					type="radio"
-					id="controller_rog_ally"
-					name="controller_type"
-					value="controller_rog_ally"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="simple-icons:republicofgamers" width="1.2em" />
-				<span> ASUS ROG Ally </span>
-			</label>
-			<label for="controller_mobile_touch">
-				<input
-					type="radio"
-					id="controller_mobile_touch"
-					name="controller_type"
-					value="controller_mobile_touch"
-					bind:group={values['controller_type'] as string}
-					onchange={changeSubmitHandler} />
-				<Icon icon="mdi:cellphone" width="1.2em" />
-				<span> Mobile Touch </span>
-			</label>
+
 			<label for="controller_generic">
 				<input
 					type="radio"
@@ -327,27 +265,158 @@ const changeSubmitHandler = () => {
 				<Icon icon="mdi:gamepad" height="1.2em" />
 				<span> Generic </span>
 			</label>
+			<div class="show-more">
+				<button type="button" onclick={() => (showMoreControllers = !showMoreControllers)}>
+					<span class="show-more-text">{showMoreControllers ? 'Show Less' : 'Show More'}</span>
+					{#if showMoreControllers}
+						<Icon icon="mdi:chevron-up" height="1.6em" />
+					{:else}
+						<Icon icon="mdi:chevron-down" height="1.6em" />
+					{/if}
+				</button>
+			</div>
+			{#if showMoreControllers}
+				<label
+					for="controller_steamcontroller_headcrab"
+					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_steamcontroller_headcrab"
+						name="controller_type"
+						value="controller_steamcontroller_headcrab"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<Gordon width="1.2em" />
+					<span> Steam Controller (Headcrab) </span>
+				</label>
+				<label
+					for="controller_ps5_edge"
+					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_ps5_edge"
+						name="controller_type"
+						value="controller_ps5_edge"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<PS5 width="1.2em" />
+					<span> DualSense Edge </span>
+				</label>
+				<label for="controller_ps3" transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_ps3"
+						name="controller_type"
+						value="controller_ps3"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<Icon icon="iconoir:gamepad" width="1.2em" />
+					<span> DualShock 3 </span>
+				</label>
+				<label
+					for="controller_hori_steam"
+					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_hori_steam"
+						name="controller_type"
+						value="controller_hori_steam"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<Hori width="1.2em" />
+					<span> HoriPad Steam </span>
+				</label>
+				<label
+					for="controller_mobile_touch"
+					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_mobile_touch"
+						name="controller_type"
+						value="controller_mobile_touch"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<Icon icon="mdi:cellphone" width="1.2em" />
+					<span> Mobile Touch </span>
+				</label>
+				<label
+					for="controller_rog_ally"
+					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_rog_ally"
+						name="controller_type"
+						value="controller_rog_ally"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<Icon icon="simple-icons:republicofgamers" width="1.2em" />
+					<span> ASUS ROG Ally </span>
+				</label>
+				<label
+					for="controller_legion_go_s"
+					transition:slide|global={{ duration: 196, easing: cubicInOut }}>
+					<input
+						type="radio"
+						id="controller_legion_go_s"
+						name="controller_type"
+						value="controller_legion_go_s"
+						bind:group={values['controller_type'] as string}
+						onchange={changeSubmitHandler} />
+					<Icon icon="game-icons:spartan-helmet" width="1.2em" />
+					<span> Lenovo Legion Go S </span>
+				</label>
+			{/if}
 		</fieldset>
 	{/if}
-	{#if showFeatureFilter}
+	{#if showAdvancedFilters}
 		<fieldset id="features" transition:slide={{ duration: 196, easing: cubicInOut }} disabled={disabled}>
-			<legend>Must have</legend>
-			{@render featurefilters(values)}
+			<legend
+				><button
+					type="button"
+					class="plain"
+					onclick={() => {
+						showFeatureFilter = !showFeatureFilter;
+					}}
+					>Must have features
+					{#if showFeatureFilter}
+						<Icon icon="mdi:chevron-up" height="1.6em" />
+					{:else}
+						<Icon icon="mdi:chevron-down" height="1.6em" />
+					{/if}
+				</button></legend>
+			{#if showFeatureFilter}
+				{@render featurefilters(values)}
+			{/if}
 		</fieldset>
 	{/if}
-	{#if showExcludedFeatureFilter}
+	{#if showAdvancedFilters}
 		<fieldset
 			id="excluded-features"
 			transition:slide={{ duration: 196, easing: cubicInOut }}
 			disabled={disabled}>
-			<legend>Must not have</legend>
-			{@render featurefilters(values, 'exclude_')}
+			<legend>
+				<button
+					type="button"
+					class="plain"
+					onclick={() => {
+						showExcludedFeatureFilter = !showExcludedFeatureFilter;
+					}}
+					>Must <strong>not</strong> have features
+					{#if showExcludedFeatureFilter}
+						<Icon icon="mdi:chevron-up" height="1.6em" />
+					{:else}
+						<Icon icon="mdi:chevron-down" height="1.6em" />
+					{/if}
+				</button></legend>
+			{#if showExcludedFeatureFilter}
+				{@render featurefilters(values, 'exclude_')}
+			{/if}
 		</fieldset>
 	{/if}
 {/snippet}
 
 {#snippet featurefilters(bindMap: Record<string, unknown>, prefix = '')}
-	<label for={`${prefix}feature_gamepad`}>
+	<label for={`${prefix}feature_gamepad`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_gamepad`}
@@ -357,7 +426,7 @@ const changeSubmitHandler = () => {
 		<Icon icon="mdi:controller" width="1.2em" />
 		<span>Gamepad Inputs</span>
 	</label>
-	<label for={`${prefix}feature_keyboard`}>
+	<label for={`${prefix}feature_keyboard`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<!-- actually typo in valves data: feature_keboard -->
 		<input
 			type="checkbox"
@@ -368,7 +437,7 @@ const changeSubmitHandler = () => {
 		<Icon icon="mdi:keyboard" width="1.2em" />
 		<span>Keyboard Inputs</span>
 	</label>
-	<label for={`${prefix}feature_mouse`}>
+	<label for={`${prefix}feature_mouse`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_mouse`}
@@ -378,7 +447,7 @@ const changeSubmitHandler = () => {
 		<Icon icon="mdi:mouse" width="1.2em" />
 		<span>Mouse Inputs</span>
 	</label>
-	<label for={`${prefix}feature_gyro`}>
+	<label for={`${prefix}feature_gyro`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_gyro`}
@@ -388,7 +457,7 @@ const changeSubmitHandler = () => {
 		<Icon icon="game-icons:gyroscope" width="1.2em" />
 		<span>Gyro Inputs</span>
 	</label>
-	<label for={`${prefix}feature_touchmenu`}>
+	<label for={`${prefix}feature_touchmenu`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_touchmenu`}
@@ -398,7 +467,9 @@ const changeSubmitHandler = () => {
 		<Icon icon="mdi:gesture-touch" width="1.2em" />
 		<span>Touch Menus</span>
 	</label>
-	<label for={`${prefix}feature_radialmenu`}>
+	<label
+		for={`${prefix}feature_radialmenu`}
+		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_radialmenu`}
@@ -408,7 +479,7 @@ const changeSubmitHandler = () => {
 		<Icon icon="material-symbols:joystick" width="1.2em" />
 		<span>Radial Menus</span>
 	</label>
-	<label for={`${prefix}feature_modeshift`}>
+	<label for={`${prefix}feature_modeshift`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_modeshift`}
@@ -418,7 +489,9 @@ const changeSubmitHandler = () => {
 		<Icon icon="material-symbols:layers-rounded" width="1.2em" />
 		<span>Mode Shifts</span>
 	</label>
-	<label for={`${prefix}feature_mouseregion`}>
+	<label
+		for={`${prefix}feature_mouseregion`}
+		transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_mouseregion`}
@@ -428,7 +501,7 @@ const changeSubmitHandler = () => {
 		<Icon icon="fluent:cursor-hover-16-filled" width="1.2em" />
 		<span>Mouse Regions</span>
 	</label>
-	<label for={`${prefix}feature_actionset`}>
+	<label for={`${prefix}feature_actionset`} transition:slide|global={{ duration: 196, easing: cubicInOut }}>
 		<input
 			type="checkbox"
 			id={`${prefix}feature_actionset`}
@@ -539,13 +612,17 @@ select {
 
 fieldset {
 	border-radius: 0.5em;
-	padding: 1em;
+	padding: 0 1em;
 	background: var(--card-background-noise);
 	border: 1px solid color-mix(in srgb, var(--text-color), transparent 90%);
 	position: relative;
 	box-shadow: inset 0.1em 0.2em 0.5em 0 light-dark(#0f0f0f27, #0e0e0e7e);
 
 	width: 100%;
+	transition: all var(--transition-duration);
+	&:has(label) {
+		padding: 1em;
+	}
 
 	&[disabled] {
 		opacity: 0.5;
@@ -555,9 +632,12 @@ fieldset {
 		font-size: 1.1em;
 		border-radius: 0.5em;
 		background: var(--card-background-noise);
-		padding: 0.25em 0.5em;
 		isolation: isolate;
 		position: relative;
+		& > :first-child {
+			padding: 0.25em 0.5em;
+			display: block;
+		}
 		&::before {
 			content: '';
 			position: absolute;
@@ -615,8 +695,19 @@ fieldset {
 		gap: 0.5em;
 	}
 }
-
-button {
+button.plain {
+	background: none;
+	border: none;
+	padding: 0;
+	box-shadow: none;
+	display: flex !important;
+	gap: 1ch;
+	&:hover,
+	&:focus-visible {
+		background-color: color-mix(in srgb, var(--color-primary), transparent 50%);
+	}
+}
+button:not(.plain) {
 	color: var(--text-color-dark);
 	font-weight: bold;
 	background:
@@ -643,6 +734,23 @@ button {
 		justify-content: center;
 		align-items: center;
 		margin-left: auto;
+	}
+}
+
+.show-more {
+	width: 100%;
+	grid-column: 1 / -1;
+	display: flex;
+	justify-content: end;
+	& button {
+		display: flex;
+		gap: 1ch;
+		background: none;
+		padding: 0.5em 1em;
+		&:hover,
+		&:focus-visible {
+			background-color: color-mix(in srgb, var(--color-primary), transparent 75%);
+		}
 	}
 }
 
