@@ -221,6 +221,7 @@ import { fade, slide } from 'svelte/transition';
 					color-mix(in srgb, var(--card-color), transparent 90%) 70%
 				),
 				var(--bg-noise-transparent);
+			backdrop-filter: blur(6px);
 			&:hover,
 			&:focus-visible {
 				color: var(--text-color-dark);

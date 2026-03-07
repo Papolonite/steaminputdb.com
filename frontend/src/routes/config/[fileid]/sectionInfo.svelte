@@ -139,7 +139,9 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 		<aside>
 			<section>
 				{#if fileInfo.votes}
-					{@render configRating({ item: fileInfo })}
+					<div>
+						{@render configRating({ item: fileInfo })}
+					</div>
 				{/if}
 				{#if fileInfo.playtime_seconds || fileInfo.lifetime_playtime_seconds}
 					<div class="playtime">
@@ -189,6 +191,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 		padding: 1em;
 		overflow-x: hidden;
 		position: relative;
+		backdrop-filter: blur(8px);
 
 		& > dt {
 			font-size: 1.2em;
@@ -217,13 +220,15 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 			gap: 1em;
 			width: 100%;
 			grid-template-columns: repeat(auto-fit, minmax(calc(var(--width) -1em), auto));
-			& > :global(div) {
+			:global(> *) {
 				width: 100%;
 				padding: 1em;
 				position: relative;
 				isolation: isolate;
 				border-radius: var(--border-radius);
 				box-shadow: var(--card-shadow);
+				backdrop-filter: blur(8px);
+
 				&::before {
 					content: '';
 					position: absolute;
@@ -327,7 +332,7 @@ import { format, formatDistance, formatDistanceToNow, formatDuration, intervalTo
 		}
 
 		& > section {
-			& :global(> .rating) {
+			& :global(> :first-child) {
 				height: 100%;
 			}
 			& > .playtime {
