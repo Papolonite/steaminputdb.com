@@ -70,6 +70,9 @@ $effect(() => {
 			return;
 		}
 		const idCopy = cfg.app_id;
+		infoAppIdMap[idCopy] = {
+			app_id: idCopy
+		} as components['schemas']['AppItem'];
 		client
 			.GET('/v1/steam/appinfo', {
 				params: {
@@ -91,6 +94,7 @@ $effect(() => {
 			})
 			.catch((err) => {
 				log.error('Error fetching store info', 'appid', idCopy, 'error', err);
+				delete infoAppIdMap[idCopy];
 			});
 	});
 });
