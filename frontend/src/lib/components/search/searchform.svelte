@@ -747,9 +747,11 @@ button:not(.plain) {
 		gap: 1ch;
 		background: none;
 		padding: 0.5em 1em;
+		color: var(--text-color);
 		&:hover,
 		&:focus-visible {
 			background-color: color-mix(in srgb, var(--color-primary), transparent 75%);
+			color: var(--text-color) !important;
 		}
 	}
 }
