@@ -6,6 +6,20 @@ import { ANSI, log } from '$lib/log';
 import { getStatusText, httpActiveConnections, httpRequestDuration, httpRequestsTotal } from '$lib/metrics';
 import { sequence } from '@sveltejs/kit/hooks';
 
+function metricPathLabel(routeId: string | null): string {
+    if (!routeId) {
+        return '/unmatched';
+    }
+
+    const withoutGroups = routeId.replace(/\/\([^/]+\)/g, '');
+    const normalized = withoutGroups
+        .replace(/\[\[([^\]]+)\]\]/g, ':$1?')
+        .replace(/\[\.\.\.([^\]]+)\]/g, ':$1*')
+        .replace(/\[([^\]]+)\]/g, ':$1');
+
+    return normalized || '/';
+}
+
 
 const logHook: Handle = async ({ event, resolve }) => {
     if (building) {
@@ -26,7 +40,7 @@ const logHook: Handle = async ({ event, resolve }) => {
         const durationSeconds = durationMs / 1000;
 
         const method = event.request.method;
-        const path = event.url.pathname;
+        const path = metricPathLabel(event.route.id);
         const statusText = getStatusText(statusCode);
 
         httpRequestsTotal.labels(method, path, statusText).inc();
