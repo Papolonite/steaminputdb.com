@@ -19,7 +19,7 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>SteamInputDB</title>
+	<title>SteamInputDB | Database of every Steam Input configuration</title>
 	<meta
 		name="description"
 		content="Community-driven database of Steam Input configurations using the Steam API." />
@@ -32,19 +32,19 @@ onMount(() => {
 
 	<meta property="og:site_name" content="SteamInputDB" />
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content="SteamInputDB" />
+	<meta property="og:title" content="SteamInputDB | Database of every Steam Input configuration" />
 	<meta
 		property="og:description"
-		content="Community-driven database of Steam Input configurations using the Steam API." />
+		content="SteamInputDB is a database of every Steam Input configuration using the Steam API." />
 	<meta property="og:url" content="https://www.steaminputdb.com/" />
 	<meta property="og:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta property="og:image:alt" content="SteamInputDB preview image" />
 
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="SteamInputDB" />
+	<meta name="twitter:title" content="SteamInputDB | Database of every Steam Input configuration" />
 	<meta
 		name="twitter:description"
-		content="Community-driven database of Steam Input configurations using the Steam API." />
+		content="SteamInputDB is a database of every Steam Input configuration using the Steam API." />
 	<meta name="twitter:image" content="https://www.steaminputdb.com/ogimage.png" />
 	<meta name="twitter:image:alt" content="SteamInputDB preview image" />
 
